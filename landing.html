@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing Page</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="landing-view">
+
+<div id="contenidoLanding">
+    Cargando landing…
+</div>
+
+<script>
+    // Obtener ID desde la URL
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("view");
+
+    if (!id) {
+        document.getElementById("contenidoLanding").innerHTML =
+            "<h2>Error: Landing no encontrada.</h2>";
+    } else {
+        const raw = localStorage.getItem("landing-" + id);
+        if (!raw) {
+            document.getElementById("contenidoLanding").innerHTML =
+                "<h2>Error: Landing no encontrada.</h2>";
+        } else {
+            const data = JSON.parse(raw);
+
+            // Convertir arrays a HTML
+            const benefitsHTML = (data.benefits || [])
+                .map(b => `<div class='card'>${b}</div>`).join("");
+
+            const featuresHTML = (data.features || [])
+                .map(f => `<div class='card'>${f}</div>`).join("");
+
+            const testimonialsHTML = (data.testimonials || [])
+                .map(t => `<div class='test-card'>${t}</div>`).join("");
+
+            // Plantilla PRO directamente en este archivo
+            document.getElementById("contenidoLanding").innerHTML = `
+                <section class="hero">
+                    <img src="${data.heroImage}" class="hero-img" />
+                    <h1>${data.heroText}</h1>
+                    <p>${data.subText}</p>
+                    <a class="cta-btn">${data.cta}</a>
+                </section>
+
+                <section class="benefits">${benefitsHTML}</section>
+
+                <section class="features">${featuresHTML}</section>
+
+                <section class="testimonials">${testimonialsHTML}</section>
+            `;
+        }
+    }
+</script>
+
+</body>
+</html>

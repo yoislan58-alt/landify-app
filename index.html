@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landify Builder AI — ULTRA Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Fuente premium -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="light">
+
+<div id="notify" class="notify"></div>
+
+<!-- CTA flotante -->
+<a class="floating-action" href="#seccionCrear">+ Nueva Landing</a>
+
+<!-- SIDEBAR ULTRA -->
+<aside class="sidebar-ultra">
+    <h2 class="logo-ultra">Landify<span>AI</span></h2>
+
+    <nav>
+        <button class="side-btn active" id="btnCrear">⚡ Crear Landing</button>
+        <button class="side-btn" id="btnProyectos">📁 Mis Proyectos</button>
+        <button class="side-btn" id="btnAjustes">⚙ Ajustes</button>
+    </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main-ultra">
+
+    <!-- TOPBAR -->
+    <header class="topbar-ultra">
+        <h1 class="titulo-panel-ultra">Creador de Landings</h1>
+        <button id="toggleTheme" class="theme-toggle-ultra">🌙</button>
+    </header>
+
+    <!-- SECCIÓN CREAR -->
+    <section id="seccionCrear" class="seccion-ultra activa">
+
+        <div class="card-ultra">
+            <h2>Generar Nueva Landing</h2>
+            <textarea id="userPrompt" placeholder="Describe la landing con detalle…" class="input-ultra"></textarea>
+
+            <div class="row-ultra">
+                <button id="generateBtn" class="btn-ultra-primary">✨ Generar</button>
+            </div>
+
+            <button id="btn-ver-landing" class="btn-ultra-outline" style="margin-top:15px;">👁 Ver landing generada</button>
+
+            <div id="loading" class="loading-ultra hidden">
+                <div class="loader"></div>
+                <span>Generando…</span>
+            </div>
+        </div>
+
+        <h2 class="subtitle-ultra">Mis Landings</h2>
+        <div id="projectList" class="grid-proyectos-ultra"></div>
+    </section>
+
+    <!-- SECCIÓN PROYECTOS -->
+    <section id="seccionProyectos" class="seccion-ultra">
+        <h2 class="subtitle-ultra">Mis Landings Generadas</h2>
+        <div id="projectList" class="grid-proyectos-ultra"></div>
+    </section>
+
+    <!-- SECCIÓN AJUSTES -->
+    <section id="seccionAjustes" class="seccion-ultra">
+        <h2 class="subtitle-ultra">Ajustes</h2>
+
+        <div class="card-ultra">
+            <h3>Plan Actual</h3>
+            <p id="ajustePlanTexto">Cargando…</p>
+            <p id="ajusteCreditosTexto">Cargando créditos…</p>
+            <button id="btnUpgrade" class="btn-ultra-primary">Actualizar Plan</button>
+        </div>
+
+        <div class="card-ultra">
+            <h3>Preferencias</h3>
+            <button id="resetTema" class="btn-ultra-outline">Restablecer Tema</button>
+            <button id="resetTodo" class="btn-ultra-danger">Restablecer Cuenta</button>
+        </div>
+
+    </section>
+
+</main>
+
+<script src="app.js"></script>
+
+<script>
+const btnCrear = document.getElementById("btnCrear");
+const btnProyectos = document.getElementById("btnProyectos");
+const btnAjustes = document.getElementById("btnAjustes");
+
+const sCrear = document.getElementById("seccionCrear");
+const sProyectos = document.getElementById("seccionProyectos");
+const sAjustes = document.getElementById("seccionAjustes");
+
+function activar(seccion) {
+    document.querySelectorAll(".seccion-ultra").forEach(s => s.classList.remove("activa"));
+    document.querySelectorAll(".side-btn").forEach(b => b.classList.remove("active"));
+    seccion.classList.add("activa");
+}
+
+btnCrear.onclick = () => { activar(sCrear); btnCrear.classList.add("active") };
+btnProyectos.onclick = () => { activar(sProyectos); btnProyectos.classList.add("active") };
+btnAjustes.onclick = () => { activar(sAjustes); btnAjustes.classList.add("active") };
+
+const toggleTheme = document.getElementById("toggleTheme");
+const body = document.body;
+
+let theme = localStorage.getItem("theme") || "light";
+body.className = theme;
+toggleTheme.textContent = theme === "light" ? "🌙" : "☀️";
+
+toggleTheme.onclick = () => {
+    body.classList.toggle("dark");
+    body.classList.toggle("light");
+    const nuevo = body.classList.contains("dark") ? "dark" : "light";
+    toggleTheme.textContent = nuevo === "light" ? "🌙" : "☀️";
+    localStorage.setItem("theme", nuevo);
+};
+</script>
+
+</body>
+</html>
+
+
+
+
+
