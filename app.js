@@ -17,7 +17,7 @@ const notifyBox = document.getElementById("notify");
 const loading = document.getElementById("loading");
 
 const generateBtn = document.getElementById("generateBtn");
-const adjustBtn = document.getElementById("ajustarDirecto");  // <-- EL VERDADERO BOTÓN
+const adjustBtn = document.getElementById("ajustarDirecto"); // <-- BOTÓN REAL
 const projectList = document.getElementById("projectList");
 const projectListSec = document.getElementById("projectListSec");
 
@@ -55,6 +55,7 @@ generateBtn.onclick = async () => {
         const textos = data.textos;
         textos.heroImage = data.heroImage;
 
+        // Template HTML
         const template = await fetch("/landing/template.html").then(r => r.text());
 
         const finalHTML = template
@@ -62,16 +63,14 @@ generateBtn.onclick = async () => {
             .replace("{{heroText}}", textos.heroText)
             .replace("{{subText}}", textos.subText)
             .replace("{{cta}}", textos.cta)
-            .replace("{{benefits}}",
-                textos.benefits.map(b => `<div class="card">${b}</div>`).join(""))
-            .replace("{{features}}",
-                textos.features.map(f => `<div class="card">${f}</div>`).join(""))
-            .replace("{{testimonials}}",
-                textos.testimonials.map(t => `<div class="test-card">${t}</div>`).join(""));
+            .replace("{{benefits}}", textos.benefits.map(b => `<div class="card">${b}</div>`).join(""))
+            .replace("{{features}}", textos.features.map(f => `<div class="card">${f}</div>`).join(""))
+            .replace("{{testimonials}}", textos.testimonials.map(t => `<div class="test-card">${t}</div>`).join(""));
 
         const id = generarIdLanding();
         ultimoIdGenerado = id;
 
+        // Guardar en servidor
         const urlFinal = await guardarLandingEnServidor(id, finalHTML);
         if (!urlFinal) {
             loading.classList.add("hidden");
@@ -120,7 +119,7 @@ async function guardarLandingEnServidor(id, html) {
 }
 
 /* =========================================================
-   MOSTRAR PROJECTOS
+   MOSTRAR PROYECTOS
 ========================================================= */
 function addProject(id, data) {
     const card = document.createElement("div");
@@ -162,17 +161,15 @@ function copiarHTML(id) {
         .then(r => r.text())
         .then(t => {
             const data = JSON.parse(raw);
+
             const html = t
                 .replace("{{heroImage}}", data.heroImage)
                 .replace("{{heroText}}", data.heroText)
                 .replace("{{subText}}", data.subText)
                 .replace("{{cta}}", data.cta)
-                .replace("{{benefits}}",
-                    data.benefits.map(b => `<div class="card">${b}</div>`).join(""))
-                .replace("{{features}}",
-                    data.features.map(f => `<div class="card">${f}</div>`).join(""))
-                .replace("{{testimonials}}",
-                    data.testimonials.map(t => `<div class="test-card">${t}</div>`).join(""));
+                .replace("{{benefits}}", data.benefits.map(b => `<div class="card">${b}</div>`).join(""))
+                .replace("{{features}}", data.features.map(f => `<div class="card">${f}</div>`).join(""))
+                .replace("{{testimonials}}", data.testimonials.map(t => `<div class="test-card">${t}</div>`).join(""));
 
             navigator.clipboard.writeText(html);
             notify("HTML copiado ✔");
@@ -191,17 +188,15 @@ function exportarHTML(id) {
         .then(r => r.text())
         .then(template => {
             const data = JSON.parse(raw);
+
             const html = template
                 .replace("{{heroImage}}", data.heroImage)
                 .replace("{{heroText}}", data.heroText)
                 .replace("{{subText}}", data.subText)
                 .replace("{{cta}}", data.cta)
-                .replace("{{benefits}}",
-                    data.benefits.map(b => `<div class="card">${b}</div>`).join(""))
-                .replace("{{features}}",
-                    data.features.map(f => `<div class="card">${f}</div>`).join(""))
-                .replace("{{testimonials}}",
-                    data.testimonials.map(t => `<div class="test-card">${t}</div>`).join(""));
+                .replace("{{benefits}}", data.benefits.map(b => `<div class="card">${b}</div>`).join(""))
+                .replace("{{features}}", data.features.map(f => `<div class="card">${f}</div>`).join(""))
+                .replace("{{testimonials}}", data.testimonials.map(t => `<div class="test-card">${t}</div>`).join(""));
 
             const blob = new Blob([html], { type: "text/html" });
             const url = URL.createObjectURL(blob);
@@ -216,7 +211,7 @@ function exportarHTML(id) {
 window.exportarHTML = exportarHTML;
 
 /* =========================================================
-   AJUSTAR LANDING
+   AJUSTAR LANDING (insertar secciones)
 ========================================================= */
 adjustBtn.onclick = async () => {
     if (!ultimoIdGenerado) return notify("Primero genera una landing.");
@@ -237,8 +232,8 @@ adjustBtn.onclick = async () => {
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 accion: "insertar",
-                htmlActual,
                 prompt: textoNuevo,
+                htmlActual,
                 ubicacion
             })
         });
@@ -268,6 +263,7 @@ adjustBtn.onclick = async () => {
 
     loading.classList.add("hidden");
 };
+
 
 
 
