@@ -1,6 +1,3 @@
-openai.js
-
-
 export async function handler(event, context) {
     try {
         // CORS
@@ -149,3 +146,4 @@ function corsHeaders() {
         "Access-Control-Allow-Methods": "POST, OPTIONS"
     };
 }
+
