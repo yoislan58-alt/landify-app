@@ -1,406 +1,69 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="{{theme}}">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tu Landing — Generada con Landify AI</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Fuente -->
+  <title>{{heroText}}</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --bg: #050413;
-      --card: #0f0b25;
-      --card-soft: #151233;
-      --accent1: #7b3dff;
-      --accent2: #ff4fba;
-      --accent3: #49c5ff;
-      --text-main: #fdfbff;
-      --text-soft: #d2cef7;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
-      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: radial-gradient(circle at top, #1a1238, #050413 55%, #02010a 100%);
-      color: var(--text-main);
-      min-height: 100vh;
+        margin:0;
+        font-family:"Poppins";
+        background: var(--bg);
+        color: var(--text);
+    }
+    :root[data-theme="light"] {
+        --bg:#ffffff;
+        --card:#f4f4f7;
+        --text:#121212;
+        --accent:#6b4eff;
+    }
+    :root[data-theme="dark"] {
+        --bg:#0d0d12;
+        --card:#171720;
+        --text:#ffffff;
+        --accent:#7b61ff;
     }
 
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    /* BARRA SUPERIOR */
-    .top-bar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: linear-gradient(90deg, rgba(123,61,255,0.97), rgba(255,79,186,0.97));
-      color: #fff;
-      text-align: center;
-      padding: 8px 16px;
-      font-size: 13px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
-    }
-
-    .top-bar span {
-      font-weight: 600;
-    }
-
-    /* LAYOUT */
-    .layout {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 22px 16px 40px;
-    }
-
-    /* HERO */
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-      gap: 24px;
-      align-items: center;
-      margin-top: 10px;
-      padding: 22px 20px;
-      border-radius: 24px;
-      background: radial-gradient(circle at top left, rgba(123,61,255,0.32), rgba(8,6,30,0.98));
-      box-shadow: 0 22px 55px rgba(0,0,0,0.85);
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .hero-kicker {
-      font-size: 13px;
-      color: var(--accent3);
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    .hero-title {
-      font-size: clamp(26px, 4vw, 34px);
-      font-weight: 700;
-      line-height: 1.15;
-      margin-bottom: 10px;
-    }
-
-    .hero-sub {
-      font-size: 14px;
-      color: var(--text-soft);
-      margin-bottom: 16px;
-    }
-
-    .hero-cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .btn-main {
-      padding: 11px 22px;
-      border-radius: 999px;
-      border: none;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent3));
-      color: #fff;
-      box-shadow: 0 0 24px rgba(124,67,255,0.85);
-      transition: 0.25s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
-    }
-
-    .btn-main:hover {
-      transform: translateY(-1px) scale(1.02);
-      background: linear-gradient(135deg, #9a63ff, #ff6dd0, #67d6ff);
-      box-shadow: 0 0 30px rgba(255,120,210,0.95);
-    }
-
-    .hero-note {
-      font-size: 11px;
-      color: rgba(210, 206, 255, 0.9);
-    }
-
-    .hero-badges {
-      margin-top: 12px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 11px;
-    }
-
-    .badge {
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.3);
-      color: var(--text-soft);
-      background: rgba(10,8,30,0.8);
-    }
-
-    .hero-image-wrap {
-      border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: radial-gradient(circle at top, #32245f, #08051a);
-      box-shadow: 0 16px 45px rgba(0,0,0,0.9);
-    }
-
-    .hero-image-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* SECCIÓN CONTENEDORA GENÉRICA */
-    .section {
-      margin-top: 26px;
-      background: rgba(10, 8, 30, 0.96);
-      border-radius: 20px;
-      padding: 18px 18px 20px;
-      border: 1px solid rgba(255,255,255,0.06);
-      box-shadow: 0 18px 45px rgba(0,0,0,0.85);
-    }
-
-    .section-title {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .section-sub {
-      font-size: 13px;
-      color: var(--text-soft);
-      margin-bottom: 14px;
-    }
-
-    /* BENEFICIOS */
-    .benefits-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .benefit-card {
-      background: var(--card-soft);
-      border-radius: 14px;
-      padding: 10px 10px 12px;
-      font-size: 13px;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-
-    /* FEATURES */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .feature-card {
-      background: var(--card);
-      border-radius: 14px;
-      padding: 10px 10px 12px;
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 13px;
-    }
-
-    /* TESTIMONIOS */
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 14px;
-      margin-top: 12px;
-    }
-
-    .test-card {
-      background: var(--card-soft);
-      border-radius: 16px;
-      padding: 12px 12px 14px;
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 13px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .test-card::before {
-      content: "“";
-      position: absolute;
-      top: -18px;
-      left: 8px;
-      font-size: 40px;
-      color: rgba(255,255,255,0.08);
-    }
-
-    .test-name {
-      margin-top: 8px;
-      font-weight: 600;
-      font-size: 12px;
-      color: var(--text-main);
-    }
-
-    .test-meta {
-      font-size: 11px;
-      color: rgba(210, 206, 255, 0.75);
-    }
-
-    /* SECCIÓN PRECIO SIMPLE */
-    .pricing {
-      margin-top: 26px;
-      padding: 18px 18px 20px;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: radial-gradient(circle at top, rgba(123,61,255,0.35), rgba(8,6,25,0.98));
-      text-align: center;
-      box-shadow: 0 20px 55px rgba(0,0,0,0.9);
-    }
-
-    .pricing-title {
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
-
-    .pricing-sub {
-      font-size: 13px;
-      color: var(--text-soft);
-      margin-bottom: 12px;
-    }
-
-    .pricing-price {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .pricing-tag {
-      font-size: 12px;
-      color: rgba(230,230,255,0.8);
-      margin-bottom: 14px;
-    }
-
-    .footer-note {
-      margin-top: 18px;
-      text-align: center;
-      font-size: 11px;
-      color: rgba(210, 206, 255, 0.65);
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 800px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
-      .hero-image-wrap {
-        order: -1;
-      }
-    }
+    .hero { max-width:900px; margin:auto; padding:30px; text-align:center; }
+    .hero img { width:100%; border-radius:16px; margin-top:15px; }
+    .section { max-width:900px; margin:20px auto; padding:20px; background:var(--card); border-radius:18px; }
   </style>
 </head>
+
 <body>
 
-  <!-- BARRA SUPERIOR -->
-  <div class="top-bar">
-    <span>Oferta por tiempo limitado</span> — Aumenta tus conversiones hoy mismo con una landing profesional.
-  </div>
+<div class="hero">
+    <h1>{{heroText}}</h1>
+    <p>{{subText}}</p>
+    <a href="#precio" style="display:inline-block;margin-top:12px;padding:10px 20px;background:var(--accent);color:white;border-radius:8px;">{{cta}}</a>
+    <img src="{{heroImage}}" alt="">
+</div>
 
-  <div class="layout">
+<div class="section">
+    <h2>Beneficios</h2>
+    {{benefits}}
+</div>
 
-    <!-- HERO -->
-    <section class="hero">
-      <div>
-        <div class="hero-kicker">Landing creada por IA</div>
-        <h1 class="hero-title">
-          {{heroText}}
-        </h1>
-        <p class="hero-sub">
-          {{subText}}
-        </p>
+<div class="section">
+    <h2>Incluye</h2>
+    {{features}}
+</div>
 
-        <div class="hero-cta-row">
-          <a href="#precio" class="btn-main">
-            {{cta}} <span>→</span>
-          </a>
-          <span class="hero-note">Sin código, sin diseño complicado.</span>
-        </div>
+<div class="section">
+    <h2>Testimonios</h2>
+    {{testimonials}}
+</div>
 
-        <div class="hero-badges">
-          <span class="badge">⚡ Optimizada para conversión</span>
-          <span class="badge">📱 100% responsive</span>
-          <span class="badge">✨ Diseñada con Landify AI</span>
-        </div>
-      </div>
-
-      <div class="hero-image-wrap">
-        <img src="{{heroImage}}" alt="Imagen principal de la landing">
-      </div>
-    </section>
-
-    <!-- BENEFICIOS -->
-    <section class="section">
-      <h2 class="section-title">Beneficios clave</h2>
-      <p class="section-sub">Lo que hace que esta oferta sea diferente y por qué vale la pena.</p>
-
-      <div class="benefits-grid">
-        {{benefits}}
-      </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="section">
-      <h2 class="section-title">Qué incluye</h2>
-      <p class="section-sub">Características principales y todo lo que el usuario obtiene al dar el primer paso.</p>
-
-      <div class="features-grid">
-        {{features}}
-      </div>
-    </section>
-
-    <!-- TESTIMONIOS -->
-    <section class="section">
-      <h2 class="section-title">Personas que ya confiaron</h2>
-      <p class="section-sub">Opiniones reales que refuerzan la decisión de compra.</p>
-
-      <div class="testimonials-grid">
-        {{testimonials}}
-      </div>
-    </section>
-
-    <!-- PRECIO / CIERRE -->
-    <section id="precio" class="pricing">
-      <h2 class="pricing-title">Listo para llevar tu proyecto al siguiente nivel</h2>
-      <p class="pricing-sub">Una landing clara, directa y enfocada en resultados.</p>
-
-      <div class="pricing-price">$27</div>
-      <div class="pricing-tag">Pago único · Acceso inmediato</div>
-
-      <a href="#!" class="btn-main">
-        {{cta}} <span>→</span>
-      </a>
-
-      <div class="footer-note">
-        Puedes personalizar esta sección de precio y el botón con tu propia oferta real.
-      </div>
-    </section>
-
-  </div>
+<div id="precio" class="section">
+    <h2>Precio</h2>
+    <p>Personaliza tu oferta real aquí.</p>
+</div>
 
 </body>
 </html>
+
+
 
