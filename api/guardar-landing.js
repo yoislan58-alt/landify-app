@@ -1,4 +1,4 @@
-exports.handler = async function(event, context) {
+exports.handler = async function (event, context) {
 
     if (event.httpMethod === "OPTIONS") {
         return {
@@ -13,15 +13,19 @@ exports.handler = async function(event, context) {
 
     try {
         const body = JSON.parse(event.body || "{}");
-        const { filename, html } = body;
+        const { id, html } = body;
 
-        if (!filename || !html) {
+        if (!id || !html) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ success: false, error: "Datos incompletos" })
+                body: JSON.stringify({
+                    success: false,
+                    error: "Datos incompletos"
+                })
             };
         }
 
+        // URL simulada donde vive el HTML (ya que Netlify no escribe archivos)
         return {
             statusCode: 200,
             headers: {
@@ -29,14 +33,18 @@ exports.handler = async function(event, context) {
             },
             body: JSON.stringify({
                 success: true,
-                url: `https://landify-builder.netlify.app/landing-pages/${filename}`
+                url: `https://landify-builder.netlify.app/landing-pages/${id}.html`
             })
         };
 
     } catch (err) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ success: false, error: err.toString() })
+            body: JSON.stringify({
+                success: false,
+                error: err.toString()
+            })
         };
     }
 };
+
