@@ -52,9 +52,9 @@ const projectList = document.getElementById("projectList");
 function showLoading() { loadingBox.classList.remove("hidden"); }
 function hideLoading() { loadingBox.classList.add("hidden"); }
 
-// Limpia ```html, ``` y la palabra "html" suelta al inicio
+// Limpia ```html, ``` y palabra suelta "html"
 function cleanHTML(html) {
-    return html
+    return (html || "")
         .replace(/```html/gi, "")
         .replace(/```/g, "")
         .replace(/^\s*html\s*/i, "")
@@ -86,7 +86,7 @@ function setPreviewMode(mode) {
 btnDesktop.addEventListener("click", () => setPreviewMode("desktop"));
 btnMobile.addEventListener("click", () => setPreviewMode("mobile"));
 
-// Default
+// default
 setPreviewMode("desktop");
 
 // ===========================
@@ -233,8 +233,7 @@ function saveProject(html) {
     const project = {
         id,
         html: cleanHTML(html),
-        date: new Date().toLocaleString(),
-        url: `/l/${id}` // reservado para futuro hosting real
+        date: new Date().toLocaleString()
     };
 
     let all = JSON.parse(localStorage.getItem("projects") || "[]");
@@ -355,7 +354,7 @@ resetTodoBtn.addEventListener("click", () => {
 });
 
 // ===========================
-// TEMA CLARO/OSC
+// TEMA CLARO/OSCURO
 // ===========================
 
 toggleTheme.addEventListener("click", () => {
@@ -377,7 +376,6 @@ toggleTheme.addEventListener("click", () => {
 renderPreview("<h3 style='padding:20px;color:gray;'>Vista previa aquí…</h3>");
 hideAllPanels();
 panelGenerar.classList.remove("hidden");
-
 
 
 
