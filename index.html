@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="es">
-
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landify Builder AI — ULTRA Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Landify Builder AI — Panel ULTRA</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="light">
+<body>
 
 <!-- NOTIFICACIONES -->
 <div id="notify" class="notify"></div>
 
 <!-- SIDEBAR -->
-<aside class="sidebar-ultra">
-    <h2 class="logo-ultra">Landify<span>AI</span></h2>
+<aside class="sidebar">
+    <h2 class="logo">Landify<span>AI</span></h2>
 
     <nav>
         <button class="side-btn active" id="btnCrear">⚡ Crear Landing</button>
@@ -26,80 +26,80 @@
 </aside>
 
 <!-- MAIN -->
-<main class="main-ultra">
+<main class="main">
 
     <!-- TOPBAR -->
-    <header class="topbar-ultra">
-        <h1 class="titulo-panel-ultra">Creador de Landings ULTRA</h1>
-        <button id="toggleTheme" class="theme-toggle-ultra">🌙</button>
+    <header class="topbar">
+        <h1 class="titulo-panel">Creador de Landings</h1>
+        <button id="toggleTheme" class="theme-toggle">🌓</button>
     </header>
 
     <!-- SECCIÓN CREAR -->
-    <section id="seccionCrear" class="seccion-ultra activa">
+    <section id="seccionCrear" class="seccion activa">
 
-        <!-- CARD PRINCIPAL -->
-        <div class="card-ultra" style="text-align:center;">
-
+        <div class="card" style="text-align:center;">
             <h2>Generar Nueva Landing</h2>
 
-            <textarea id="userPrompt" class="input-ultra grande" placeholder="Describe la landing con detalle…"></textarea>
+            <textarea id="userPrompt" class="input grande" placeholder="Describe la landing con detalle…"></textarea>
 
             <button id="generateBtn" class="btn-main-full">✨ Generar Landing</button>
-
-            <!-- 🔧 BOTÓN QUE FALTABA (AQUÍ ESTÁ EL ARREGLO) -->
-            <button id="adjustBtn" class="btn-main-full">➕ Insertar sección nueva</button>
 
             <hr class="separator">
 
             <h2>Ajustar / Agregar sección</h2>
 
-            <textarea id="ajustarPrompt" class="input-ultra grande" placeholder="Ej: Agrega un countdown debajo del héroe…"></textarea>
+            <textarea id="ajustarPrompt" class="input grande" placeholder="Ej: Agrega un countdown debajo del héroe…"></textarea>
 
-            <button id="ajustarDirecto" class="btn-main-full">🔧 Ajustar Landing</button>
+            <select id="ajustarPosicion" class="input">
+                <option value="inicio">Al inicio</option>
+                <option value="despues-hero">Después del héroe</option>
+                <option value="antes-precio">Antes de precio</option>
+                <option value="final">Al final</option>
+            </select>
 
-            <button id="btn-ver-landing" class="btn-ultra-outline" style="margin-top:18px;">
+            <button id="adjustLandingBtn" class="btn-main-full">🔧 Insertar sección</button>
+
+            <button id="btn-ver-landing" class="btn-outline" style="margin-top:18px;">
                 👁 Ver Última Landing
             </button>
 
-            <div id="loading" class="loading-ultra hidden">
+            <div id="loading" class="loading hidden">
                 <div class="loader"></div>
                 <span>Procesando…</span>
             </div>
         </div>
 
-        <h2 class="subtitle-ultra">Mis Landings</h2>
-        <div id="projectList" class="grid-proyectos-ultra"></div>
+        <h2 class="subtitle">Mis Landings</h2>
+        <div id="projectList" class="grid-proyectos"></div>
     </section>
 
     <!-- SECCIÓN PROYECTOS -->
-    <section id="seccionProyectos" class="seccion-ultra">
-        <h2 class="subtitle-ultra">Mis Landings Generadas</h2>
-        <div id="projectListSec" class="grid-proyectos-ultra"></div>
+    <section id="seccionProyectos" class="seccion">
+        <h2 class="subtitle">Mis Landings Generadas</h2>
+        <div id="projectListSec" class="grid-proyectos"></div>
     </section>
 
-    <!-- AJUSTES -->
-    <section id="seccionAjustes" class="seccion-ultra">
-        <h2 class="subtitle-ultra">Ajustes</h2>
+    <!-- SECCIÓN AJUSTES -->
+    <section id="seccionAjustes" class="seccion">
+        <h2 class="subtitle">Ajustes</h2>
 
-        <div class="card-ultra">
+        <div class="card">
             <h3>Plan Actual</h3>
-            <p id="ajustePlanTexto">Plan básico (ejemplo visual)</p>
-            <p id="ajusteCreditosTexto">Créditos simulados: ∞ mientras pruebas</p>
-            <button id="btnUpgrade" class="btn-main-full">Actualizar Plan</button>
+            <p>Plan básico (mientras pruebas)</p>
+            <button class="btn-main-full">Actualizar Plan</button>
         </div>
 
-        <div class="card-ultra">
+        <div class="card">
             <h3>API Key (opcional)</h3>
-            <input id="inputApiKey" type="text" class="input-ultra" placeholder="(Opcional)">
+            <input id="inputApiKey" type="text" class="input" placeholder="(Opcional)">
             <button id="guardarApiKey" class="btn-main-full">Guardar</button>
         </div>
 
-        <div class="card-ultra">
+        <div class="card">
             <h3>Preferencias</h3>
-            <button id="resetTema" class="btn-ultra-outline">Restablecer Tema</button>
-            <button id="resetTodo" class="btn-ultra-danger">Restablecer Cuenta</button>
+            <button id="resetTema" class="btn-outline">Restablecer Tema</button>
+            <button id="resetTodo" class="btn-danger">Restablecer Cuenta</button>
         </div>
-
     </section>
 
 </main>
@@ -108,6 +108,8 @@
 
 </body>
 </html>
+
+
 
 
 
