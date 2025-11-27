@@ -1,11 +1,44 @@
 /* GENERAL */
 body {
     margin: 0;
-    background: #0c0c1d;
     font-family: "Poppins", sans-serif;
-    color: white;
+    background: var(--bg);
+    color: var(--text);
 }
 
+/* MODO OSCURO / CLARO */
+:root {
+    --bg: #0c0c1d;
+    --text: #ffffff;
+    --card: #181830;
+    --input: #0f0f25;
+    --border: #2c2c44;
+}
+
+html[data-theme="light"] {
+    --bg: #f3f5ff;
+    --text: #121212;
+    --card: #ffffff;
+    --input: #e8e8f0;
+    --border: #d0d0e2;
+}
+
+/* BOTÓN DE TEMA */
+.theme-btn {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    font-size: 22px;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    padding: 10px 12px;
+    cursor: pointer;
+    color: var(--text);
+    z-index: 99;
+}
+
+/* LAYOUT */
 .layout {
     display: flex;
     height: 100vh;
@@ -13,26 +46,20 @@ body {
 
 /* COLUMNAS */
 .col-izquierda {
-    width: 60%;
-    padding: 30px;
+    width: 33%;
+    padding: 22px;
     overflow-y: auto;
 }
 
 .col-derecha {
-    width: 40%;
-    padding: 30px;
-    border-left: 2px solid #2c2c44;
-    background: #11112a;
+    width: 67%;
+    padding: 22px;
+    border-left: 2px solid var(--border);
 }
 
-.titulo {
-    margin-top: 0;
-    text-align: center;
-}
-
-/* CARD */
+/* CARDS */
 .card {
-    background: #181830;
+    background: var(--card);
     padding: 20px;
     border-radius: 15px;
     margin-bottom: 25px;
@@ -42,36 +69,32 @@ body {
 .input {
     width: 100%;
     padding: 12px;
-    border-radius: 10px;
+    background: var(--input);
     border: none;
+    border-radius: 10px;
+    color: var(--text);
     margin-bottom: 15px;
-    background: #0f0f25;
-    color: white;
 }
-.grande {
-    height: 130px;
-}
+.grande { height: 130px; }
 
 /* BOTONES */
 .btn-main-full {
     width: 100%;
     padding: 14px;
-    margin-top: 10px;
-    background: linear-gradient(to right, #9b5bff, #00b7ff);
     border: none;
     border-radius: 10px;
-    color: white;
     font-weight: bold;
+    color: white;
+    background: linear-gradient(to right, #9b5bff, #00b7ff);
     cursor: pointer;
 }
 .btn-outline {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     border-radius: 10px;
     border: 2px solid #00b7ff;
     background: transparent;
     color: #00b7ff;
-    font-weight: bold;
     cursor: pointer;
 }
 
@@ -83,7 +106,6 @@ body {
     overflow: hidden;
     background: black;
 }
-
 #previewFrame {
     width: 100%;
     height: 100%;
@@ -97,10 +119,7 @@ body {
     gap: 12px;
     padding: 10px;
 }
-
-.loading.hidden {
-    display: none;
-}
+.loading.hidden { display: none; }
 .loader {
     width: 28px;
     height: 28px;
@@ -109,9 +128,8 @@ body {
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
+
 
 
 
