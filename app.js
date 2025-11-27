@@ -5,7 +5,7 @@
 function generarIdLanding() {
     const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let random = "";
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
         random += letras.charAt(Math.floor(Math.random() * letras.length));
     }
     return "ldg-" + random;
@@ -22,7 +22,7 @@ const projectList = document.getElementById("projectList");
 const projectListSec = document.getElementById("projectListSec");
 
 /* =========================================================
-   NOTIFICATIONS
+   NOTIFY
 ========================================================= */
 function notify(msg) {
     notifyBox.textContent = msg;
@@ -33,6 +33,7 @@ function notify(msg) {
 /* =========================================================
    GENERAR LANDING
 ========================================================= */
+
 generateBtn.onclick = async () => {
     const prompt = document.getElementById("userPrompt").value.trim();
     if (!prompt) return notify("Describe la landing primero.");
@@ -42,11 +43,12 @@ generateBtn.onclick = async () => {
     try {
         const response = await fetch("/.netlify/functions/openai", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ accion: "generar", prompt })
         });
 
         const data = await response.json();
+
         if (!data.success) {
             loading.classList.add("hidden");
             return notify("Error generando la landing.");
@@ -55,16 +57,16 @@ generateBtn.onclick = async () => {
         const textos = data.textos;
         textos.heroImage = data.heroImage;
 
-        const template = await fetch("/landing/template.html").then(r => r.text());
+        const template = await fetch("template.html").then(r => r.text());
 
         const finalHTML = template
             .replace("{{heroImage}}", textos.heroImage)
             .replace("{{heroText}}", textos.heroText)
             .replace("{{subText}}", textos.subText)
             .replace("{{cta}}", textos.cta)
-            .replace("{{benefits}}", textos.benefits.map(b => `<div class="benefit-card">${b}</div>`).join(""))
-            .replace("{{features}}", textos.features.map(f => `<div class="feature-card">${f}</div>`).join(""))
-            .replace("{{testimonials}}", textos.testimonials.map(t => `<div class="test-card">${t}</div>`).join(""));
+            .replace("{{benefits}}", textos.benefits.map(b => `<div class="card">${b}</div>`).join(""))
+            .replace("{{features}}", textos.features.map(f => `<div class="card">${f}</div>`).join(""))
+            .replace("{{testimonials}}", textos.testimonials.map(t => `<div class="card">${t}</div>`).join(""));
 
         const id = generarIdLanding();
         ultimoIdGenerado = id;
@@ -90,27 +92,30 @@ generateBtn.onclick = async () => {
 
     } catch (e) {
         console.error(e);
-        notify("Error generando.");
+        notify("Error generando la landing.");
     }
 
     loading.classList.add("hidden");
 };
 
 /* =========================================================
-   GUARDAR EN SERVIDOR
+   GUARDAR LANDING
 ========================================================= */
+
 async function guardarLandingEnServidor(id, html) {
     try {
         const response = await fetch("/.netlify/functions/guardar-landing", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ filename: `${id}.html`, html })
         });
 
         const data = await response.json();
+
         if (!data.success) return null;
 
         return data.url;
+
     } catch (e) {
         console.error(e);
         return null;
@@ -118,20 +123,23 @@ async function guardarLandingEnServidor(id, html) {
 }
 
 /* =========================================================
-   MOSTRAR PROJECTOS
+   MOSTRAR PROYECTOS
 ========================================================= */
+
 function addProject(id, data) {
     const card = document.createElement("div");
     card.className = "card-proyecto";
 
     card.innerHTML = `
-        <img class="card-thumb" src="${data.heroImage}">
-        <h3>${data.heroText}</h3>
-        <small>ID: ${id}</small>
+        <div class="card">
+            <img src="${data.heroImage}" style="width:100%;border-radius:10px;margin-bottom:10px;">
+            <h3>${data.heroText}</h3>
+            <small>ID: ${id}</small>
 
-        <button class="btn-outline" onclick="verLanding('${id}')">👁 Ver</button>
-        <button class="btn-outline" onclick="copiarHTML('${id}')">📋 Copiar HTML</button>
-        <button class="btn-outline" onclick="exportarHTML('${id}')">⬇ Exportar</button>
+            <button class="btn-outline" onclick="verLanding('${id}')">👁 Ver</button>
+            <button class="btn-outline" onclick="copiarHTML('${id}')">📋 Copiar HTML</button>
+            <button class="btn-outline" onclick="exportarHTML('${id}')">⬇ Exportar</button>
+        </div>
     `;
 
     projectList.appendChild(card);
@@ -144,6 +152,7 @@ function syncProjectListSecondary() {
 /* =========================================================
    VER LANDING
 ========================================================= */
+
 function verLanding(id) {
     window.open(`/landing-pages/${id}.html`, "_blank");
 }
@@ -152,22 +161,23 @@ window.verLanding = verLanding;
 /* =========================================================
    COPIAR HTML
 ========================================================= */
+
 function copiarHTML(id) {
     const raw = localStorage.getItem(`landing-${id}`);
     if (!raw) return notify("Landing no encontrada.");
 
-    fetch("/landing/template.html")
+    fetch("template.html")
         .then(r => r.text())
-        .then(t => {
+        .then(template => {
             const data = JSON.parse(raw);
-            const html = t
+            const html = template
                 .replace("{{heroImage}}", data.heroImage)
                 .replace("{{heroText}}", data.heroText)
                 .replace("{{subText}}", data.subText)
                 .replace("{{cta}}", data.cta)
-                .replace("{{benefits}}", data.benefits.map(b => `<div class="benefit-card">${b}</div>`).join(""))
-                .replace("{{features}}", data.features.map(f => `<div class="feature-card">${f}</div>`).join(""))
-                .replace("{{testimonials}}", data.testimonials.map(t => `<div class="test-card">${t}</div>`).join(""));
+                .replace("{{benefits}}", data.benefits.map(b => `<div class="card">${b}</div>`).join(""))
+                .replace("{{features}}", data.features.map(f => `<div class="card">${f}</div>`).join(""))
+                .replace("{{testimonials}}", data.testimonials.map(t => `<div class="card">${t}</div>`).join(""));
 
             navigator.clipboard.writeText(html);
             notify("HTML copiado ✔");
@@ -178,23 +188,23 @@ window.copiarHTML = copiarHTML;
 /* =========================================================
    EXPORTAR HTML
 ========================================================= */
+
 function exportarHTML(id) {
     const raw = localStorage.getItem(`landing-${id}`);
     if (!raw) return notify("Landing no encontrada.");
 
-    fetch("/landing/template.html")
+    fetch("template.html")
         .then(r => r.text())
         .then(template => {
             const data = JSON.parse(raw);
-
             const html = template
                 .replace("{{heroImage}}", data.heroImage)
                 .replace("{{heroText}}", data.heroText)
                 .replace("{{subText}}", data.subText)
                 .replace("{{cta}}", data.cta)
-                .replace("{{benefits}}", data.benefits.map(b => `<div class="benefit-card">${b}</div>`).join(""))
-                .replace("{{features}}", data.features.map(f => `<div class="feature-card">${f}</div>`).join(""))
-                .replace("{{testimonials}}", data.testimonials.map(t => `<div class="test-card">${t}</div>`).join(""));
+                .replace("{{benefits}}", data.benefits.map(b => `<div class="card">${b}</div>`).join(""))
+                .replace("{{features}}", data.features.map(f => `<div class="card">${f}</div>`).join(""))
+                .replace("{{testimonials}}", data.testimonials.map(t => `<div class="card">${t}</div>`).join(""));
 
             const blob = new Blob([html], { type: "text/html" });
             const url = URL.createObjectURL(blob);
@@ -210,8 +220,9 @@ function exportarHTML(id) {
 window.exportarHTML = exportarHTML;
 
 /* =========================================================
-   AJUSTAR LANDING (SECCIÓN NUEVA)
+   AJUSTAR LANDING (INSERTAR SECCIÓN)
 ========================================================= */
+
 adjustBtn.onclick = async () => {
     if (!ultimoIdGenerado) return notify("Primero genera una landing.");
 
@@ -228,7 +239,7 @@ adjustBtn.onclick = async () => {
 
         const response = await fetch("/.netlify/functions/openai", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 accion: "insertar",
                 htmlActual,
@@ -264,6 +275,34 @@ adjustBtn.onclick = async () => {
 
     loading.classList.add("hidden");
 };
+
+/* =========================================================
+   NAVEGACIÓN ENTRE SECCIONES
+========================================================= */
+
+document.getElementById("btnCrear").onclick = () => activar("seccionCrear");
+document.getElementById("btnProyectos").onclick = () => activar("seccionProyectos");
+document.getElementById("btnAjustes").onclick = () => activar("seccionAjustes");
+
+function activar(id) {
+    document.querySelectorAll(".seccion").forEach(s => s.classList.remove("activa"));
+    document.getElementById(id).classList.add("activa");
+
+    document.querySelectorAll(".side-btn").forEach(btn => btn.classList.remove("active"));
+    event.target.classList.add("active");
+}
+
+/* =========================================================
+   CAMBIO TEMA (CLARO/OSCURO)
+========================================================= */
+
+document.getElementById("toggleTheme").onclick = () => {
+    const body = document.body;
+    const actual = body.getAttribute("data-theme") || "dark";
+    const nuevo = actual === "dark" ? "light" : "dark";
+    body.setAttribute("data-theme", nuevo);
+};
+
 
 
 
