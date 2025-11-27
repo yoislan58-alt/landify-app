@@ -2,6 +2,7 @@ const generateBtn = document.getElementById("generateBtn");
 const adjustBtn = document.getElementById("adjustLandingBtn");
 const verLandingBtn = document.getElementById("btn-ver-landing");
 const previewFrame = document.getElementById("previewFrame");
+const toggleTheme = document.getElementById("toggleTheme");
 
 const userPrompt = document.getElementById("userPrompt");
 const ajustarPrompt = document.getElementById("ajustarPrompt");
@@ -9,18 +10,10 @@ const ajustarPosicion = document.getElementById("ajustarPosicion");
 
 const loadingBox = document.getElementById("loading");
 
+function showLoading() { loadingBox.classList.remove("hidden"); }
+function hideLoading() { loadingBox.classList.add("hidden"); }
 
-function showLoading() {
-    loadingBox.classList.remove("hidden");
-}
-function hideLoading() {
-    loadingBox.classList.add("hidden");
-}
-
-function renderPreview(html) {
-    previewFrame.srcdoc = html;
-}
-
+function renderPreview(html) { previewFrame.srcdoc = html; }
 
 // ==== GENERAR ====
 async function generarLanding() {
@@ -44,7 +37,6 @@ async function generarLanding() {
     renderPreview(data.output);
 }
 
-
 // ==== AJUSTAR ====
 async function ajustarLanding() {
     const last = localStorage.getItem("lastLanding");
@@ -54,7 +46,7 @@ async function ajustarLanding() {
     if (!mod) return alert("Ingresa qué ajustar");
 
     const prompt = `
-Modifica esta landing HTML según:
+Ajusta esta landing HTML según:
 Acción: ${mod}
 Posición: ${ajustarPosicion.value}
 
@@ -79,15 +71,28 @@ ${last}
     renderPreview(data.output);
 }
 
-
-// ==== VER ÚLTIMA ====
+// ==== VER ====
 function verLanding() {
     const html = localStorage.getItem("lastLanding");
     if (!html) return alert("No has generado ninguna landing");
     renderPreview(html);
 }
 
+// ==== TEMA ====
+toggleTheme.addEventListener("click", () => {
+    const html = document.getElementById("htmlTag");
+    const isLight = html.getAttribute("data-theme") === "light";
 
+    if (isLight) {
+        html.setAttribute("data-theme", "dark");
+        toggleTheme.textContent = "🌙";
+    } else {
+        html.setAttribute("data-theme", "light");
+        toggleTheme.textContent = "☀️";
+    }
+});
+
+// EVENTOS
 generateBtn.addEventListener("click", generarLanding);
 adjustBtn.addEventListener("click", ajustarLanding);
 verLandingBtn.addEventListener("click", verLanding);
