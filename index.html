@@ -11,12 +11,8 @@
 
 <body>
 
-<!-- BOTÓN TEMA FLOTANTE (SIEMPRE ARRIBA A LA DERECHA) -->
-<button id="toggleTheme" class="theme-btn-floating" title="Cambiar modo claro/oscuro">🌙</button>
-
 <!-- SIDEBAR GLASS -->
 <aside class="sidebar">
-
     <div class="sidebar-top">
         <div class="logo">Landify<span>AI</span></div>
     </div>
@@ -28,7 +24,6 @@
         <button id="btnAjustar" class="nav-btn">🛠 Ajustar Landing</button>
         <button id="btnAjustes" class="nav-btn">⚙ Ajustes</button>
     </nav>
-
 </aside>
 
 <!-- MAIN -->
@@ -44,16 +39,19 @@
             </div>
         </div>
 
-        <div class="preview-actions">
-            <button id="btnAbrir" class="icon-btn" title="Abrir en pestaña nueva">
-                🔗 Abrir
-            </button>
-            <button id="btnCopiar" class="icon-btn" title="Copiar HTML al portapapeles">
-                📋 Copiar
-            </button>
-            <button id="btnDescargar" class="icon-btn" title="Descargar HTML actual">
-                ⬇ Descargar
-            </button>
+        <div class="preview-right">
+            <div class="preview-actions">
+                <button id="btnAbrir" class="icon-btn" title="Abrir en pestaña nueva">
+                    🔗 Abrir
+                </button>
+                <button id="btnCopiar" class="icon-btn" title="Copiar HTML al portapapeles">
+                    📋 Copiar
+                </button>
+                <button id="btnDescargar" class="icon-btn" title="Descargar HTML actual">
+                    ⬇ Descargar
+                </button>
+            </div>
+            <button id="toggleTheme" class="theme-btn-header" title="Cambiar modo claro/oscuro">🌙</button>
         </div>
     </header>
 
@@ -120,9 +118,6 @@
 
 </body>
 </html>
-
-
-
 
 
 
