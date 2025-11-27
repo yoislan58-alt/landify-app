@@ -17,7 +17,7 @@ const notifyBox = document.getElementById("notify");
 const loading = document.getElementById("loading");
 
 const generateBtn = document.getElementById("generateBtn");
-const adjustBtn = document.getElementById("adjustLandingBtn");
+const adjustBtn = document.getElementById("adjustBtn");
 const projectList = document.getElementById("projectList");
 const projectListSec = document.getElementById("projectListSec");
 
@@ -265,6 +265,7 @@ adjustBtn.onclick = async () => {
 
     loading.classList.add("hidden");
 };
+
 
 
 
