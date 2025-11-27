@@ -1,17 +1,19 @@
 export async function handler(event, context) {
     try {
-        // CORS
         return await handle(event);
     } catch (err) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: "Error interno", details: err.toString() })
+            body: JSON.stringify({
+                success: false,
+                error: "Error interno",
+                details: err.toString()
+            })
         };
     }
 }
 
 async function handle(event) {
-    // CORS
     if (event.httpMethod === "OPTIONS") {
         return {
             statusCode: 200,
@@ -20,19 +22,26 @@ async function handle(event) {
     }
 
     const body = JSON.parse(event.body || "{}");
-    const { prompt, htmlActual, accion, ubicacion } = body;
+    const { accion, prompt, htmlActual, ubicacion } = body;
 
-    // 🟪 Cargar clave desde Netlify (NO en el archivo)
+    // Cargar clave real
     const OPENAI_KEY = process.env.OPENAI_API_KEY;
     if (!OPENAI_KEY) {
-        return json({ success: false, error: "OPENAI_API_KEY no configurada en Netlify" });
+        return json({
+            success: false,
+            error: "OPENAI_API_KEY no configurada en Netlify"
+        });
     }
 
-    // 🟦 1) MODO GENERAR LANDING
-    if (accion !== "insertar") {
-        if (!prompt) return json({ success: false, error: "Falta prompt" });
+    /* =========================================================
+       MODO 1 — GENERAR LANDING
+    ========================================================== */
+    if (accion === "generar") {
 
-        // Generar textos (GPT)
+        if (!prompt)
+            return json({ success: false, error: "Falta prompt" });
+
+        // Generar textos
         const textosRes = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -52,10 +61,10 @@ async function handle(event) {
             })
         });
 
-        const textos = await textosRes.json();
-        const parsed = JSON.parse(textos.choices[0].message.content);
+        const textosRaw = await textosRes.json();
+        const parsed = JSON.parse(textosRaw.choices[0].message.content);
 
-        // Generar imagen del héroe (GPT-4o)
+        // Generar imagen
         const imgRes = await fetch("https://api.openai.com/v1/images/generations", {
             method: "POST",
             headers: {
@@ -78,25 +87,27 @@ async function handle(event) {
         });
     }
 
-    // 🟧 2) MODO INSERTAR SECCIÓN
+    /* =========================================================
+       MODO 2 — INSERTAR SECCIÓN NUEVA
+    ========================================================== */
     if (accion === "insertar") {
-        if (!htmlActual) return json({ success: false, error: "Falta HTML actual" });
+
+        if (!htmlActual)
+            return json({ success: false, error: "Falta HTML actual" });
 
         const promptInsertar = `
-Aquí tienes la landing actual en HTML:
-
+HTML actual:
 -------------------------
 ${htmlActual}
 -------------------------
 
 Tu tarea:
-👉 Insertar SOLO este contenido nuevo: "${prompt}"
-👉 Ubicación deseada: "${ubicacion}"
-👉 NO borrar ninguna sección.
-👉 NO regenerar toda la landing.
-👉 NO cambiar estilos ni colores.
-👉 NO tocar imágenes ya existentes.
-👉 SOLO insertar respetando diseño actual.
+- Insertar solo este contenido: "${prompt}"
+- Ubicación: "${ubicacion}"
+- NO borrar nada
+- NO cambiar estilos
+- NO reemplazar imágenes
+- Solo insertar
 
 Devuelve SOLO el HTML final completo.
 `;
@@ -110,24 +121,21 @@ Devuelve SOLO el HTML final completo.
             body: JSON.stringify({
                 model: "gpt-4o-mini",
                 messages: [
-                    {
-                        role: "system",
-                        content: "Eres un experto en edición HTML; no eliminas nada, solo insertas."
-                    },
+                    { role: "system", content: "Eres experto en edición HTML." },
                     { role: "user", content: promptInsertar }
                 ]
             })
         });
 
-        const result = await modRes.json();
+        const mod = await modRes.json();
 
         return json({
             success: true,
-            htmlFinal: result.choices[0].message.content
+            htmlFinal: mod.choices[0].message.content
         });
     }
 
-    return json({ success: false, error: "Acción no reconocida" });
+    return json({ success: false, error: "Acción no válida" });
 }
 
 /* Helpers */
@@ -146,4 +154,5 @@ function corsHeaders() {
         "Access-Control-Allow-Methods": "POST, OPTIONS"
     };
 }
+
 
