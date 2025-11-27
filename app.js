@@ -23,12 +23,18 @@ const ajustarPosicion = document.getElementById("ajustarPosicion");
 // Botones principales
 const generateBtn = document.getElementById("generateBtn");
 const adjustBtn = document.getElementById("adjustLandingBtn");
+const resetTodoBtn = document.getElementById("resetTodo");
 
 // Preview / acciones navbar
 const previewFrame = document.getElementById("previewFrame");
 const btnAbrir = document.getElementById("btnAbrir");
 const btnCopiar = document.getElementById("btnCopiar");
 const btnDescargar = document.getElementById("btnDescargar");
+
+// Desktop / Mobile toggle
+const btnDesktop = document.getElementById("btnDesktop");
+const btnMobile = document.getElementById("btnMobile");
+const previewCol = document.getElementById("previewCol");
 
 // Loading
 const loadingBox = document.getElementById("loading");
@@ -40,27 +46,48 @@ const toggleTheme = document.getElementById("toggleTheme");
 const projectList = document.getElementById("projectList");
 
 // ===========================
-// FUNCIONES DE UTILIDAD
+// UTIL
 // ===========================
 
-function showLoading() {
-    loadingBox.classList.remove("hidden");
-}
+function showLoading() { loadingBox.classList.remove("hidden"); }
+function hideLoading() { loadingBox.classList.add("hidden"); }
 
-function hideLoading() {
-    loadingBox.classList.add("hidden");
-}
-
+// Limpia ```html, ``` y la palabra "html" suelta al inicio
 function cleanHTML(html) {
     return html
         .replace(/```html/gi, "")
         .replace(/```/g, "")
+        .replace(/^\s*html\s*/i, "")
         .trim();
 }
 
 function renderPreview(html) {
     previewFrame.srcdoc = cleanHTML(html);
 }
+
+// ===========================
+// PREVIEW MODE: DESKTOP / MOBILE
+// ===========================
+
+function setPreviewMode(mode) {
+    if (mode === "mobile") {
+        previewCol.classList.remove("desktop");
+        previewCol.classList.add("mobile");
+        btnMobile.classList.add("active");
+        btnDesktop.classList.remove("active");
+    } else {
+        previewCol.classList.add("desktop");
+        previewCol.classList.remove("mobile");
+        btnDesktop.classList.add("active");
+        btnMobile.classList.remove("active");
+    }
+}
+
+btnDesktop.addEventListener("click", () => setPreviewMode("desktop"));
+btnMobile.addEventListener("click", () => setPreviewMode("mobile"));
+
+// Default
+setPreviewMode("desktop");
 
 // ===========================
 // PANEL SWITCHING
@@ -95,7 +122,7 @@ btnAjustes.addEventListener("click", () => {
 });
 
 // ===========================
-// NUEVA LANDING (RESET)
+// NUEVA LANDING (RESET SUAVE)
 // ===========================
 
 btnNueva.addEventListener("click", () => {
@@ -104,6 +131,7 @@ btnNueva.addEventListener("click", () => {
     renderPreview("<h3 style='padding:20px;color:gray;'>Vista previa aquí…</h3>");
     hideAllPanels();
     panelGenerar.classList.remove("hidden");
+    setPreviewMode("desktop");
 });
 
 // ===========================
@@ -112,25 +140,32 @@ btnNueva.addEventListener("click", () => {
 
 async function generarLanding() {
     const prompt = userPrompt.value.trim();
-    if (!prompt) return alert("Ingresa una descripción");
+    if (!prompt) return alert("Ingresa una descripción para la landing.");
 
     showLoading();
 
-    const res = await fetch("/api/openai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt })
-    });
+    try {
+        const res = await fetch("/api/openai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt })
+        });
 
-    const data = await res.json();
-    hideLoading();
+        const data = await res.json();
+        hideLoading();
 
-    if (!data.output) return alert("Error generando la landing");
+        if (!data.output) return alert("Error generando la landing.");
 
-    const html = cleanHTML(data.output);
+        const html = cleanHTML(data.output);
 
-    renderPreview(html);
-    saveProject(html);
+        renderPreview(html);
+        saveProject(html);
+
+    } catch (e) {
+        hideLoading();
+        console.error(e);
+        alert("Error inesperado al generar la landing.");
+    }
 }
 
 generateBtn.addEventListener("click", generarLanding);
@@ -141,10 +176,10 @@ generateBtn.addEventListener("click", generarLanding);
 
 async function ajustarLanding() {
     const last = localStorage.getItem("lastLanding");
-    if (!last) return alert("Primero genera una landing");
+    if (!last) return alert("Primero genera una landing.");
 
     const mod = ajustarPrompt.value.trim();
-    if (!mod) return alert("Describe qué ajustar");
+    if (!mod) return alert("Describe qué quieres ajustar o agregar.");
 
     const prompt = `
 Ajusta esta landing según:
@@ -157,28 +192,35 @@ ${last}
 
     showLoading();
 
-    const res = await fetch("/api/openai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt })
-    });
+    try {
+        const res = await fetch("/api/openai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt })
+        });
 
-    const data = await res.json();
-    hideLoading();
+        const data = await res.json();
+        hideLoading();
 
-    if (!data.output) return alert("Error ajustando la landing");
+        if (!data.output) return alert("Error ajustando la landing.");
 
-    const html = cleanHTML(data.output);
+        const html = cleanHTML(data.output);
 
-    localStorage.setItem("lastLanding", html);
-    renderPreview(html);
-    saveProject(html);
+        localStorage.setItem("lastLanding", html);
+        renderPreview(html);
+        saveProject(html);
+
+    } catch (e) {
+        hideLoading();
+        console.error(e);
+        alert("Error inesperado al ajustar la landing.");
+    }
 }
 
 adjustBtn.addEventListener("click", ajustarLanding);
 
 // ===========================
-// SISTEMA DE PROYECTOS PRO
+// SISTEMA DE PROYECTOS
 // ===========================
 
 function generateID() {
@@ -190,17 +232,15 @@ function saveProject(html) {
 
     const project = {
         id,
-        html,
+        html: cleanHTML(html),
         date: new Date().toLocaleString(),
-        url: `/l/${id}`
+        url: `/l/${id}` // reservado para futuro hosting real
     };
 
-    // guardar
     let all = JSON.parse(localStorage.getItem("projects") || "[]");
     all.unshift(project);
     localStorage.setItem("projects", JSON.stringify(all));
-
-    localStorage.setItem("lastLanding", html);
+    localStorage.setItem("lastLanding", project.html);
 
     loadProjects();
 }
@@ -209,85 +249,89 @@ function loadProjects() {
     const all = JSON.parse(localStorage.getItem("projects") || "[]");
 
     if (all.length === 0) {
-        projectList.innerHTML = "<p style='opacity:0.6;'>Aún no tienes proyectos.</p>";
+        projectList.innerHTML = "<p style='opacity:0.6;font-size:12px;'>Aún no tienes proyectos.</p>";
         return;
     }
 
-    projectList.innerHTML = all
-        .map(p => `
+    projectList.innerHTML = all.map(p => {
+        const safeHTML = cleanHTML(p.html)
+            .replace(/`/g, "&#96;")
+            .replace(/"/g, "&quot;");
+
+        return `
         <div class="proj-item">
+            <div class="proj-thumb">
+                <iframe srcdoc="${safeHTML}"></iframe>
+            </div>
             <div class="proj-info">
                 <strong>${p.id}</strong>
                 <span>${p.date}</span>
             </div>
             <div class="proj-actions">
-                <button onclick="verProyecto('${p.id}')">👁</button>
-                <button onclick="abrirURL('${p.url}')">🔗</button>
-                <button onclick="copiarURL('${p.url}')">📋</button>
-                <button onclick="descargarHTML('${p.id}')">⬇</button>
-                <button onclick="borrarProyecto('${p.id}')">🗑</button>
+                <button onclick="verProyecto('${p.id}')" title="Ver en vista previa">👁 Ver</button>
+                <button onclick="descargarHTML('${p.id}')" title="Descargar HTML de este proyecto">⬇</button>
+                <button onclick="borrarProyecto('${p.id}')" title="Borrar proyecto">🗑</button>
             </div>
-        </div>
-    `).join("");
+        </div>`;
+    }).join("");
 }
 
-function verProyecto(id) {
+window.verProyecto = function(id) {
     const all = JSON.parse(localStorage.getItem("projects") || "[]");
     const p = all.find(x => x.id === id);
     if (!p) return;
 
     renderPreview(p.html);
     localStorage.setItem("lastLanding", p.html);
-}
+};
 
-function abrirURL(url) {
-    alert("Cuando configuremos API de guardado real, esta ruta abrirá la landing:\n\n" + url);
-}
-
-function copiarURL(url) {
-    navigator.clipboard.writeText(url);
-    alert("URL copiada!");
-}
-
-function descargarHTML(id) {
+window.descargarHTML = function(id) {
     const all = JSON.parse(localStorage.getItem("projects") || "[]");
     const p = all.find(x => x.id === id);
     if (!p) return;
 
-    const blob = new Blob([p.html], { type: "text/html" });
+    const clean = cleanHTML(p.html);
+    const blob = new Blob([clean], { type: "text/html" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `${id}.html`;
     link.click();
-}
+};
 
-function borrarProyecto(id) {
+window.borrarProyecto = function(id) {
     let all = JSON.parse(localStorage.getItem("projects") || "[]");
     all = all.filter(x => x.id !== id);
     localStorage.setItem("projects", JSON.stringify(all));
     loadProjects();
-}
+};
 
 // ===========================
-// NAVBAR ACCIONES
+// NAVBAR ACCIONES (ARRIBA DERECHA)
 // ===========================
 
 btnAbrir.addEventListener("click", () => {
-    alert("Cuando activemos guardado real, se abrirá en una URL limpia.");
+    const html = localStorage.getItem("lastLanding");
+    if (!html) return alert("No hay landing actual para abrir.");
+
+    const win = window.open("", "_blank");
+    win.document.write(cleanHTML(html));
+    win.document.close();
 });
 
 btnCopiar.addEventListener("click", () => {
     const html = localStorage.getItem("lastLanding");
-    if (!html) return alert("No hay landing actual");
-    navigator.clipboard.writeText(html);
-    alert("Código HTML copiado!");
+    if (!html) return alert("No hay landing actual para copiar.");
+
+    navigator.clipboard.writeText(cleanHTML(html));
+    alert("HTML copiado al portapapeles.");
 });
 
 btnDescargar.addEventListener("click", () => {
     const html = localStorage.getItem("lastLanding");
-    if (!html) return alert("No hay landing actual");
+    if (!html) return alert("No hay landing actual para descargar.");
 
-    const blob = new Blob([html], { type: "text/html" });
+    const clean = cleanHTML(html);
+    const blob = new Blob([clean], { type: "text/html" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `landing.html`;
@@ -295,7 +339,23 @@ btnDescargar.addEventListener("click", () => {
 });
 
 // ===========================
-// TEMA
+// AJUSTES: RESET TOTAL
+// ===========================
+
+resetTodoBtn.addEventListener("click", () => {
+    const ok = confirm("¿Seguro que quieres borrar TODOS los proyectos y reiniciar la app?");
+    if (!ok) return;
+
+    localStorage.removeItem("projects");
+    localStorage.removeItem("lastLanding");
+    userPrompt.value = "";
+    ajustarPrompt.value = "";
+    renderPreview("<h3 style='padding:20px;color:gray;'>Vista previa aquí…</h3>");
+    loadProjects();
+});
+
+// ===========================
+// TEMA CLARO/OSC
 // ===========================
 
 toggleTheme.addEventListener("click", () => {
@@ -305,15 +365,18 @@ toggleTheme.addEventListener("click", () => {
     if (mode === "dark") {
         html.setAttribute("data-theme", "light");
         toggleTheme.textContent = "☀️";
+        toggleTheme.title = "Cambiar a modo oscuro";
     } else {
         html.setAttribute("data-theme", "dark");
         toggleTheme.textContent = "🌙";
+        toggleTheme.title = "Cambiar a modo claro";
     }
 });
 
-
-
-
+// Estado inicial
+renderPreview("<h3 style='padding:20px;color:gray;'>Vista previa aquí…</h3>");
+hideAllPanels();
+panelGenerar.classList.remove("hidden");
 
 
 
