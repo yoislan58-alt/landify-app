@@ -1,184 +1,96 @@
-// ===============================
-//  ELEMENTOS DEL DOM
-// ===============================
 const generateBtn = document.getElementById("generateBtn");
 const adjustBtn = document.getElementById("adjustLandingBtn");
 const verLandingBtn = document.getElementById("btn-ver-landing");
+const previewFrame = document.getElementById("previewFrame");
 
 const userPrompt = document.getElementById("userPrompt");
 const ajustarPrompt = document.getElementById("ajustarPrompt");
 const ajustarPosicion = document.getElementById("ajustarPosicion");
 
-const projectList = document.getElementById("projectList");
 const loadingBox = document.getElementById("loading");
 
 
-// ===============================
-//  FUNCIONES helper
-// ===============================
 function showLoading() {
     loadingBox.classList.remove("hidden");
 }
-
 function hideLoading() {
     loadingBox.classList.add("hidden");
 }
 
-function notify(msg, type="ok") {
-    const box = document.getElementById("notify");
-    box.innerText = msg;
-    box.className = "notify show " + type;
-
-    setTimeout(() => box.className = "notify", 2500);
+function renderPreview(html) {
+    previewFrame.srcdoc = html;
 }
 
 
-// ===============================
-//  GENERAR LANDING (OPENAI)
-// ===============================
+// ==== GENERAR ====
 async function generarLanding() {
     const prompt = userPrompt.value.trim();
-    if (!prompt) {
-        notify("Escribe una descripción primero", "error");
-        return;
-    }
+    if (!prompt) return alert("Ingresa una descripción");
 
     showLoading();
 
-    try {
-        const res = await fetch("/api/openai", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt })
-        });
+    const res = await fetch("/api/openai", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ prompt })
+    });
 
-        const data = await res.json();
-        hideLoading();
+    const data = await res.json();
+    hideLoading();
 
-        if (data.error) {
-            console.error(data.error);
-            notify("Error generando la landing", "error");
-            return;
-        }
+    if (!data.output) return alert("Error generando la landing");
 
-        // Guardar temporalmente
-        localStorage.setItem("lastLanding", data.output);
-
-        notify("Landing generada correctamente");
-
-        renderProject(data.output);
-
-    } catch (err) {
-        hideLoading();
-        console.error(err);
-        notify("Error inesperado", "error");
-    }
+    localStorage.setItem("lastLanding", data.output);
+    renderPreview(data.output);
 }
 
 
-// ===============================
-//  AJUSTAR / AGREGAR SECCIÓN
-// ===============================
+// ==== AJUSTAR ====
 async function ajustarLanding() {
-    const original = localStorage.getItem("lastLanding") || "";
-    if (!original) {
-        notify("Primero genera una landing", "error");
-        return;
-    }
+    const last = localStorage.getItem("lastLanding");
+    if (!last) return alert("Primero genera una landing");
 
-    const instruccion = ajustarPrompt.value.trim();
-    if (!instruccion) {
-        notify("Escribe qué quieres agregar o ajustar", "error");
-        return;
-    }
-
-    const posicion = ajustarPosicion.value;
+    const mod = ajustarPrompt.value.trim();
+    if (!mod) return alert("Ingresa qué ajustar");
 
     const prompt = `
-Eres un experto en HTML.
-Toma esta landing y agrega/ajusta según lo siguiente:
+Modifica esta landing HTML según:
+Acción: ${mod}
+Posición: ${ajustarPosicion.value}
 
-- Acción solicitada: ${instruccion}
-- Ubicación: ${posicion}
-
-HTML ORIGINAL:
-${original}
-    `;
+HTML:
+${last}
+`;
 
     showLoading();
 
-    try {
-        const res = await fetch("/api/openai", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt })
-        });
+    const res = await fetch("/api/openai", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ prompt })
+    });
 
-        const data = await res.json();
-        hideLoading();
+    const data = await res.json();
+    hideLoading();
 
-        if (!data.output) {
-            notify("Error ajustando la landing", "error");
-            return;
-        }
+    if (!data.output) return alert("Error al ajustar");
 
-        localStorage.setItem("lastLanding", data.output);
-        renderProject(data.output);
-
-        notify("Sección agregada / ajustada correctamente");
-
-    } catch (err) {
-        hideLoading();
-        console.error(err);
-        notify("Error inesperado", "error");
-    }
+    localStorage.setItem("lastLanding", data.output);
+    renderPreview(data.output);
 }
 
 
-// ===============================
-//  MOSTRAR LANDING EN PANTALLA
-// ===============================
-function renderProject(html) {
-    projectList.innerHTML = `
-        <div class="proyecto-card">
-            <iframe srcdoc="${html.replace(/"/g, '&quot;')}"></iframe>
-        </div>
-    `;
-}
-
-
-// ===============================
-//  VER ÚLTIMA LANDING
-// ===============================
+// ==== VER ÚLTIMA ====
 function verLanding() {
     const html = localStorage.getItem("lastLanding");
-    if (!html) {
-        notify("Aún no has generado una landing", "error");
-        return;
-    }
-
-    const win = window.open("", "_blank");
-    win.document.write(html);
-    win.document.close();
+    if (!html) return alert("No has generado ninguna landing");
+    renderPreview(html);
 }
 
 
-// ===============================
-//  EVENTOS
-// ===============================
 generateBtn.addEventListener("click", generarLanding);
 adjustBtn.addEventListener("click", ajustarLanding);
 verLandingBtn.addEventListener("click", verLanding);
-
-console.log("🟦 app.js cargado correctamente");
-
-
-
-
-
-
-
-
 
 
 
