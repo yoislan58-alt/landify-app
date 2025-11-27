@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landify Builder AI — ULTRA PANEL</title>
+    <title>Landify Builder AI — Panel ULTRA PRO</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -11,72 +11,102 @@
 
 <body>
 
-<!-- SIDEBAR GLASS -->
+<!-- SIDEBAR PREMIUM -->
 <aside class="sidebar">
-    <div class="sidebar-top">
+
+    <!-- LOGO + TEMA -->
+    <div class="sidebar-header">
         <div class="logo">Landify<span>AI</span></div>
+        <button id="toggleTheme" class="theme-toggle" title="Cambiar tema">🌙</button>
     </div>
 
-    <nav>
-        <button id="btnNueva" class="nav-btn">✨ Nueva Landing</button>
-        <button id="btnCrear" class="nav-btn">⚡ Generar Landing</button>
-        <button id="btnProyectos" class="nav-btn">📁 Mis Proyectos</button>
-        <button id="btnAjustar" class="nav-btn">🛠 Ajustar Landing</button>
-        <button id="btnAjustes" class="nav-btn">⚙ Ajustes</button>
-    </nav>
+    <!-- MENÚ PRINCIPAL -->
+    <div class="menu">
+
+        <!-- INICIO / NUEVA LANDING -->
+        <button class="menu-item" id="btnNueva">
+            ✨ <span>Nueva Landing</span>
+        </button>
+
+        <!-- MIS PROYECTOS (DESPLEGABLE) -->
+        <div class="menu-group">
+            <button class="menu-item" id="btnProyectosToggle">
+                📁 <span>Mis Proyectos</span>
+            </button>
+
+            <div id="submenuProyectos" class="submenu hidden">
+                <div id="projectListSidebar"></div>
+            </div>
+        </div>
+
+        <!-- AJUSTES (DESPLEGABLE) -->
+        <div class="menu-group">
+            <button class="menu-item" id="btnAjustesToggle">
+                ⚙ <span>Ajustes</span>
+            </button>
+
+            <div id="submenuAjustes" class="submenu hidden">
+                <button id="resetTodo" class="submenu-btn">🔄 Restablecer App</button>
+            </div>
+        </div>
+
+    </div>
+
 </aside>
+
+
 
 <!-- MAIN -->
 <main class="main">
 
-    <!-- NAVBAR DEL PREVIEW -->
-    <header class="preview-bar">
-        <div class="preview-left">
-            <h2>Vista previa</h2>
-            <div class="view-toggle">
+    <!-- TOP NAV -->
+    <header class="topnav">
+        <div class="topnav-left">
+            <h2>Vista Previa</h2>
+
+            <div class="view-buttons">
                 <button id="btnDesktop" class="view-btn active" title="Vista escritorio">🖥 Desktop</button>
                 <button id="btnMobile" class="view-btn" title="Vista móvil">📱 Móvil</button>
             </div>
         </div>
 
-        <div class="preview-right">
-            <div class="preview-actions">
-                <button id="btnAbrir" class="icon-btn" title="Abrir en pestaña nueva">
-                    🔗 Abrir
-                </button>
-                <button id="btnCopiar" class="icon-btn" title="Copiar HTML al portapapeles">
-                    📋 Copiar
-                </button>
-                <button id="btnDescargar" class="icon-btn" title="Descargar HTML actual">
-                    ⬇ Descargar
-                </button>
-            </div>
-            <button id="toggleTheme" class="theme-btn-header" title="Cambiar modo claro/oscuro">🌙</button>
+        <div class="topnav-right">
+            <button id="btnFullscreen" class="icon-btn" title="Ver en pantalla completa">🖼 Pantalla completa</button>
+
+            <button id="btnAbrir" class="icon-btn" title="Abrir landing en nueva pestaña">🔗 Abrir</button>
+            <button id="btnCopiar" class="icon-btn" title="Copiar HTML al portapapeles">📋 Copiar</button>
+            <button id="btnDescargar" class="icon-btn" title="Descargar HTML">⬇ Descargar</button>
         </div>
     </header>
 
+    <!-- LAYOUT -->
     <div class="layout">
 
-        <!-- PANEL IZQUIERDO (1/3) -->
-        <section class="col-izquierda">
+        <!-- PANEL IZQUIERDO (CENTRAL DE TRABAJO) -->
+        <section class="panel">
 
             <!-- LOADING -->
             <div id="loading" class="loading hidden">
                 <div class="loader"></div>
-                <span>Generando landing…</span>
+                <span>Generando…</span>
             </div>
 
             <!-- GENERAR -->
-            <div id="panelGenerar" class="glass-card">
-                <h3>Generar Nueva Landing</h3>
-                <textarea id="userPrompt" class="input grande" placeholder="Describe la landing con detalle…"></textarea>
-                <button id="generateBtn" class="btn-main-full">✨ Generar</button>
+            <div id="panelGenerar" class="card">
+                <div class="card-title">✨ Generar Landing</div>
+
+                <textarea id="userPrompt" class="input large" placeholder="Describe la landing con detalle…"></textarea>
+
+                <button id="generateBtn" class="btn-primary">✨ Generar</button>
+
+                <button id="resetGenerar" class="btn-reset">↺ Restaurar</button>
             </div>
 
             <!-- AJUSTAR -->
-            <div id="panelAjustar" class="glass-card hidden">
-                <h3>Ajustar / Agregar sección</h3>
-                <textarea id="ajustarPrompt" class="input grande" placeholder="Ej: Agrega un countdown debajo del héroe…"></textarea>
+            <div id="panelAjustar" class="card hidden">
+                <div class="card-title">🛠 Ajustar / Agregar sección</div>
+
+                <textarea id="ajustarPrompt" class="input large" placeholder="Ej: Agregar countdown debajo del héroe…"></textarea>
 
                 <select id="ajustarPosicion" class="input">
                     <option value="inicio">Al inicio</option>
@@ -85,28 +115,15 @@
                     <option value="final">Al final</option>
                 </select>
 
-                <button id="adjustLandingBtn" class="btn-main-full">🛠 Aplicar cambios</button>
-            </div>
+                <button id="adjustLandingBtn" class="btn-primary">🛠 Aplicar cambios</button>
 
-            <!-- PROYECTOS -->
-            <div id="panelProyectos" class="glass-card hidden">
-                <h3>Mis Proyectos</h3>
-                <div id="projectList"></div>
-            </div>
-
-            <!-- AJUSTES -->
-            <div id="panelAjustes" class="glass-card hidden">
-                <h3>Ajustes</h3>
-                <p style="font-size:12px;opacity:0.8;margin-bottom:8px;">
-                    Aquí puedes borrar todos tus proyectos y reiniciar la app.
-                </p>
-                <button id="resetTodo" class="btn-danger">🗑 Restablecer todo</button>
+                <button id="resetAjustar" class="btn-reset">↺ Restaurar</button>
             </div>
 
         </section>
 
-        <!-- PREVIEW (2/3) -->
-        <section class="col-derecha desktop" id="previewCol">
+        <!-- PREVIEW -->
+        <section class="preview" id="previewCol">
             <iframe id="previewFrame"></iframe>
         </section>
 
@@ -115,9 +132,9 @@
 </main>
 
 <script src="app.js"></script>
-
 </body>
 </html>
+
 
 
 
