@@ -1,131 +1,178 @@
 // ===============================
-//  VARIABLES Y ELEMENTOS
+//  ELEMENTOS DEL DOM
 // ===============================
-const generarBtn = document.getElementById("generarBtn");
-const mejorarBtn = document.getElementById("mejorarBtn");
-const guardarBtn = document.getElementById("guardarBtn");
-const salida = document.getElementById("salida");
-const promptInput = document.getElementById("promptInput");
+const generateBtn = document.getElementById("generateBtn");
+const adjustBtn = document.getElementById("adjustLandingBtn");
+const verLandingBtn = document.getElementById("btn-ver-landing");
+
+const userPrompt = document.getElementById("userPrompt");
+const ajustarPrompt = document.getElementById("ajustarPrompt");
+const ajustarPosicion = document.getElementById("ajustarPosicion");
+
+const projectList = document.getElementById("projectList");
+const loadingBox = document.getElementById("loading");
+
 
 // ===============================
-//  GENERAR LANDING
+//  FUNCIONES helper
+// ===============================
+function showLoading() {
+    loadingBox.classList.remove("hidden");
+}
+
+function hideLoading() {
+    loadingBox.classList.add("hidden");
+}
+
+function notify(msg, type="ok") {
+    const box = document.getElementById("notify");
+    box.innerText = msg;
+    box.className = "notify show " + type;
+
+    setTimeout(() => box.className = "notify", 2500);
+}
+
+
+// ===============================
+//  GENERAR LANDING (OPENAI)
 // ===============================
 async function generarLanding() {
+    const prompt = userPrompt.value.trim();
+    if (!prompt) {
+        notify("Escribe una descripción primero", "error");
+        return;
+    }
+
+    showLoading();
+
     try {
-        salida.innerHTML = "⏳ Generando landing, espera...";
-
-        const prompt = promptInput.value.trim();
-        if (!prompt) {
-            alert("Escribe una descripción para generar la landing.");
-            return;
-        }
-
-        // 🔥 IMPORTANTE: RUTA CORRECTA PARA VERCEL
-        const response = await fetch("/api/openai", {
+        const res = await fetch("/api/openai", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt })
         });
 
-        const data = await response.json();
+        const data = await res.json();
+        hideLoading();
 
         if (data.error) {
-            salida.innerHTML = "❌ Error generando la landing.";
-            console.error("Error:", data.error);
+            console.error(data.error);
+            notify("Error generando la landing", "error");
             return;
         }
 
-        salida.innerHTML = data.output;
-    } catch (error) {
-        salida.innerHTML = "❌ Error inesperado generando landing.";
-        console.error(error);
+        // Guardar temporalmente
+        localStorage.setItem("lastLanding", data.output);
+
+        notify("Landing generada correctamente");
+
+        renderProject(data.output);
+
+    } catch (err) {
+        hideLoading();
+        console.error(err);
+        notify("Error inesperado", "error");
     }
 }
 
+
 // ===============================
-//  MEJORAR PROMPT
+//  AJUSTAR / AGREGAR SECCIÓN
 // ===============================
-async function mejorarPrompt() {
+async function ajustarLanding() {
+    const original = localStorage.getItem("lastLanding") || "";
+    if (!original) {
+        notify("Primero genera una landing", "error");
+        return;
+    }
+
+    const instruccion = ajustarPrompt.value.trim();
+    if (!instruccion) {
+        notify("Escribe qué quieres agregar o ajustar", "error");
+        return;
+    }
+
+    const posicion = ajustarPosicion.value;
+
+    const prompt = `
+Eres un experto en HTML.
+Toma esta landing y agrega/ajusta según lo siguiente:
+
+- Acción solicitada: ${instruccion}
+- Ubicación: ${posicion}
+
+HTML ORIGINAL:
+${original}
+    `;
+
+    showLoading();
+
     try {
-        const original = promptInput.value.trim();
-        if (!original) {
-            alert("Escribe algo para mejorar el prompt.");
-            return;
-        }
-
-        const prompt = `Mejora este prompt para obtener un HTML atractivo y moderno: ${original}`;
-
-        const response = await fetch("/api/openai", {
+        const res = await fetch("/api/openai", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt })
         });
 
-        const data = await response.json();
+        const data = await res.json();
+        hideLoading();
 
-        if (data.error) {
-            console.error(data.error);
-            alert("Error mejorando el prompt.");
+        if (!data.output) {
+            notify("Error ajustando la landing", "error");
             return;
         }
 
-        promptInput.value = data.output;
-    } catch (error) {
-        console.error(error);
-        alert("Error inesperado.");
+        localStorage.setItem("lastLanding", data.output);
+        renderProject(data.output);
+
+        notify("Sección agregada / ajustada correctamente");
+
+    } catch (err) {
+        hideLoading();
+        console.error(err);
+        notify("Error inesperado", "error");
     }
 }
 
+
 // ===============================
-//  GUARDAR LANDING HTML
+//  MOSTRAR LANDING EN PANTALLA
 // ===============================
-async function guardarLanding() {
-    try {
-        const html = salida.innerHTML.trim();
-
-        if (!html) {
-            alert("No hay landing generada para guardar.");
-            return;
-        }
-
-        const id = Date.now().toString();
-
-        // 🔥 RUTA CORRECTA PARA VERCEL
-        const response = await fetch("/api/guardar-landing", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ id, html })
-        });
-
-        const data = await response.json();
-
-        if (data.error) {
-            console.error(data.error);
-            alert("Error guardando la landing.");
-            return;
-        }
-
-        alert("Landing guardada correctamente. URL:\n" + data.url);
-
-        window.open(data.url, "_blank");
-    } catch (error) {
-        console.error(error);
-        alert("Error inesperado guardando la landing.");
-    }
+function renderProject(html) {
+    projectList.innerHTML = `
+        <div class="proyecto-card">
+            <iframe srcdoc="${html.replace(/"/g, '&quot;')}"></iframe>
+        </div>
+    `;
 }
+
+
+// ===============================
+//  VER ÚLTIMA LANDING
+// ===============================
+function verLanding() {
+    const html = localStorage.getItem("lastLanding");
+    if (!html) {
+        notify("Aún no has generado una landing", "error");
+        return;
+    }
+
+    const win = window.open("", "_blank");
+    win.document.write(html);
+    win.document.close();
+}
+
 
 // ===============================
 //  EVENTOS
 // ===============================
-generarBtn.addEventListener("click", generarLanding);
-mejorarBtn.addEventListener("click", mejorarPrompt);
-guardarBtn.addEventListener("click", guardarLanding);
+generateBtn.addEventListener("click", generarLanding);
+adjustBtn.addEventListener("click", ajustarLanding);
+verLandingBtn.addEventListener("click", verLanding);
+
+console.log("🟦 app.js cargado correctamente");
+
+
 
 
 
