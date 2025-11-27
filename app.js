@@ -17,7 +17,7 @@ const notifyBox = document.getElementById("notify");
 const loading = document.getElementById("loading");
 
 const generateBtn = document.getElementById("generateBtn");
-const adjustBtn = document.getElementById("adjustBtn");
+const adjustBtn = document.getElementById("adjustLandingBtn");
 const projectList = document.getElementById("projectList");
 const projectListSec = document.getElementById("projectListSec");
 
@@ -40,8 +40,7 @@ generateBtn.onclick = async () => {
     loading.classList.remove("hidden");
 
     try {
-        // 🔥 FIX: ruta correcta
-        const response = await fetch("/api/openai", {
+        const response = await fetch("/.netlify/functions/openai", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ accion: "generar", prompt })
@@ -63,14 +62,13 @@ generateBtn.onclick = async () => {
             .replace("{{heroText}}", textos.heroText)
             .replace("{{subText}}", textos.subText)
             .replace("{{cta}}", textos.cta)
-            .replace("{{benefits}}", textos.benefits.map(b => `<div class="card">${b}</div>`).join(""))
-            .replace("{{features}}", textos.features.map(f => `<div class="card">${f}</div>`).join(""))
+            .replace("{{benefits}}", textos.benefits.map(b => `<div class="benefit-card">${b}</div>`).join(""))
+            .replace("{{features}}", textos.features.map(f => `<div class="feature-card">${f}</div>`).join(""))
             .replace("{{testimonials}}", textos.testimonials.map(t => `<div class="test-card">${t}</div>`).join(""));
 
         const id = generarIdLanding();
         ultimoIdGenerado = id;
 
-        // 🔥 FIX: ruta correcta
         const urlFinal = await guardarLandingEnServidor(id, finalHTML);
 
         if (!urlFinal) {
@@ -103,8 +101,7 @@ generateBtn.onclick = async () => {
 ========================================================= */
 async function guardarLandingEnServidor(id, html) {
     try {
-        // 🔥 FIX: ruta correcta
-        const response = await fetch("/api/guardar-landing", {
+        const response = await fetch("/.netlify/functions/guardar-landing", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ filename: `${id}.html`, html })
@@ -132,9 +129,9 @@ function addProject(id, data) {
         <h3>${data.heroText}</h3>
         <small>ID: ${id}</small>
 
-        <button class="btn-ultra-outline" onclick="verLanding('${id}')">👁 Ver</button>
-        <button class="btn-ultra-outline" onclick="copiarHTML('${id}')">📋 Copiar HTML</button>
-        <button class="btn-ultra-outline" onclick="exportarHTML('${id}')">⬇ Exportar</button>
+        <button class="btn-outline" onclick="verLanding('${id}')">👁 Ver</button>
+        <button class="btn-outline" onclick="copiarHTML('${id}')">📋 Copiar HTML</button>
+        <button class="btn-outline" onclick="exportarHTML('${id}')">⬇ Exportar</button>
     `;
 
     projectList.appendChild(card);
@@ -168,8 +165,8 @@ function copiarHTML(id) {
                 .replace("{{heroText}}", data.heroText)
                 .replace("{{subText}}", data.subText)
                 .replace("{{cta}}", data.cta)
-                .replace("{{benefits}}", data.benefits.map(b => `<div class="card">${b}</div>`).join(""))
-                .replace("{{features}}", data.features.map(f => `<div class="card">${f}</div>`).join(""))
+                .replace("{{benefits}}", data.benefits.map(b => `<div class="benefit-card">${b}</div>`).join(""))
+                .replace("{{features}}", data.features.map(f => `<div class="feature-card">${f}</div>`).join(""))
                 .replace("{{testimonials}}", data.testimonials.map(t => `<div class="test-card">${t}</div>`).join(""));
 
             navigator.clipboard.writeText(html);
@@ -189,13 +186,14 @@ function exportarHTML(id) {
         .then(r => r.text())
         .then(template => {
             const data = JSON.parse(raw);
+
             const html = template
                 .replace("{{heroImage}}", data.heroImage)
                 .replace("{{heroText}}", data.heroText)
                 .replace("{{subText}}", data.subText)
                 .replace("{{cta}}", data.cta)
-                .replace("{{benefits}}", data.benefits.map(b => `<div class="card">${b}</div>`).join(""))
-                .replace("{{features}}", data.features.map(f => `<div class="card">${f}</div>`).join(""))
+                .replace("{{benefits}}", data.benefits.map(b => `<div class="benefit-card">${b}</div>`).join(""))
+                .replace("{{features}}", data.features.map(f => `<div class="feature-card">${f}</div>`).join(""))
                 .replace("{{testimonials}}", data.testimonials.map(t => `<div class="test-card">${t}</div>`).join(""));
 
             const blob = new Blob([html], { type: "text/html" });
@@ -205,13 +203,14 @@ function exportarHTML(id) {
             a.href = url;
             a.download = `${id}.html`;
             a.click();
+
             notify("HTML exportado ✔");
         });
 }
 window.exportarHTML = exportarHTML;
 
 /* =========================================================
-   AJUSTAR LANDING
+   AJUSTAR LANDING (SECCIÓN NUEVA)
 ========================================================= */
 adjustBtn.onclick = async () => {
     if (!ultimoIdGenerado) return notify("Primero genera una landing.");
@@ -220,14 +219,14 @@ adjustBtn.onclick = async () => {
     if (!textoNuevo) return notify("Describe qué quieres agregar.");
 
     const ubicacion = document.getElementById("ajustarPosicion").value;
+
     loading.classList.remove("hidden");
 
     try {
         const data = JSON.parse(localStorage.getItem(`landing-${ultimoIdGenerado}`));
         const htmlActual = await fetch(data.url).then(r => r.text());
 
-        // 🔥 FIX: ruta correcta
-        const response = await fetch("/api/openai", {
+        const response = await fetch("/.netlify/functions/openai", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -265,6 +264,8 @@ adjustBtn.onclick = async () => {
 
     loading.classList.add("hidden");
 };
+
+
 
 
 
