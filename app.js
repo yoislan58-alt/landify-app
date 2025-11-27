@@ -17,7 +17,7 @@ const notifyBox = document.getElementById("notify");
 const loading = document.getElementById("loading");
 
 const generateBtn = document.getElementById("generateBtn");
-const adjustBtn = document.getElementById("ajustarDirecto"); // <-- BOTÓN REAL
+const adjustBtn = document.getElementById("adjustLandingBtn");
 const projectList = document.getElementById("projectList");
 const projectListSec = document.getElementById("projectListSec");
 
@@ -55,7 +55,6 @@ generateBtn.onclick = async () => {
         const textos = data.textos;
         textos.heroImage = data.heroImage;
 
-        // Template HTML
         const template = await fetch("/landing/template.html").then(r => r.text());
 
         const finalHTML = template
@@ -70,8 +69,8 @@ generateBtn.onclick = async () => {
         const id = generarIdLanding();
         ultimoIdGenerado = id;
 
-        // Guardar en servidor
         const urlFinal = await guardarLandingEnServidor(id, finalHTML);
+
         if (!urlFinal) {
             loading.classList.add("hidden");
             return notify("Error guardando la landing.");
@@ -119,7 +118,7 @@ async function guardarLandingEnServidor(id, html) {
 }
 
 /* =========================================================
-   MOSTRAR PROYECTOS
+   MOSTRAR PROJECTOS
 ========================================================= */
 function addProject(id, data) {
     const card = document.createElement("div");
@@ -161,7 +160,6 @@ function copiarHTML(id) {
         .then(r => r.text())
         .then(t => {
             const data = JSON.parse(raw);
-
             const html = t
                 .replace("{{heroImage}}", data.heroImage)
                 .replace("{{heroText}}", data.heroText)
@@ -188,7 +186,6 @@ function exportarHTML(id) {
         .then(r => r.text())
         .then(template => {
             const data = JSON.parse(raw);
-
             const html = template
                 .replace("{{heroImage}}", data.heroImage)
                 .replace("{{heroText}}", data.heroText)
@@ -211,7 +208,7 @@ function exportarHTML(id) {
 window.exportarHTML = exportarHTML;
 
 /* =========================================================
-   AJUSTAR LANDING (insertar secciones)
+   AJUSTAR LANDING
 ========================================================= */
 adjustBtn.onclick = async () => {
     if (!ultimoIdGenerado) return notify("Primero genera una landing.");
@@ -220,7 +217,6 @@ adjustBtn.onclick = async () => {
     if (!textoNuevo) return notify("Describe qué quieres agregar.");
 
     const ubicacion = document.getElementById("ajustarPosicion").value;
-
     loading.classList.remove("hidden");
 
     try {
@@ -232,19 +228,21 @@ adjustBtn.onclick = async () => {
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 accion: "insertar",
-                prompt: textoNuevo,
                 htmlActual,
+                prompt: textoNuevo,
                 ubicacion
             })
         });
 
         const result = await response.json();
+
         if (!result.success) {
             loading.classList.add("hidden");
             return notify("Error ajustando la landing.");
         }
 
         const urlFinal = await guardarLandingEnServidor(ultimoIdGenerado, result.htmlFinal);
+
         if (!urlFinal) {
             loading.classList.add("hidden");
             return notify("Error guardando cambios.");
@@ -263,6 +261,7 @@ adjustBtn.onclick = async () => {
 
     loading.classList.add("hidden");
 };
+
 
 
 
