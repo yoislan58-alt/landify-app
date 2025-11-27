@@ -8,7 +8,7 @@ function generarIdLanding() {
     for (let i = 0; i < 5; i++) {
         random += letras.charAt(Math.floor(Math.random() * letras.length));
     }
-    return "ldg-" + random";
+    return "ldg-" + random;  // ✔ CORREGIDO
 }
 
 let ultimoIdGenerado = null;
@@ -40,15 +40,10 @@ generateBtn.onclick = async () => {
     loading.classList.remove("hidden");
 
     try {
-
-        // 🔥🔥🔥 AQUI ESTABA EL ERROR 🔥🔥🔥
         const response = await fetch("/.netlify/functions/openai", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                accion: "generar",   // ✔ correcto
-                prompt: prompt        // ✔ correcto
-            })
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ accion: "generar", prompt })
         });
 
         const data = await response.json();
@@ -61,7 +56,7 @@ generateBtn.onclick = async () => {
         const textos = data.textos;
         textos.heroImage = data.heroImage;
 
-        const template = await fetch("/landing/template.html").then(r => r.text());
+        const template = await fetch("template.html").then(r => r.text());
 
         const finalHTML = template
             .replace("{{heroImage}}", textos.heroImage)
@@ -102,7 +97,6 @@ generateBtn.onclick = async () => {
     loading.classList.add("hidden");
 };
 
-
 /* =========================================================
    GUARDAR EN SERVIDOR
 ========================================================= */
@@ -110,27 +104,22 @@ async function guardarLandingEnServidor(id, html) {
     try {
         const response = await fetch("/.netlify/functions/guardar-landing", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                filename: `${id}.html`,
-                html: html
-            })
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ filename: `${id}.html`, html })
         });
 
         const data = await response.json();
         if (!data.success) return null;
 
         return data.url;
-
     } catch (e) {
         console.error(e);
         return null;
     }
 }
 
-
 /* =========================================================
-   MOSTRAR PROYECTOS
+   MOSTRAR PROJECTOS
 ========================================================= */
 function addProject(id, data) {
     const card = document.createElement("div");
@@ -153,15 +142,13 @@ function syncProjectListSecondary() {
     projectListSec.innerHTML = projectList.innerHTML;
 }
 
-
 /* =========================================================
    VER LANDING
 ========================================================= */
 function verLanding(id) {
-    window.open(`https://landify-builder.netlify.app/landing-pages/${id}.html`, "_blank");
+    window.open(`/.netlify/functions/landing-pages/${id}.html`, "_blank");
 }
 window.verLanding = verLanding;
-
 
 /* =========================================================
    COPIAR HTML
@@ -170,7 +157,7 @@ function copiarHTML(id) {
     const raw = localStorage.getItem(`landing-${id}`);
     if (!raw) return notify("Landing no encontrada.");
 
-    fetch("/landing/template.html")
+    fetch("template.html")
         .then(r => r.text())
         .then(t => {
             const data = JSON.parse(raw);
@@ -189,7 +176,6 @@ function copiarHTML(id) {
 }
 window.copiarHTML = copiarHTML;
 
-
 /* =========================================================
    EXPORTAR HTML
 ========================================================= */
@@ -197,7 +183,7 @@ function exportarHTML(id) {
     const raw = localStorage.getItem(`landing-${id}`);
     if (!raw) return notify("Landing no encontrada.");
 
-    fetch("/landing/template.html")
+    fetch("template.html")
         .then(r => r.text())
         .then(template => {
             const data = JSON.parse(raw);
@@ -222,7 +208,6 @@ function exportarHTML(id) {
 }
 window.exportarHTML = exportarHTML;
 
-
 /* =========================================================
    AJUSTAR LANDING
 ========================================================= */
@@ -241,7 +226,7 @@ adjustBtn.onclick = async () => {
 
         const response = await fetch("/.netlify/functions/openai", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 accion: "insertar",
                 htmlActual,
@@ -277,7 +262,6 @@ adjustBtn.onclick = async () => {
 
     loading.classList.add("hidden");
 };
-
 
 
 
