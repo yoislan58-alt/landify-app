@@ -11,9 +11,15 @@
 
 <body>
 
+<!-- BOTÓN TEMA FLOTANTE (SIEMPRE ARRIBA A LA DERECHA) -->
+<button id="toggleTheme" class="theme-btn-floating" title="Cambiar modo claro/oscuro">🌙</button>
+
 <!-- SIDEBAR GLASS -->
 <aside class="sidebar">
-    <div class="logo">Landify<span>AI</span></div>
+
+    <div class="sidebar-top">
+        <div class="logo">Landify<span>AI</span></div>
+    </div>
 
     <nav>
         <button id="btnNueva" class="nav-btn">✨ Nueva Landing</button>
@@ -23,7 +29,6 @@
         <button id="btnAjustes" class="nav-btn">⚙ Ajustes</button>
     </nav>
 
-    <button id="toggleTheme" class="theme-btn">🌙</button>
 </aside>
 
 <!-- MAIN -->
@@ -31,12 +36,24 @@
 
     <!-- NAVBAR DEL PREVIEW -->
     <header class="preview-bar">
-        <h2>Vista previa</h2>
+        <div class="preview-left">
+            <h2>Vista previa</h2>
+            <div class="view-toggle">
+                <button id="btnDesktop" class="view-btn active" title="Vista escritorio">🖥 Desktop</button>
+                <button id="btnMobile" class="view-btn" title="Vista móvil">📱 Móvil</button>
+            </div>
+        </div>
 
         <div class="preview-actions">
-            <button id="btnAbrir" class="icon-btn">🔗</button>
-            <button id="btnCopiar" class="icon-btn">📋</button>
-            <button id="btnDescargar" class="icon-btn">⬇</button>
+            <button id="btnAbrir" class="icon-btn" title="Abrir en pestaña nueva">
+                🔗 Abrir
+            </button>
+            <button id="btnCopiar" class="icon-btn" title="Copiar HTML al portapapeles">
+                📋 Copiar
+            </button>
+            <button id="btnDescargar" class="icon-btn" title="Descargar HTML actual">
+                ⬇ Descargar
+            </button>
         </div>
     </header>
 
@@ -60,8 +77,8 @@
 
             <!-- AJUSTAR -->
             <div id="panelAjustar" class="glass-card hidden">
-                <h3>Ajustar sección</h3>
-                <textarea id="ajustarPrompt" class="input grande" placeholder="Ej: Agrega un countdown…"></textarea>
+                <h3>Ajustar / Agregar sección</h3>
+                <textarea id="ajustarPrompt" class="input grande" placeholder="Ej: Agrega un countdown debajo del héroe…"></textarea>
 
                 <select id="ajustarPosicion" class="input">
                     <option value="inicio">Al inicio</option>
@@ -82,13 +99,16 @@
             <!-- AJUSTES -->
             <div id="panelAjustes" class="glass-card hidden">
                 <h3>Ajustes</h3>
-                <button id="resetTodo" class="btn-danger">Restablecer</button>
+                <p style="font-size:12px;opacity:0.8;margin-bottom:8px;">
+                    Aquí puedes borrar todos tus proyectos y reiniciar la app.
+                </p>
+                <button id="resetTodo" class="btn-danger">🗑 Restablecer todo</button>
             </div>
 
         </section>
 
         <!-- PREVIEW (2/3) -->
-        <section class="col-derecha">
+        <section class="col-derecha desktop" id="previewCol">
             <iframe id="previewFrame"></iframe>
         </section>
 
@@ -100,8 +120,6 @@
 
 </body>
 </html>
-
-
 
 
 
