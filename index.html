@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es" id="htmlTag">
+<html lang="es" id="htmlTag" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landify Builder AI — Panel ULTRA</title>
+    <title>Landify Builder AI — ULTRA PANEL</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -11,70 +11,96 @@
 
 <body>
 
-<!-- BOTÓN TEMA (SOL/LUNA) -->
-<button id="toggleTheme" class="theme-btn">🌙</button>
+<!-- SIDEBAR GLASS -->
+<aside class="sidebar">
+    <div class="logo">Landify<span>AI</span></div>
 
-<!-- NOTIFICACIONES -->
-<div id="notify" class="notify"></div>
+    <nav>
+        <button id="btnNueva" class="nav-btn">✨ Nueva Landing</button>
+        <button id="btnCrear" class="nav-btn">⚡ Generar Landing</button>
+        <button id="btnProyectos" class="nav-btn">📁 Mis Proyectos</button>
+        <button id="btnAjustar" class="nav-btn">🛠 Ajustar Landing</button>
+        <button id="btnAjustes" class="nav-btn">⚙ Ajustes</button>
+    </nav>
 
-<!-- CONTENEDOR PRINCIPAL -->
-<div class="layout">
-    
-    <!-- COLUMNA IZQUIERDA -->
-    <div class="col-izquierda">
+    <button id="toggleTheme" class="theme-btn">🌙</button>
+</aside>
 
-        <h1 class="titulo">Creador de Landings</h1>
+<!-- MAIN -->
+<main class="main">
 
-        <!-- LOADING -->
-        <div id="loading" class="loading hidden">
-            <div class="loader"></div>
-            <span>Generando landing…</span>
+    <!-- NAVBAR DEL PREVIEW -->
+    <header class="preview-bar">
+        <h2>Vista previa</h2>
+
+        <div class="preview-actions">
+            <button id="btnAbrir" class="icon-btn">🔗</button>
+            <button id="btnCopiar" class="icon-btn">📋</button>
+            <button id="btnDescargar" class="icon-btn">⬇</button>
         </div>
+    </header>
 
-        <!-- GENERAR -->
-        <div class="card">
-            <h2>Generar Nueva Landing</h2>
-            <textarea id="userPrompt" class="input grande"
-                placeholder="Describe la landing con detalle…"></textarea>
-            <button id="generateBtn" class="btn-main-full">✨ Generar Landing</button>
-        </div>
+    <div class="layout">
 
-        <!-- AJUSTAR -->
-        <div class="card">
-            <h2>Ajustar / Agregar sección</h2>
-            <textarea id="ajustarPrompt" class="input grande"
-                placeholder="Ej: Agrega un countdown debajo del héroe…"></textarea>
+        <!-- PANEL IZQUIERDO (1/3) -->
+        <section class="col-izquierda">
 
-            <select id="ajustarPosicion" class="input">
-                <option value="inicio">Al inicio</option>
-                <option value="despues-hero">Después del héroe</option>
-                <option value="antes-precio">Antes de precio</option>
-                <option value="final">Al final</option>
-            </select>
+            <!-- LOADING -->
+            <div id="loading" class="loading hidden">
+                <div class="loader"></div>
+                <span>Generando landing…</span>
+            </div>
 
-            <button id="adjustLandingBtn" class="btn-main-full">
-                🛠 Ajustar / Agregar sección
-            </button>
-        </div>
+            <!-- GENERAR -->
+            <div id="panelGenerar" class="glass-card">
+                <h3>Generar Nueva Landing</h3>
+                <textarea id="userPrompt" class="input grande" placeholder="Describe la landing con detalle…"></textarea>
+                <button id="generateBtn" class="btn-main-full">✨ Generar</button>
+            </div>
 
-        <button id="btn-ver-landing" class="btn-outline">👁 Ver última landing</button>
+            <!-- AJUSTAR -->
+            <div id="panelAjustar" class="glass-card hidden">
+                <h3>Ajustar sección</h3>
+                <textarea id="ajustarPrompt" class="input grande" placeholder="Ej: Agrega un countdown…"></textarea>
 
-    </div>
+                <select id="ajustarPosicion" class="input">
+                    <option value="inicio">Al inicio</option>
+                    <option value="despues-hero">Después del héroe</option>
+                    <option value="antes-precio">Antes del precio</option>
+                    <option value="final">Al final</option>
+                </select>
 
-    <!-- COLUMNA DERECHA -->
-    <div class="col-derecha">
-        <h2 class="subtitle">Vista previa</h2>
-        <div id="previewBox" class="preview-container">
+                <button id="adjustLandingBtn" class="btn-main-full">🛠 Aplicar cambios</button>
+            </div>
+
+            <!-- PROYECTOS -->
+            <div id="panelProyectos" class="glass-card hidden">
+                <h3>Mis Proyectos</h3>
+                <div id="projectList"></div>
+            </div>
+
+            <!-- AJUSTES -->
+            <div id="panelAjustes" class="glass-card hidden">
+                <h3>Ajustes</h3>
+                <button id="resetTodo" class="btn-danger">Restablecer</button>
+            </div>
+
+        </section>
+
+        <!-- PREVIEW (2/3) -->
+        <section class="col-derecha">
             <iframe id="previewFrame"></iframe>
-        </div>
+        </section>
+
     </div>
 
-</div>
+</main>
 
 <script src="app.js"></script>
 
 </body>
 </html>
+
 
 
 
