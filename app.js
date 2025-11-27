@@ -40,7 +40,8 @@ generateBtn.onclick = async () => {
     loading.classList.remove("hidden");
 
     try {
-        const response = await fetch("/.netlify/functions/openai", {
+        // 🔥 FIX: ruta correcta
+        const response = await fetch("/api/openai", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ accion: "generar", prompt })
@@ -69,6 +70,7 @@ generateBtn.onclick = async () => {
         const id = generarIdLanding();
         ultimoIdGenerado = id;
 
+        // 🔥 FIX: ruta correcta
         const urlFinal = await guardarLandingEnServidor(id, finalHTML);
 
         if (!urlFinal) {
@@ -101,10 +103,11 @@ generateBtn.onclick = async () => {
 ========================================================= */
 async function guardarLandingEnServidor(id, html) {
     try {
-        const response = await fetch("/.netlify/functions/guardar-landing", {
+        // 🔥 FIX: ruta correcta
+        const response = await fetch("/api/guardar-landing", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ id, html })
+            body: JSON.stringify({ filename: `${id}.html`, html })
         });
 
         const data = await response.json();
@@ -223,7 +226,8 @@ adjustBtn.onclick = async () => {
         const data = JSON.parse(localStorage.getItem(`landing-${ultimoIdGenerado}`));
         const htmlActual = await fetch(data.url).then(r => r.text());
 
-        const response = await fetch("/.netlify/functions/openai", {
+        // 🔥 FIX: ruta correcta
+        const response = await fetch("/api/openai", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -261,6 +265,8 @@ adjustBtn.onclick = async () => {
 
     loading.classList.add("hidden");
 };
+
+
 
 
 
