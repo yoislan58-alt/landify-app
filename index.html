@@ -14,41 +14,33 @@
 <!-- NOTIFICACIONES -->
 <div id="notify" class="notify"></div>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-    <h2 class="logo">Landify<span>AI</span></h2>
+<!-- CONTENEDOR PRINCIPAL -->
+<div class="layout">
+    
+    <!-- COLUMNA IZQUIERDA -->
+    <div class="col-izquierda">
 
-    <nav>
-        <button class="side-btn active" id="btnCrear">⚡ Crear Landing</button>
-        <button class="side-btn" id="btnProyectos">📁 Mis Proyectos</button>
-        <button class="side-btn" id="btnAjustes">⚙ Ajustes</button>
-    </nav>
-</aside>
+        <h1 class="titulo">Creador de Landings</h1>
 
-<!-- MAIN -->
-<main class="main">
+        <!-- LOADING -->
+        <div id="loading" class="loading hidden">
+            <div class="loader"></div>
+            <span>Generando landing…</span>
+        </div>
 
-    <!-- TOPBAR -->
-    <header class="topbar">
-        <h1 class="titulo-panel">Creador de Landings</h1>
-        <button id="toggleTheme" class="theme-toggle">🌓</button>
-    </header>
-
-    <!-- SECCIÓN CREAR -->
-    <section id="seccionCrear" class="seccion activa">
-
-        <div class="card" style="text-align:center;">
+        <!-- GENERAR -->
+        <div class="card">
             <h2>Generar Nueva Landing</h2>
-
-            <textarea id="userPrompt" class="input grande" placeholder="Describe la landing con detalle…"></textarea>
-
+            <textarea id="userPrompt" class="input grande"
+                placeholder="Describe la landing con detalle…"></textarea>
             <button id="generateBtn" class="btn-main-full">✨ Generar Landing</button>
+        </div>
 
-            <hr class="separator">
-
+        <!-- AJUSTAR / AGREGAR -->
+        <div class="card">
             <h2>Ajustar / Agregar sección</h2>
-
-            <textarea id="ajustarPrompt" class="input grande" placeholder="Ej: Agrega un countdown debajo del héroe…"></textarea>
+            <textarea id="ajustarPrompt" class="input grande"
+                placeholder="Ej: Agrega un countdown debajo del héroe…"></textarea>
 
             <select id="ajustarPosicion" class="input">
                 <option value="inicio">Al inicio</option>
@@ -60,56 +52,28 @@
             <button id="adjustLandingBtn" class="btn-main-full">
                 🛠 Ajustar / Agregar sección
             </button>
-
-            <button id="btn-ver-landing" class="btn-outline" style="margin-top:18px;">
-                👁 Ver Última Landing
-            </button>
-
-            <div id="loading" class="loading hidden">
-                <div class="loader"></div>
-                <span>Procesando…</span>
-            </div>
         </div>
 
-        <h2 class="subtitle">Mis Landings</h2>
-        <div id="projectList" class="grid-proyectos"></div>
-    </section>
+        <button id="btn-ver-landing" class="btn-outline">👁 Ver última landing</button>
 
-    <!-- SECCIÓN PROYECTOS -->
-    <section id="seccionProyectos" class="seccion">
-        <h2 class="subtitle">Mis Landings Generadas</h2>
-        <div id="projectListSec" class="grid-proyectos"></div>
-    </section>
+    </div>
 
-    <!-- AJUSTES -->
-    <section id="seccionAjustes" class="seccion">
-        <h2 class="subtitle">Ajustes</h2>
-
-        <div class="card">
-            <h3>Plan Actual</h3>
-            <p>Plan básico (mientras pruebas)</p>
-            <button class="btn-main-full">Actualizar Plan</button>
+    <!-- COLUMNA DERECHA -->
+    <div class="col-derecha">
+        <h2 class="subtitle">Vista previa</h2>
+        <div id="previewBox" class="preview-container">
+            <iframe id="previewFrame"></iframe>
         </div>
+    </div>
 
-        <div class="card">
-            <h3>API Key (opcional)</h3>
-            <input id="inputApiKey" type="text" class="input" placeholder="(Opcional)">
-            <button id="guardarApiKey" class="btn-main-full">Guardar</button>
-        </div>
-
-        <div class="card">
-            <h3>Preferencias</h3>
-            <button id="resetTema" class="btn-outline">Restablecer Tema</button>
-            <button id="resetTodo" class="btn-danger">Restablecer Cuenta</button>
-        </div>
-    </section>
-
-</main>
+</div>
 
 <script src="app.js"></script>
 
 </body>
 </html>
+
+
 
 
 
