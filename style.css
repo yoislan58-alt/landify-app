@@ -1,89 +1,93 @@
-/* ====== ULTRA PANEL FINAL ====== */
-
-:root {
-    --bg: #0e0b16;
-    --bg-light: #ffffff;
-    --text: #ffffff;
-    --text-dark: #333;
-    --card: #171324;
-    --accent1: #7b3dff;
-    --accent2: #ff4fba;
-    --accent3: #49c5ff;
-}
+/* =========================================================
+   ESTILO PRO VERSION ULTRA
+========================================================= */
 
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    transition: .3s;
+    background: #0b0a16;
+    color: #f2f2f7;
+    display: flex;
 }
 
-body[data-theme="light"] {
-    background: var(--bg-light);
-    color: var(--text-dark);
-}
+/* ================= SIDEBAR ================= */
 
-/* SIDEBAR */
 .sidebar {
-    width: 260px;
-    height: 100vh;
-    background: #1a1629;
-    position: fixed;
+    width: 230px;
+    background: #131122;
     padding: 20px;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.4);
 }
 
 .logo {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 700;
+    margin-bottom: 25px;
 }
 
 .logo span {
-    color: var(--accent2);
+    color: #9a5bff;
 }
 
 .side-btn {
     width: 100%;
     padding: 12px;
-    background: transparent;
-    border: none;
+    margin: 6px 0;
+    background: #1a182a;
     color: #fff;
-    font-size: 16px;
-    margin-top: 14px;
+    border: none;
+    border-radius: 8px;
     text-align: left;
     cursor: pointer;
-    transition: .25s;
+    font-size: 15px;
+    transition: all 0.2s ease;
 }
 
+.side-btn:hover,
 .side-btn.active {
-    background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3));
-    border-radius: 8px;
+    background: linear-gradient(90deg, #9a5bff, #00d0ff);
+    color: #111;
 }
 
-/* MAIN */
+/* ================= MAIN ================= */
+
 .main {
-    margin-left: 260px;
-    padding: 32px;
+    margin-left: 250px;
+    padding: 30px;
+    width: 100%;
 }
 
 .topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 25px;
 }
 
 .titulo-panel {
-    font-size: 32px;
-    font-weight: 600;
+    font-size: 28px;
+    font-weight: 700;
 }
 
 .theme-toggle {
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 26px;
+    padding: 8px 16px;
+    background: #1a182a;
+    border-radius: 8px;
     cursor: pointer;
+    border: none;
+    color: #fff;
+    transition: all 0.2s;
 }
+
+.theme-toggle:hover {
+    background: #312c4e;
+}
+
+/* ================= SECCIONES ================= */
 
 .seccion {
     display: none;
@@ -93,72 +97,153 @@ body[data-theme="light"] {
     display: block;
 }
 
-/* CARDS */
 .card {
-    background: var(--card);
-    padding: 22px;
-    border-radius: 14px;
-    margin-bottom: 24px;
+    background: #141328;
+    padding: 25px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
 
 .input {
     width: 100%;
-    padding: 12px;
-    background: #100d1c;
-    border: 1px solid #2e2844;
-    color: #fff;
+    padding: 14px;
     border-radius: 8px;
-    margin-bottom: 14px;
+    border: none;
+    margin: 8px 0 18px;
+    background: #1f1d35;
+    color: #fff;
+    font-size: 15px;
 }
 
 .input.grande {
-    height: 140px;
+    min-height: 120px;
 }
 
-/* BUTTONS */
 .btn-main-full {
     width: 100%;
     padding: 14px;
-    background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3));
+    border-radius: 10px;
+    background: linear-gradient(90deg, #9a5bff, #00d0ff);
     border: none;
-    color: #fff;
-    border-radius: 12px;
-    font-size: 18px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
     cursor: pointer;
+    margin-bottom: 12px;
+    transition: 0.2s;
+}
+
+.btn-main-full:hover {
+    transform: scale(1.03);
 }
 
 .btn-outline {
-    padding: 10px 16px;
-    border: 1px solid var(--accent3);
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid #9a5bff;
     background: transparent;
-    color: var(--accent3);
-    border-radius: 8px;
+    color: #9a5bff;
     cursor: pointer;
+    margin-top: 12px;
+    transition: 0.2s;
+}
+
+.btn-outline:hover {
+    background: #9a5bff;
+    color: #111;
 }
 
 .btn-danger {
-    padding: 10px 16px;
-    border: none;
-    background: #ff3d67;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    background: #ff2b63;
     color: #fff;
-    border-radius: 8px;
     cursor: pointer;
+    border: none;
+    transition: 0.2s;
 }
 
-/* GRID PROYECTOS */
-.grid-proyectos {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 18px;
+.btn-danger:hover {
+    background: #ff3f72;
 }
 
-/* LOADER */
+/* ================= LOADING ================= */
+
 .loading {
-    margin-top: 20px;
+    margin-top: 15px;
     text-align: center;
 }
 
-.hidden { display: none; }
+.loading.hidden {
+    display: none;
+}
+
+.loader {
+    border: 4px solid #222;
+    border-top: 4px solid #9a5bff;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    margin: auto;
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ================= GRID PROYECTOS ================= */
+
+.grid-proyectos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+}
+
+.card-proyecto {
+    background: #18172d;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 5px 14px rgba(0,0,0,0.25);
+    transition: 0.2s;
+}
+
+.card-proyecto:hover {
+    transform: translateY(-5px);
+}
+
+.card-thumb {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+/* ================= NOTIFY ================= */
+
+.notify {
+    position: fixed;
+    top: 20px;
+    right: -400px;
+    background: #9a5bff;
+    color: #111;
+    padding: 14px 26px;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    font-weight: 600;
+    transition: 0.4s;
+    z-index: 999;
+}
+
+.notify.show {
+    right: 20px;
+}
+
+
 
 
 
