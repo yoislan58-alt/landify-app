@@ -1,103 +1,303 @@
 <!DOCTYPE html>
-<html lang="es" id="htmlTag" data-theme="dark">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landify Builder AI — Panel ULTRA PRO</title>
+    <title>Landify Builder AI — Panel PRO</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        /* --------------------------
+           VARIABLES MODO OSCURO / CLARO
+        -------------------------- */
+        :root[data-theme="dark"] {
+            --bg: #0b0b11;
+            --panel: #11111a;
+            --panel2: #161622;
+            --text: #ffffff;
+            --text-soft: #bdbdd2;
+            --accent: #8b4dff;
+            --accent2: #ff4d9e;
+            --border: #2a2a3d;
+            --card: #141422;
+        }
+
+        :root[data-theme="light"] {
+            --bg: #f5f5fc;
+            --panel: #ffffff;
+            --panel2: #fafaff;
+            --text: #1b1b2e;
+            --text-soft: #4d4d66;
+            --accent: #8b4dff;
+            --accent2: #ff4d9e;
+            --border: #d8d8ea;
+            --card: #fff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --------------------------
+           LAYOUT GENERAL
+        -------------------------- */
+        .left-panel {
+            width: 30%;
+            background: var(--panel);
+            padding: 22px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+        }
+
+        .right-panel {
+            width: 70%;
+            background: var(--panel2);
+            padding: 18px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* --------------------------
+           TITULOS Y SECCIONES
+        -------------------------- */
+        .panel-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .section-block {
+            background: var(--card);
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            border: 1px solid var(--border);
+        }
+
+        .section-block-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 90px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 10px;
+            background: var(--panel2);
+            color: var(--text);
+            resize: none;
+            font-size: 14px;
+        }
+
+        /* --------------------------
+           BOTONES PRINCIPALES
+        -------------------------- */
+        .btn-main {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            padding: 12px;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+        .btn-main:hover { opacity: 0.85; }
+
+        .btn-outline {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--accent);
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 500;
+            color: var(--accent);
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        /* --------------------------
+           BOTONES DEL HEADER (DERECHA)
+        -------------------------- */
+        .top-right-buttons {
+            display: flex;
+            gap: 10px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 40;
+        }
+
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* --------------------------
+           LOADER PRO
+        -------------------------- */
+        #loader {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px);
+            z-index: 60;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .loader-circle {
+            width: 45px;
+            height: 45px;
+            border: 5px solid #aaa;
+            border-top-color: var(--accent2);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            margin-top: 8px;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* --------------------------
+           VISTA PREVIA
+        -------------------------- */
+        #preview-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            min-height: 90vh;
+            padding: 0;
+            overflow-y: auto;
+        }
+
+        /* --------------------------
+           PROYECTOS (ACORDEÓN)
+        -------------------------- */
+        .accordion-trigger {
+            background: var(--panel2);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 14px;
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 10px;
+            background: var(--panel);
+            border-radius: 8px;
+            margin-top: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .project-item {
+            padding: 8px;
+            background: var(--card);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- TOP NAV -->
-<header class="topnav">
-    <div class="topnav-left">
-        <h2>Vista Previa</h2>
+    <!-- PANEL IZQUIERDO -->
+    <div class="left-panel">
 
-        <div class="view-buttons">
-            <button id="btnDesktop" class="view-btn active" title="Vista escritorio">🖥 Desktop</button>
-            <button id="btnMobile" class="view-btn" title="Vista móvil">📱 Móvil</button>
+        <h2 class="panel-title">Crear nueva Landing</h2>
+
+        <!-- BLOQUE CREAR -->
+        <div class="section-block">
+            <div class="section-block-title">Describe la landing</div>
+            <textarea id="prompt-crear" placeholder="Ej: Landing moderna para cafetería orgánica..."></textarea>
+            <button class="btn-main" id="btn-crear">⚡ Generar Landing</button>
+            <button class="btn-outline" id="restore-crear">Restaurar</button>
         </div>
+
+        <!-- BLOQUE AJUSTAR -->
+        <div class="section-block">
+            <div class="section-block-title">Ajustar o agregar sección</div>
+            <textarea id="prompt-ajustar" placeholder="Ej: Agrega sección de garantía premium..."></textarea>
+            <button class="btn-main" id="btn-ajustar">🛠 Agregar Sección</button>
+            <button class="btn-outline" id="restore-ajustar">Restaurar</button>
+        </div>
+
+        <!-- BOTÓN NUEVA LANDING -->
+        <button class="accordion-trigger" id="btn-nueva">🆕 Nueva Landing</button>
+
+        <!-- ACORDEÓN PROYECTOS -->
+        <div class="accordion-trigger">📁 Mis Proyectos</div>
+        <div class="accordion-content" id="proyectos-lista">
+            <!-- Aquí se insertan proyectos -->
+        </div>
+
     </div>
 
-    <div class="topnav-right">
-        <button id="btnFullscreen" class="icon-btn" title="Ver en pantalla completa">🖼 Pantalla completa</button>
-        <button id="btnDescargar" class="icon-btn" title="Descargar HTML">⬇ Descargar</button>
-        <button id="toggleTheme" class="icon-btn theme-toggle" title="Cambiar modo claro/oscuro">🌙</button>
-    </div>
-</header>
+    <!-- PANEL DERECHO -->
+    <div class="right-panel">
 
-<!-- LAYOUT 30% / 70% -->
-<div class="layout">
-
-    <!-- COLUMNA IZQUIERDA (30%) -->
-    <section class="panel">
+        <!-- BOTONES DERECHA -->
+        <div class="top-right-buttons">
+            <div class="icon-btn" id="btn-descargar" title="Descargar HTML">⬇️</div>
+            <div class="icon-btn" id="btn-fullscreen" title="Vista completa">🖥️</div>
+            <div class="icon-btn" id="toggle-theme" title="Modo claro/oscuro">🌙</div>
+        </div>
 
         <!-- LOADER -->
-        <div id="loading" class="loading hidden">
-            <div class="loader"></div>
-            <span>Generando…</span>
+        <div id="loader">
+            <div class="loader-circle"></div>
+            <div class="loader-text">Generando...</div>
         </div>
 
-        <!-- GENERAR LANDING -->
-        <div id="panelGenerar" class="card">
-            <div class="card-title">✨ Generar Landing</div>
+        <!-- PREVIEW -->
+        <div id="preview-container"></div>
 
-            <textarea id="userPrompt" class="input large" placeholder="Describe la landing con detalle…"></textarea>
+    </div>
 
-            <button id="generateBtn" class="btn-primary">✨ Generar</button>
-            <button id="resetGenerar" class="btn-reset">↺ Restaurar</button>
-        </div>
-
-        <!-- AJUSTAR / AGREGAR -->
-        <div id="panelAjustar" class="card">
-            <div class="card-title">🛠 Ajustar / Agregar sección</div>
-
-            <textarea id="ajustarPrompt" class="input large" placeholder="Ej: Agregar countdown debajo del héroe…"></textarea>
-
-            <select id="ajustarPosicion" class="input">
-                <option value="inicio">Al inicio</option>
-                <option value="despues-hero">Después del héroe</option>
-                <option value="antes-precio">Antes del precio</option>
-                <option value="final">Al final</option>
-            </select>
-
-            <button id="adjustLandingBtn" class="btn-primary">🛠 Aplicar cambios</button>
-            <button id="resetAjustar" class="btn-reset">↺ Restaurar</button>
-        </div>
-
-        <!-- ACCIONES: NUEVA + PROYECTOS -->
-        <div class="card card-acciones">
-            <div class="card-title">⚡ Acciones rápidas</div>
-
-            <button id="btnNueva" class="btn-primary-outline">✨ Nueva Landing</button>
-
-            <button id="btnProyectosToggle" class="btn-primary-outline" style="margin-top:8px;">
-                📁 Mis Proyectos
-            </button>
-
-            <div id="submenuProyectos" class="submenu hidden">
-                <div id="projectListSidebar"></div>
-            </div>
-
-            <button id="resetTodo" class="btn-reset-full">🗑 Restablecer App</button>
-        </div>
-
-    </section>
-
-    <!-- COLUMNA DERECHA (70%) -->
-    <section class="preview" id="previewCol">
-        <iframe id="previewFrame"></iframe>
-    </section>
-
-</div>
-
-<script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
-
 
 
 
