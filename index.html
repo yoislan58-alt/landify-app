@@ -282,7 +282,6 @@
     <div class="icon-btn" id="btn-mobile" title="Vista móvil">📱</div>
     <div class="icon-btn" id="btn-tablet" title="Vista tablet">📲</div>
     <div class="icon-btn" id="btn-desktop" title="Vista escritorio">🖥️</div>
-
     <div class="icon-btn" id="btn-descargar" title="Descargar HTML">⬇️</div>
     <div class="icon-btn" id="btn-fullscreen" title="Vista completa">🖥️+</div>
     <div class="icon-btn" id="toggle-theme" title="Modo claro/oscuro">🌙</div>
@@ -299,13 +298,14 @@
 <div id="preview-container"></div>
 
 <!-- VISTA PREVIA RESPONSIVE -->
-<div id="responsive-frame-wrapper" style="display:none; margin-top:20px;">
-    <iframe id="responsive-frame"
-            style="width:100%; height:90vh; border:1px solid var(--border); border-radius:12px; background:white;">
-    </iframe>
+<div id="responsive-frame-wrapper" style="display:none; margin-top:20px; text-align:center;">
+    <div id="viewport-container" style="display:inline-block; transform:scale(1); transform-origin:top center;">
+        <iframe id="responsive-frame"
+                style="width:100%; height:90vh; border:1px solid var(--border); border-radius:12px; background:white;">
+        </iframe>
+    </div>
 </div>
 
-         </div>
 
     <!-- MÓDULO PARA MINIATURAS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -314,6 +314,7 @@
     <script src="app.js"></script>
 </body>
 </html>
+
 
 
 
