@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+
         /* --------------------------
            VARIABLES MODO OSCURO / CLARO
         -------------------------- */
@@ -46,6 +47,7 @@
             overflow: hidden;
         }
 
+
         /* --------------------------
            LAYOUT GENERAL
         -------------------------- */
@@ -64,6 +66,7 @@
             overflow-y: auto;
             position: relative;
         }
+
 
         /* --------------------------
            TITULOS Y SECCIONES
@@ -100,6 +103,7 @@
             font-size: 14px;
         }
 
+
         /* --------------------------
            BOTONES PRINCIPALES
         -------------------------- */
@@ -129,8 +133,9 @@
             margin-top: 8px;
         }
 
+
         /* --------------------------
-           BOTONES DEL HEADER (DERECHA)
+           BOTONES HEADER DERECHA
         -------------------------- */
         .top-right-buttons {
             display: flex;
@@ -160,6 +165,7 @@
             color: white;
         }
 
+
         /* --------------------------
            LOADER PRO
         -------------------------- */
@@ -184,9 +190,7 @@
             animation: spin 1s linear infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .loader-text {
             margin-top: 8px;
@@ -194,8 +198,9 @@
             font-weight: 600;
         }
 
+
         /* --------------------------
-           VISTA PREVIA NORMAL
+           PREVIEW NORMAL
         -------------------------- */
         #preview-container {
             background: white;
@@ -206,8 +211,9 @@
             overflow-y: auto;
         }
 
+
         /* --------------------------
-           MARCOS APPLE PRO (iPhone / iPad / MacBook)
+           MARCOS APPLE PRO
         -------------------------- */
         #responsive-frame-wrapper {
             display: none;
@@ -227,6 +233,61 @@
             border-radius: 12px;
             border: 1px solid var(--border);
         }
+
+
+        /* --------------------------
+           ACORDEÓN PROYECTOS PRO
+        -------------------------- */
+        .accordion-trigger {
+            background: var(--panel2);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 14px;
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 10px;
+            background: var(--panel);
+            border-radius: 8px;
+            margin-top: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .project-item {
+            padding: 10px;
+            background: var(--card);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .project-options {
+            display: none;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            padding: 8px;
+            border-radius: 8px;
+            margin-top: 6px;
+        }
+
+        .project-options button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
     </style>
 </head>
 
@@ -262,43 +323,26 @@
 
     </div>
 
+
     <!-- PANEL DERECHO -->
     <div class="right-panel">
 
         <!-- BOTONES DERECHA -->
         <div class="top-right-buttons">
 
-            <!-- Vista móvil -->
             <div class="icon-btn" id="btn-mobile" title="Vista móvil (iPhone)">📱</div>
-
-            <!-- Vista tablet -->
             <div class="icon-btn" id="btn-tablet" title="Vista tablet (iPad)">📲</div>
-
-            <!-- Vista escritorio -->
             <div class="icon-btn" id="btn-desktop" title="Vista escritorio (MacBook)">💻</div>
-
-            <!-- Zoom menos -->
             <div class="icon-btn" id="btn-zoom-out" title="Zoom -">➖</div>
-
-            <!-- Zoom reset -->
             <div class="icon-btn" id="btn-zoom-reset" title="Zoom 100%">🔄</div>
-
-            <!-- Zoom más -->
             <div class="icon-btn" id="btn-zoom-in" title="Zoom +">➕</div>
-
-            <!-- Volver vista normal -->
             <div class="icon-btn" id="btn-normal" title="Vista normal">↩️</div>
-
-            <!-- Descargar -->
             <div class="icon-btn" id="btn-descargar" title="Descargar HTML">⬇️</div>
-
-            <!-- Pantalla completa -->
             <div class="icon-btn" id="btn-fullscreen" title="Vista completa">🖥️</div>
-
-            <!-- Tema -->
             <div class="icon-btn" id="toggle-theme" title="Modo claro/oscuro">🌙</div>
 
         </div>
+
 
         <!-- LOADER -->
         <div id="loader">
@@ -306,14 +350,16 @@
             <div class="loader-text">Generando...</div>
         </div>
 
-        <!-- VISTA PREVIA RESPONSIVE -->
+
+        <!-- VISTA RESPONSIVE -->
         <div id="responsive-frame-wrapper">
             <div id="viewport-container">
                 <iframe id="responsive-frame"></iframe>
             </div>
         </div>
 
-        <!-- PREVIEW NORMAL -->
+
+        <!-- VISTA NORMAL -->
         <div id="preview-container"></div>
 
     </div>
