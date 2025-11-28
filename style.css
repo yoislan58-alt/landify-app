@@ -366,6 +366,31 @@ body {
     }
 }
 
+/* ===============================
+      VISTA RESPONSIVA PRO
+   =============================== */
+#responsive-frame-wrapper {
+    transition: all 0.25s ease;
+}
+
+.responsive-mobile iframe {
+    width: 375px !important;
+    margin: auto;
+    display: block;
+}
+
+.responsive-tablet iframe {
+    width: 768px !important;
+    margin: auto;
+    display: block;
+}
+
+.responsive-desktop iframe {
+    width: 100% !important;
+}
+
+
+
 
 
 
