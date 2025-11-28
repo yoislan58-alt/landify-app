@@ -67,124 +67,18 @@ body {
 }
 
 /* =========================================================
-   SIDEBAR TIPO FRAMER
-========================================================= */
-
-.sidebar {
-    width: 240px;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    background: var(--glass);
-    backdrop-filter: blur(20px);
-    border-right: 1px solid var(--border);
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: var(--shadow);
-    z-index: 10;
-}
-
-.sidebar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.logo {
-    font-size: 22px;
-    font-weight: 700;
-}
-.logo span {
-    background: linear-gradient(45deg, var(--glow1), var(--glow2));
-    -webkit-background-clip: text;
-    color: transparent;
-}
-
-.theme-toggle {
-    font-size: 20px;
-    background: transparent;
-    border: 1px solid var(--border);
-    padding: 6px 8px;
-    border-radius: 12px;
-    cursor: pointer;
-    color: var(--text);
-    transition: 0.2s;
-}
-.theme-toggle:hover {
-    background: rgba(255,255,255,0.15);
-}
-
-.menu {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.menu-item {
-    width: 100%;
-    padding: 10px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.menu-item:hover {
-    background: rgba(255,255,255,0.12);
-}
-
-/* Submenús */
-.menu-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.submenu {
-    background: rgba(255,255,255,0.06);
-    padding: 8px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    animation: fadeIn 0.25s ease;
-}
-
-.submenu-btn {
-    width: 100%;
-    padding: 7px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 13px;
-    cursor: pointer;
-    color: var(--text);
-}
-.submenu-btn:hover {
-    background: rgba(255,255,255,0.1);
-}
-
-/* =========================================================
-   TOP NAV BAR
+   TOP NAV
 ========================================================= */
 
 .topnav {
     height: 58px;
     border-bottom: 1px solid var(--border);
-    background: rgba(0,0,0,0.15);
-    backdrop-filter: blur(15px);
-    margin-left: 240px;
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: blur(18px);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 18px;
-    position: relative;
 }
 
 .topnav-left {
@@ -210,6 +104,7 @@ body {
     background: transparent;
     color: var(--text);
     cursor: pointer;
+    font-size: 12px;
 }
 .view-btn.active {
     background: linear-gradient(45deg, var(--glow1), var(--glow2));
@@ -236,30 +131,60 @@ body {
     background: rgba(255,255,255,0.15);
 }
 
+/* Botón tema */
+.theme-toggle {
+    font-size: 18px;
+}
+
 /* =========================================================
-   LAYOUT GENERAL
+   LAYOUT 30% / 70%
 ========================================================= */
 
 .layout {
     display: flex;
     height: calc(100vh - 58px);
-    margin-left: 240px;
 }
 
-/* =========================================================
-   PANEL CENTRAL (1/3)
-========================================================= */
-
+/* Panel izquierdo (30%) */
 .panel {
-    width: 33%;
+    width: 30%;
     padding: 15px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
 }
 
-/* Cards */
+/* Preview derecho (70%) */
+.preview {
+    width: 70%;
+    border-left: 1px solid var(--border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+#previewFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+}
+
+/* Modo móvil */
+.preview.mobile #previewFrame {
+    width: 390px;
+    height: 780px;
+    border-radius: 30px;
+    border: 10px solid #000;
+    box-shadow: 0 0 0 3px #333;
+}
+
+/* =========================================================
+   CARDS PANEL IZQUIERDO
+========================================================= */
+
 .card {
     background: var(--card);
     backdrop-filter: blur(12px);
@@ -282,7 +207,7 @@ body {
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 10px;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text);
     margin-bottom: 10px;
 }
@@ -290,6 +215,7 @@ body {
     height: 120px;
 }
 
+/* Botones principales */
 .btn-primary {
     width: 100%;
     padding: 10px;
@@ -305,6 +231,7 @@ body {
     filter: brightness(1.1);
 }
 
+/* Botón restaurar de cada card */
 .btn-reset {
     margin-top: 6px;
     width: 100%;
@@ -320,33 +247,71 @@ body {
     background: rgba(255,255,255,0.15);
 }
 
-/* =========================================================
-   PREVIEW (2/3)
-========================================================= */
-
-.preview {
-    width: 67%;
-    border-left: 1px solid var(--border);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 15px;
+/* Card Acciones */
+.card-acciones {
+    margin-top: 4px;
 }
 
-#previewFrame {
+.btn-primary-outline {
     width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 12px;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+}
+.btn-primary-outline:hover {
+    background: rgba(255,255,255,0.15);
 }
 
-/* Mobile Frame */
-.preview.mobile #previewFrame {
-    width: 390px;
-    height: 780px;
-    border-radius: 30px;
-    border: 10px solid #000;
-    box-shadow: 0 0 0 3px #333;
+/* Submenú proyectos */
+.submenu {
+    margin-top: 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 8px;
+    background: rgba(0,0,0,0.2);
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+#projectListSidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.proj-btn {
+    width: 100%;
+    padding: 6px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 12px;
+    text-align: left;
+}
+.proj-btn:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* Botón reset total */
+.btn-reset-full {
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px;
+    background: transparent;
+    border: 1px solid #e25b5b;
+    border-radius: 10px;
+    color: #ff9a9a;
+    cursor: pointer;
+    font-size: 13px;
+}
+.btn-reset-full:hover {
+    background: rgba(226,91,91,0.15);
 }
 
 /* =========================================================
@@ -357,7 +322,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.08);
     padding: 8px;
     border-radius: 12px;
 }
@@ -376,33 +341,30 @@ body {
 }
 
 /* =========================================================
-   ANIMACIONES
-========================================================= */
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(3px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* =========================================================
-   RESPONSIVE
+   RESPONSIVE BÁSICO
 ========================================================= */
 
 @media (max-width: 900px) {
-    .sidebar {
+    body {
+        overflow: auto;
+    }
+
+    .layout {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .panel, .preview {
         width: 100%;
         height: auto;
-        flex-direction: row;
-        padding: 8px;
     }
 
-    .main {
-        margin-left: 0;
+    .preview {
+        border-left: none;
+        border-top: 1px solid var(--border);
+        height: 60vh;
     }
 }
-
-
-
 
 
 
