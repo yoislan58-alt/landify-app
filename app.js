@@ -1,359 +1,162 @@
-// =======================================================
+// ---------------------------
+// LANDIFY BUILDER PRO – APP.JS
+// ---------------------------
+
 // ELEMENTOS
-// =======================================================
+const promptCrear = document.getElementById("prompt-crear");
+const btnCrear = document.getElementById("btn-crear");
 
-// Panel izquierdo
-const panelGenerar = document.getElementById("panelGenerar");
-const panelAjustar = document.getElementById("panelAjustar");
+const promptAjustar = document.getElementById("prompt-ajustar");
+const btnAjustar = document.getElementById("btn-ajustar");
 
-const userPrompt = document.getElementById("userPrompt");
-const ajustarPrompt = document.getElementById("ajustarPrompt");
-const ajustarPosicion = document.getElementById("ajustarPosicion");
+const preview = document.getElementById("preview-container");
+const loader = document.getElementById("loader");
 
-const generateBtn = document.getElementById("generateBtn");
-const resetGenerarBtn = document.getElementById("resetGenerar");
+const btnRestaurarCrear = document.getElementById("restore-crear");
+const btnRestaurarAjustar = document.getElementById("restore-ajustar");
 
-const adjustBtn = document.getElementById("adjustLandingBtn");
-const resetAjustarBtn = document.getElementById("resetAjustar");
+const btnDescargar = document.getElementById("btn-descargar");
+const btnPantalla = document.getElementById("btn-fullscreen");
 
-// Acciones rápidas
-const btnNueva = document.getElementById("btnNueva");
-const btnProyectosToggle = document.getElementById("btnProyectosToggle");
-const submenuProyectos = document.getElementById("submenuProyectos");
-const projectListSidebar = document.getElementById("projectListSidebar");
-const resetTodoBtn = document.getElementById("resetTodo");
 
-// Preview / topnav
-const previewCol = document.getElementById("previewCol");
-const previewFrame = document.getElementById("previewFrame");
+// ----------------------------
+//   UTILIDADES
+// ----------------------------
 
-const btnDesktop = document.getElementById("btnDesktop");
-const btnMobile = document.getElementById("btnMobile");
-
-const btnFullscreen = document.getElementById("btnFullscreen");
-const btnDescargar = document.getElementById("btnDescargar");
-
-// Tema
-const toggleTheme = document.getElementById("toggleTheme");
-
-// Loader
-const loadingBox = document.getElementById("loading");
-
-// =======================================================
-// UTILIDADES
-// =======================================================
-
+// Mostrar loader
 function showLoading() {
-  loadingBox.classList.remove("hidden");
+    loader.style.display = "flex";
 }
 
+// Ocultar loader (¡Arreglado!)
 function hideLoading() {
-  loadingBox.classList.add("hidden");
+    loader.style.display = "none";
 }
 
-// Limpia ```html, ``` y "html" suelto
-function cleanHTML(html) {
-  return (html || "")
-    .replace(/```html/gi, "")
-    .replace(/```/g, "")
-    .replace(/^\s*html\s*/i, "")
-    .trim();
+// Colocar HTML en la vista previa
+function updatePreview(html) {
+    preview.innerHTML = html;
 }
 
-function renderPreview(html) {
-  previewFrame.srcdoc = cleanHTML(html);
+// Descargar archivo HTML
+function descargarHTML(nombre, contenido) {
+    const blob = new Blob([contenido], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = nombre + ".html";
+    a.click();
+
+    URL.revokeObjectURL(url);
 }
 
-function getProjects() {
-  return JSON.parse(localStorage.getItem("projects") || "[]");
-}
 
-function setProjects(arr) {
-  localStorage.setItem("projects", JSON.stringify(arr));
-}
+// ----------------------------
+// LLAMADA AL BACKEND PRO
+// ----------------------------
+async function generarLanding(prompt, modo) {
+    try {
+        showLoading();
 
-function generateID() {
-  return "land-" + Date.now();
-}
+        const respuesta = await fetch("/api/openai", {
+            method: "POST",
+            body: JSON.stringify({
+                prompt: prompt,
+                mode: modo
+            })
+        });
 
-function buildProjectName(baseText, prefix = "Landing") {
-  const clean = (baseText || "").trim();
-  if (!clean) return prefix + " " + new Date().toLocaleString();
-  const short = clean.length > 40 ? clean.slice(0, 40) + "…" : clean;
-  return prefix + ": " + short;
-}
+        const data = await respuesta.json();
 
-// =======================================================
-// PROYECTOS
-// =======================================================
+        hideLoading(); // SIEMPRE SE APAGA AQUÍ ✔
 
-function saveProject(html, nameHint) {
-  const projects = getProjects();
+        if (!data.html) {
+            alert("Error generando la landing");
+            return;
+        }
 
-  const project = {
-    id: generateID(),
-    name: buildProjectName(nameHint, "Landing"),
-    html: cleanHTML(html),
-    date: new Date().toLocaleString()
-  };
+        // Actualizar preview
+        updatePreview(data.html);
 
-  projects.unshift(project);
-  setProjects(projects);
-  localStorage.setItem("lastLanding", project.html);
+        // Guardar última landing en memoria local
+        localStorage.setItem("ultimaLanding", data.html);
 
-  renderProjectsSidebar();
-}
+        return data.html;
 
-function renderProjectsSidebar() {
-  const projects = getProjects();
-
-  if (projects.length === 0) {
-    projectListSidebar.innerHTML =
-      "<p style='font-size:11px; opacity:0.7; margin:0;'>Aún no tienes proyectos.</p>";
-    return;
-  }
-
-  projectListSidebar.innerHTML = projects
-    .map(
-      (p) => `
-      <button class="proj-btn" onclick="loadProject('${p.id}')" title="${p.date}">
-        ${p.name}
-      </button>
-    `
-    )
-    .join("");
-}
-
-window.loadProject = function (id) {
-  const projects = getProjects();
-  const p = projects.find((x) => x.id === id);
-  if (!p) return;
-  localStorage.setItem("lastLanding", p.html);
-  renderPreview(p.html);
-};
-
-function resetApp() {
-  localStorage.removeItem("projects");
-  localStorage.removeItem("lastLanding");
-  userPrompt.value = "";
-  ajustarPrompt.value = "";
-  ajustarPosicion.value = "inicio";
-  renderPreview("<h3 style='padding:20px;color:gray;'>Vista previa aquí…</h3>");
-  renderProjectsSidebar();
-}
-
-// =======================================================
-// PREVIEW MODES
-// =======================================================
-
-function setPreviewMode(mode) {
-  if (mode === "mobile") {
-    previewCol.classList.add("mobile");
-    btnMobile.classList.add("active");
-    btnDesktop.classList.remove("active");
-  } else {
-    previewCol.classList.remove("mobile");
-    btnDesktop.classList.add("active");
-    btnMobile.classList.remove("active");
-  }
-}
-
-// =======================================================
-// EVENTOS PRINCIPALES
-// =======================================================
-
-// Nueva landing
-btnNueva.addEventListener("click", () => {
-  userPrompt.value = "";
-  ajustarPrompt.value = "";
-  ajustarPosicion.value = "inicio";
-  renderPreview("<h3 style='padding:20px;color:gray;'>Vista previa aquí…</h3>");
-  setPreviewMode("desktop");
-});
-
-// Acordeón Mis Proyectos
-btnProyectosToggle.addEventListener("click", () => {
-  submenuProyectos.classList.toggle("hidden");
-  if (!submenuProyectos.classList.contains("hidden")) {
-    renderProjectsSidebar();
-  }
-});
-
-// Reset total
-resetTodoBtn.addEventListener("click", () => {
-  const ok = confirm(
-    "¿Seguro que quieres borrar TODOS los proyectos y reiniciar la app?"
-  );
-  if (!ok) return;
-  resetApp();
-});
-
-// Vista desktop / móvil
-btnDesktop.addEventListener("click", () => setPreviewMode("desktop"));
-btnMobile.addEventListener("click", () => setPreviewMode("mobile"));
-
-// Restaurar campos
-resetGenerarBtn.addEventListener("click", () => {
-  userPrompt.value = "";
-});
-resetAjustarBtn.addEventListener("click", () => {
-  ajustarPrompt.value = "";
-  ajustarPosicion.value = "inicio";
-});
-
-// =======================================================
-// GENERAR LANDING
-// =======================================================
-
-async function generarLanding() {
-  const prompt = userPrompt.value.trim();
-  if (!prompt) {
-    alert("Escribe cómo quieres la landing.");
-    return;
-  }
-
-  showLoading();
-
-  try {
-    const res = await fetch("/api/openai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
-    });
-
-    const data = await res.json();
-    hideLoading();
-
-    if (!data.output) {
-      alert("No se pudo generar la landing.");
-      return;
+    } catch (err) {
+        hideLoading();
+        console.error("ERROR:", err);
+        alert("Ocurrió un error generando la landing");
     }
-
-    const html = cleanHTML(data.output);
-    renderPreview(html);
-    saveProject(html, prompt);
-  } catch (err) {
-    hideLoading();
-    console.error(err);
-    alert("Error inesperado al generar la landing.");
-  }
 }
 
-generateBtn.addEventListener("click", generarLanding);
 
-// =======================================================
-// AJUSTAR / AGREGAR SECCIÓN
-// =======================================================
+// ----------------------------
+// EVENTOS – CREAR LANDING
+// ----------------------------
+btnCrear.addEventListener("click", async () => {
+    const p = promptCrear.value.trim();
+    if (p.length < 5) return alert("Describe tu landing primero.");
 
-async function ajustarLanding() {
-  const last = localStorage.getItem("lastLanding");
-  if (!last) {
-    alert("Primero genera una landing antes de ajustarla.");
-    return;
-  }
-
-  const mod = ajustarPrompt.value.trim();
-  if (!mod) {
-    alert("Describe qué quieres ajustar o agregar.");
-    return;
-  }
-
-  const prompt = `
-Ajusta esta landing según:
-Acción: ${mod}
-Posición: ${ajustarPosicion.value}
-
-HTML:
-${last}
-`;
-
-  showLoading();
-
-  try {
-    const res = await fetch("/api/openai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
-    });
-
-    const data = await res.json();
-    hideLoading();
-
-    if (!data.output) {
-      alert("No se pudo ajustar la landing.");
-      return;
-    }
-
-    const html = cleanHTML(data.output);
-    localStorage.setItem("lastLanding", html);
-    renderPreview(html);
-    saveProject(html, "Landing ajustada");
-  } catch (err) {
-    hideLoading();
-    console.error(err);
-    alert("Error inesperado al ajustar la landing.");
-  }
-}
-
-adjustBtn.addEventListener("click", ajustarLanding);
-
-// =======================================================
-// BOTONES TOPO: FULLSCREEN + DESCARGAR
-// =======================================================
-
-btnFullscreen.addEventListener("click", () => {
-  const html = localStorage.getItem("lastLanding");
-  if (!html) {
-    alert("No hay landing actual para mostrar en pantalla completa.");
-    return;
-  }
-  const win = window.open("", "_blank");
-  win.document.write(cleanHTML(html));
-  win.document.close();
+    const html = await generarLanding(p, "create");
 });
 
+// Restaurar cuadro crear
+btnRestaurarCrear.addEventListener("click", () => {
+    promptCrear.value = "";
+});
+
+
+// ----------------------------
+// EVENTOS – AJUSTAR LANDING
+// ----------------------------
+btnAjustar.addEventListener("click", async () => {
+    const p = promptAjustar.value.trim();
+    if (p.length < 5) return alert("Describe qué ajustar/agregar.");
+
+    const nuevaSeccion = await generarLanding(p, "adjust");
+
+    if (!nuevaSeccion) return;
+
+    // Insertar sección al final del preview
+    preview.innerHTML += "\n\n" + nuevaSeccion;
+});
+
+// Restaurar cuadro ajustar
+btnRestaurarAjustar.addEventListener("click", () => {
+    promptAjustar.value = "";
+});
+
+
+// ----------------------------
+// DESCARGAR HTML
+// ----------------------------
 btnDescargar.addEventListener("click", () => {
-  const html = localStorage.getItem("lastLanding");
-  if (!html) {
-    alert("No hay landing actual para descargar.");
-    return;
-  }
-  const clean = cleanHTML(html);
-  const blob = new Blob([clean], { type: "text/html" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "landing.html";
-  link.click();
+    const html = preview.innerHTML.trim();
+    if (!html) return alert("No hay landing para descargar.");
+
+    descargarHTML("landing-generada", html);
 });
 
-// =======================================================
-// TEMA CLARO / OSCURO
-// =======================================================
 
-toggleTheme.addEventListener("click", () => {
-  const htmlTag = document.getElementById("htmlTag");
-  const current = htmlTag.getAttribute("data-theme");
-
-  if (current === "dark") {
-    htmlTag.setAttribute("data-theme", "light");
-    toggleTheme.textContent = "☀️";
-    toggleTheme.title = "Cambiar a modo oscuro";
-  } else {
-    htmlTag.setAttribute("data-theme", "dark");
-    toggleTheme.textContent = "🌙";
-    toggleTheme.title = "Cambiar a modo claro";
-  }
+// ----------------------------
+// MODO PANTALLA COMPLETA
+// ----------------------------
+btnPantalla.addEventListener("click", () => {
+    const win = window.open("", "_blank");
+    win.document.write(preview.innerHTML);
+    win.document.close();
 });
 
-// =======================================================
-// ESTADO INICIAL
-// =======================================================
 
-renderPreview("<h3 style='padding:20px;color:gray;'>Vista previa aquí…</h3>");
-setPreviewMode("desktop");
-renderProjectsSidebar();
-hideLoading();
-
+// ----------------------------
+// CARGAR ÚLTIMA LANDING
+// ----------------------------
+window.addEventListener("load", () => {
+    const ultima = localStorage.getItem("ultimaLanding");
+    if (ultima) updatePreview(ultima);
+});
 
 
 
