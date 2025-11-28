@@ -309,6 +309,55 @@ window.addEventListener("load", () => {
     renderMisProyectos();
 });
 
+// -------------------------------------
+// MÓDULO 4 — VISTA RESPONSIVE PRO
+// -------------------------------------
+
+const btnMobile   = document.getElementById("btn-mobile");
+const btnTablet   = document.getElementById("btn-tablet");
+const btnDesktop  = document.getElementById("btn-desktop");
+
+const responsiveWrapper = document.getElementById("responsive-frame-wrapper");
+const responsiveFrame   = document.getElementById("responsive-frame");
+
+function cargarEnResponsive() {
+    const html = preview.innerHTML.trim();
+    const doc = responsiveFrame.contentWindow.document;
+
+    doc.open();
+    doc.write(html);
+    doc.close();
+}
+
+function activarResponsive(tipo) {
+    preview.style.display = "none";  
+    responsiveWrapper.style.display = "block";
+
+    responsiveWrapper.classList.remove("responsive-mobile","responsive-tablet","responsive-desktop");
+    responsiveWrapper.classList.add(tipo);
+
+    cargarEnResponsive();
+}
+
+btnMobile.addEventListener("click", () => {
+    activarResponsive("responsive-mobile");
+});
+
+btnTablet.addEventListener("click", () => {
+    activarResponsive("responsive-tablet");
+});
+
+btnDesktop.addEventListener("click", () => {
+    activarResponsive("responsive-desktop");
+});
+
+// Volver a la vista normal si recargan
+window.addEventListener("load", () => {
+    responsiveWrapper.style.display = "none";
+});
+
+
+
 
 
 
