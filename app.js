@@ -10,19 +10,98 @@ function crearSlug(texto) {
     return texto
         .toString()
         .toLowerCase()
-        .normalize("NFD")                     // separa acentos
-        .replace(/[\u0300-\u036f]/g, "")       // elimina acentos
-        .replace(/[^a-z0-9\s\-]/g, "")         // elimina símbolos
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9\s\-]/g, "")
         .trim()
-        .replace(/\s+/g, "-")                  // espacios → guiones
-        .replace(/\-+/g, "-")                  // colapsa guiones dobles
-        .substring(0, 60);                     // límite recomendado
+        .replace(/\s+/g, "-")
+        .replace(/\-+/g, "-")
+        .substring(0, 60);
 }
 
 
-// ---------------------------
+
+// =====================================================
+// 🔥 MÓDULO 2 — SISTEMA DE PROYECTOS (sin backend)
+// =====================================================
+
+// Cargar proyectos desde localStorage
+function cargarProyectos() {
+    const data = localStorage.getItem("landify_proyectos");
+    return data ? JSON.parse(data) : [];
+}
+
+// Guardar proyectos en localStorage
+function guardarProyectos(lista) {
+    localStorage.setItem("landify_proyectos", JSON.stringify(lista));
+}
+
+// Crear un proyecto nuevo
+function guardarProyecto(titulo, slug, html, tipo = "create") {
+    const proyectos = cargarProyectos();
+
+    proyectos.push({
+        id: slug,
+        titulo: titulo,
+        html: html,
+        tipo: tipo,
+        fecha: new Date().toISOString()
+    });
+
+    guardarProyectos(proyectos);
+    renderMisProyectos();
+}
+
+// Renderizar listado en “Mis Proyectos”
+function renderMisProyectos() {
+    const cont = document.getElementById("lista-proyectos");
+    if (!cont) return; // si aún no existe en index.html
+
+    const proyectos = cargarProyectos();
+
+    cont.innerHTML = "";
+
+    if (proyectos.length === 0) {
+        cont.innerHTML = "<p>No tienes proyectos todavía.</p>";
+        return;
+    }
+
+    proyectos.forEach(proy => {
+        const card = document.createElement("div");
+        card.className = "proyecto-item";
+        card.innerHTML = `
+            <button class="proyecto-btn" data-id="${proy.id}">
+                <strong>${proy.titulo}</strong>
+                <span>${new Date(proy.fecha).toLocaleString()}</span>
+            </button>
+        `;
+        cont.appendChild(card);
+    });
+
+    // Evento para cargar proyectos
+    document.querySelectorAll(".proyecto-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const id = btn.dataset.id;
+            cargarProyectoEnPreview(id);
+        });
+    });
+}
+
+// Cargar un proyecto en el preview
+function cargarProyectoEnPreview(id) {
+    const proyectos = cargarProyectos();
+    const proy = proyectos.find(p => p.id === id);
+
+    if (!proy) return alert("Proyecto no encontrado");
+
+    updatePreview(proy.html);
+}
+
+
+
+// =====================================================
 // ELEMENTOS
-// ---------------------------
+// =====================================================
 const promptCrear = document.getElementById("prompt-crear");
 const btnCrear = document.getElementById("btn-crear");
 
@@ -39,16 +118,17 @@ const btnDescargar = document.getElementById("btn-descargar");
 const btnPantalla = document.getElementById("btn-fullscreen");
 
 
-// ----------------------------
-//   UTILIDADES
-// ----------------------------
+
+// =====================================================
+// UTILIDADES
+// =====================================================
 
 // Mostrar loader
 function showLoading() {
     loader.style.display = "flex";
 }
 
-// Ocultar loader (¡Arreglado!)
+// Ocultar loader
 function hideLoading() {
     loader.style.display = "none";
 }
@@ -72,9 +152,10 @@ function descargarHTML(nombre, contenido) {
 }
 
 
-// ----------------------------
-// LLAMADA AL BACKEND PRO
-// ----------------------------
+
+// =====================================================
+// LLAMADA AL BACKEND
+// =====================================================
 async function generarLanding(prompt, modo) {
     try {
         showLoading();
@@ -88,18 +169,16 @@ async function generarLanding(prompt, modo) {
         });
 
         const data = await respuesta.json();
-
-        hideLoading(); // SIEMPRE SE APAGA AQUÍ ✔
+        hideLoading();
 
         if (!data.html) {
             alert("Error generando la landing");
             return;
         }
 
-        // Actualizar preview
         updatePreview(data.html);
 
-        // Guardar última landing en memoria local
+        // Guardar última landing
         localStorage.setItem("ultimaLanding", data.html);
 
         return data.html;
@@ -112,17 +191,22 @@ async function generarLanding(prompt, modo) {
 }
 
 
-// ----------------------------
+
+// =====================================================
 // EVENTOS – CREAR LANDING
-// ----------------------------
+// =====================================================
 btnCrear.addEventListener("click", async () => {
     const p = promptCrear.value.trim();
     if (p.length < 5) return alert("Describe tu landing primero.");
 
     const html = await generarLanding(p, "create");
+    if (!html) return;
 
-    // Aquí usaremos el slug en Módulo 2 ✔
-    // const slug = crearSlug(p);
+    // Crear slug y guardar proyecto
+    const slug = crearSlug(p);
+    const titulo = p.substring(0, 40) + "...";
+
+    guardarProyecto(titulo, slug, html, "create");
 });
 
 // Restaurar cuadro crear
@@ -131,19 +215,24 @@ btnRestaurarCrear.addEventListener("click", () => {
 });
 
 
-// ----------------------------
+
+// =====================================================
 // EVENTOS – AJUSTAR LANDING
-// ----------------------------
+// =====================================================
 btnAjustar.addEventListener("click", async () => {
     const p = promptAjustar.value.trim();
     if (p.length < 5) return alert("Describe qué ajustar/agregar.");
 
     const nuevaSeccion = await generarLanding(p, "adjust");
-
     if (!nuevaSeccion) return;
 
-    // Insertar sección al final del preview
     preview.innerHTML += "\n\n" + nuevaSeccion;
+
+    // Guardar como proyecto de tipo "adjust"
+    const slug = crearSlug("ajuste-" + p);
+    const titulo = "Ajuste: " + p.substring(0, 25) + "...";
+
+    guardarProyecto(titulo, slug, preview.innerHTML, "adjust");
 });
 
 // Restaurar cuadro ajustar
@@ -152,20 +241,21 @@ btnRestaurarAjustar.addEventListener("click", () => {
 });
 
 
-// ----------------------------
+
+// =====================================================
 // DESCARGAR HTML
-// ----------------------------
+// =====================================================
 btnDescargar.addEventListener("click", () => {
     const html = preview.innerHTML.trim();
     if (!html) return alert("No hay landing para descargar.");
-
     descargarHTML("landing-generada", html);
 });
 
 
-// ----------------------------
-// MODO PANTALLA COMPLETA
-// ----------------------------
+
+// =====================================================
+// PANTALLA COMPLETA
+// =====================================================
 btnPantalla.addEventListener("click", () => {
     const win = window.open("", "_blank");
     win.document.write(preview.innerHTML);
@@ -173,13 +263,19 @@ btnPantalla.addEventListener("click", () => {
 });
 
 
-// ----------------------------
-// CARGAR ÚLTIMA LANDING
-// ----------------------------
+
+// =====================================================
+// CARGAR AL INICIAR
+// =====================================================
 window.addEventListener("load", () => {
     const ultima = localStorage.getItem("ultimaLanding");
     if (ultima) updatePreview(ultima);
+
+    renderMisProyectos();
 });
+
+
+
 
 
 
