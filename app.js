@@ -1,6 +1,7 @@
 // -------------------------------------------------
-// LANDIFY BUILDER PRO — APP.JS COMPLETO Y FINAL
+// LANDIFY BUILDER PRO — APP.JS FINAL (FASE 6 PRO)
 // -------------------------------------------------
+
 
 
 // ===============================================
@@ -18,6 +19,7 @@ function crearSlug(texto) {
         .replace(/\-+/g, "-")
         .substring(0, 60);
 }
+
 
 
 // ===============================================
@@ -41,7 +43,7 @@ const btnNueva = document.getElementById("btn-nueva");
 
 const proyectosLista = document.getElementById("proyectos-lista");
 
-// Botones de vista
+// Vista responsiva
 const btnMobile = document.getElementById("btn-mobile");
 const btnTablet = document.getElementById("btn-tablet");
 const btnDesktop = document.getElementById("btn-desktop");
@@ -50,12 +52,12 @@ const btnZoomOut = document.getElementById("btn-zoom-out");
 const btnZoomReset = document.getElementById("btn-zoom-reset");
 const btnNormal = document.getElementById("btn-normal");
 
-// Responsive
 const responsiveWrapper = document.getElementById("responsive-frame-wrapper");
 const responsiveFrame = document.getElementById("responsive-frame");
 const viewportContainer = document.getElementById("viewport-container");
 
 let zoomScale = 1;
+
 
 
 // ===============================================
@@ -64,19 +66,18 @@ let zoomScale = 1;
 function showLoading() {
     loader.style.display = "flex";
 }
-
 function hideLoading() {
     loader.style.display = "none";
 }
 
 
+
 // ===============================================
-// PREVIEW
+// PREVIEW SYSTEM
 // ===============================================
 function updatePreview(html) {
     preview.style.display = "block";
     responsiveWrapper.style.display = "none";
-
     preview.innerHTML = html;
 }
 
@@ -89,6 +90,7 @@ function updateResponsivePreview(html) {
     doc.write(html);
     doc.close();
 }
+
 
 
 // ===============================================
@@ -107,8 +109,9 @@ function descargarHTML(nombre, contenido) {
 }
 
 
+
 // ===============================================
-// GENERAR LANDING
+// GENERAR LANDING (LLAMADA IA)
 // ===============================================
 async function generarLanding(prompt, modo) {
     try {
@@ -116,10 +119,7 @@ async function generarLanding(prompt, modo) {
 
         const respuesta = await fetch("/api/openai", {
             method: "POST",
-            body: JSON.stringify({
-                prompt: prompt,
-                mode: modo
-            })
+            body: JSON.stringify({ prompt, mode: modo })
         });
 
         const data = await respuesta.json();
@@ -131,35 +131,42 @@ async function generarLanding(prompt, modo) {
         }
 
         updatePreview(data.html);
-        guardarProyecto(data.html, prompt);
+
+        // Guardar proyecto
+        const slug = crearSlug(prompt);
+        guardarProyecto(slug, data.html);
 
         return data.html;
 
-    } catch (err) {
+    } catch (error) {
         hideLoading();
-        alert("Error generando.");
-        console.error(err);
+        alert("Error generando landing.");
+        console.error(error);
         return null;
     }
 }
 
 
+
 // ===============================================
-// MODULO 3 — PROYECTOS LOCALSTORAGE
+// MÓDULO 3 — PROYECTOS (LOCALSTORAGE)
 // ===============================================
-function guardarProyecto(html, prompt) {
-    const slug = crearSlug(prompt);
+function guardarProyecto(slug, html) {
     const proyectos = JSON.parse(localStorage.getItem("proyectos") || "[]");
 
-    proyectos.unshift({
+    const proyecto = {
         slug,
         html,
         fecha: new Date().toISOString()
-    });
+    };
+
+    proyectos.unshift(proyecto);
 
     localStorage.setItem("proyectos", JSON.stringify(proyectos));
+
     renderProyectos();
 }
+
 
 function renderProyectos() {
     const proyectos = JSON.parse(localStorage.getItem("proyectos") || "[]");
@@ -170,89 +177,153 @@ function renderProyectos() {
         item.className = "project-item";
         item.textContent = p.slug;
 
+        const submenu = document.createElement("div");
+        submenu.className = "project-options";
+
+        // Botón abrir
+        const btnAbrir = document.createElement("button");
+        btnAbrir.textContent = "Abrir";
+        btnAbrir.onclick = () => updatePreview(p.html);
+
+        // Botón vista completa
+        const btnFull = document.createElement("button");
+        btnFull.textContent = "Vista Completa";
+        btnFull.onclick = () => {
+            const win = window.open("", "_blank");
+            win.document.write(p.html);
+            win.document.close();
+        };
+
+        // Botón copiar URL
+        const btnCopy = document.createElement("button");
+        btnCopy.textContent = "Copiar URL";
+        btnCopy.onclick = () => copiarURL(p.slug);
+
+        submenu.appendChild(btnAbrir);
+        submenu.appendChild(btnFull);
+        submenu.appendChild(btnCopy);
+
         item.onclick = () => {
-            updatePreview(p.html);
+            submenu.style.display = submenu.style.display === "block" ? "none" : "block";
         };
 
         proyectosLista.appendChild(item);
+        proyectosLista.appendChild(submenu);
     });
 }
 
 renderProyectos();
 
 
+
+// ===============================================
+// MÓDULO 6 — URL LIMPIA (FASE 6 PRO)
+// ===============================================
+function copiarURL(slug) {
+    const url = `${window.location.origin}/#/p/${slug}`;
+    navigator.clipboard.writeText(url);
+    alert("URL copiada:\n" + url);
+}
+
+function cargarLandingDesdeURL() {
+    const hash = window.location.hash;
+
+    if (!hash.startsWith("#/p/")) return;
+
+    const slug = hash.replace("#/p/", "").trim();
+    if (!slug) return;
+
+    const proyectos = JSON.parse(localStorage.getItem("proyectos") || "[]");
+    const proyecto = proyectos.find(p => p.slug === slug);
+
+    if (proyecto) {
+        updatePreview(proyecto.html);
+    }
+}
+
+window.addEventListener("load", cargarLandingDesdeURL);
+window.addEventListener("hashchange", cargarLandingDesdeURL);
+
+
+
 // ===============================================
 // EVENTOS — CREAR LANDING
 // ===============================================
-btnCrear.addEventListener("click", async () => {
+btnCrear.onclick = async () => {
     const p = promptCrear.value.trim();
-    if (p.length < 4) return alert("Escribe una descripción primero.");
+    if (p.length < 4) return alert("Describe tu landing primero.");
 
     await generarLanding(p, "create");
-});
+};
 
-btnRestaurarCrear.addEventListener("click", () => {
+btnRestaurarCrear.onclick = () => {
     promptCrear.value = "";
-});
+};
+
 
 
 // ===============================================
 // EVENTOS — AJUSTAR LANDING
 // ===============================================
-btnAjustar.addEventListener("click", async () => {
+btnAjustar.onclick = async () => {
     const p = promptAjustar.value.trim();
     if (p.length < 4) return alert("Describe qué agregar.");
 
-    const nuevaSeccion = await generarLanding(p, "adjust");
-    if (!nuevaSeccion) return;
+    const nueva = await generarLanding(p, "adjust");
+    if (!nueva) return;
 
-    preview.innerHTML += "\n\n" + nuevaSeccion;
-});
+    preview.innerHTML += "\n\n" + nueva;
+};
 
-btnRestaurarAjustar.addEventListener("click", () => {
+btnRestaurarAjustar.onclick = () => {
     promptAjustar.value = "";
-});
+};
+
 
 
 // ===============================================
 // NUEVA LANDING
 // ===============================================
-btnNueva.addEventListener("click", () => {
+btnNueva.onclick = () => {
     preview.innerHTML = "";
     promptCrear.value = "";
     promptAjustar.value = "";
-    alert("Listo: proyecto limpio para empezar uno nuevo");
-});
+    alert("Listo para crear una nueva landing.");
+};
+
 
 
 // ===============================================
 // DESCARGAR
 // ===============================================
-btnDescargar.addEventListener("click", () => {
+btnDescargar.onclick = () => {
     const html = preview.innerHTML.trim();
     if (!html) return alert("No hay landing para descargar.");
 
     descargarHTML("landing-generada", html);
-});
+};
+
 
 
 // ===============================================
 // PANTALLA COMPLETA
 // ===============================================
-btnPantalla.addEventListener("click", () => {
+btnPantalla.onclick = () => {
     const win = window.open("", "_blank");
     win.document.write(preview.innerHTML);
     win.document.close();
-});
+};
+
 
 
 // ===============================================
-// MODO CLARO / OSCURO
+// TEMA CLARO / OSCURO
 // ===============================================
 document.getElementById("toggle-theme").onclick = () => {
     const html = document.documentElement;
     html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
 };
+
 
 
 // ===============================================
@@ -272,6 +343,7 @@ btnDesktop.onclick = () => {
     viewportContainer.style.width = "1280px";
     updateResponsivePreview(preview.innerHTML);
 };
+
 
 
 // ===============================================
@@ -294,13 +366,15 @@ btnZoomReset.onclick = () => {
 };
 
 
+
 // ===============================================
-// VOLVER A VISTA NORMAL
+// VOLVER VISTA NORMAL
 // ===============================================
 btnNormal.onclick = () => {
     responsiveWrapper.style.display = "none";
     preview.style.display = "block";
 };
+
 
 
 
