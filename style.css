@@ -394,6 +394,52 @@ body {
     transition: transform 0.25s ease;
 }
 
+/* ============================================================
+   RESPONSIVE FRAME — MOBILE / TABLET / DESKTOP
+============================================================ */
+
+#responsive-frame-wrapper {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Contenedor del dispositivo */
+#viewport-container {
+    display: inline-block;
+    transform: scale(1);
+    transform-origin: top center;
+    transition: transform 0.25s ease;
+}
+
+/* Tamaños según la vista */
+.responsive-mobile #responsive-frame {
+    width: 390px !important;
+    height: 800px !important;
+    border-radius: 22px;
+}
+
+.responsive-tablet #responsive-frame {
+    width: 768px !important;
+    height: 1000px !important;
+    border-radius: 18px;
+}
+
+.responsive-desktop #responsive-frame {
+    width: 100% !important;
+    max-width: 1200px;
+    height: 1000px !important;
+    border-radius: 12px;
+}
+
+/* Efecto del dispositivo premium */
+#responsive-frame {
+    box-shadow: 0 10px 35px rgba(0,0,0,0.35);
+    background: white;
+}
+
+
+
 
 
 
