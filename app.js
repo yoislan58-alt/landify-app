@@ -1,11 +1,11 @@
-// ---------------------------
-// LANDIFY BUILDER PRO – APP.JS
-// ---------------------------
+// -------------------------------------------------
+// LANDIFY BUILDER PRO — APP.JS COMPLETO Y FINAL
+// -------------------------------------------------
 
 
-// ---------------------------
+// ===============================================
 // MÓDULO 1 — SLUGIFIER PRO
-// ---------------------------
+// ===============================================
 function crearSlug(texto) {
     return texto
         .toString()
@@ -20,161 +20,47 @@ function crearSlug(texto) {
 }
 
 
-
-// =====================================================
-// 🔥 MÓDULO 3 — MINIATURAS AUTOMÁTICAS PRO
-// =====================================================
-
-// 📌 Convierte un HTML en una miniatura PNG (canvas)
-async function generarMiniatura(html) {
-    return new Promise((resolve) => {
-        const iframe = document.createElement("iframe");
-        iframe.style.width = "1200px"; // tamaño real
-        iframe.style.height = "2000px";
-        iframe.style.position = "absolute";
-        iframe.style.left = "-9999px"; // oculto
-        document.body.appendChild(iframe);
-
-        iframe.contentDocument.open();
-        iframe.contentDocument.write(html);
-        iframe.contentDocument.close();
-
-        setTimeout(() => {
-            html2canvas(iframe.contentDocument.body, {
-                width: 1200,
-                height: 900,
-                windowWidth: 1200
-            }).then(canvas => {
-                const img = canvas.toDataURL("image/png");
-                iframe.remove();
-                resolve(img);
-            });
-        }, 500);
-    });
-}
-
-
-
-// =====================================================
-// 🔥 MÓDULO 2 — SISTEMA DE PROYECTOS (con thumbnails)
-// =====================================================
-
-// Cargar proyectos desde localStorage
-function cargarProyectos() {
-    const data = localStorage.getItem("landify_proyectos");
-    return data ? JSON.parse(data) : [];
-}
-
-// Guardar proyectos
-function guardarProyectos(lista) {
-    localStorage.setItem("landify_proyectos", JSON.stringify(lista));
-}
-
-// Guardar un PROYECTO completo (incluye miniatura)
-async function guardarProyecto(titulo, slug, html, tipo = "create") {
-
-    // generar thumbnail
-    const thumbnail = await generarMiniatura(html);
-
-    const proyectos = cargarProyectos();
-
-    proyectos.push({
-        id: slug,
-        titulo,
-        html,
-        tipo,
-        fecha: new Date().toISOString(),
-        thumbnail
-    });
-
-    guardarProyectos(proyectos);
-    renderMisProyectos();
-}
-
-
-
-// =====================================================
-// RENDER DE PROYECTOS CON MINIATURAS PRO
-// =====================================================
-function renderMisProyectos() {
-    const cont = document.getElementById("proyectos-lista");
-    if (!cont) return;
-
-    const proyectos = cargarProyectos();
-
-    cont.innerHTML = "";
-
-    if (proyectos.length === 0) {
-        cont.innerHTML = "<p style='opacity:0.6;'>No tienes proyectos todavía.</p>";
-        return;
-    }
-
-    proyectos.forEach(proy => {
-        const item = document.createElement("div");
-        item.className = "project-item";
-        item.style.cursor = "pointer";
-
-        item.innerHTML = `
-            <div style="display:flex; gap:10px; align-items:center;">
-                <img src="${proy.thumbnail}" 
-                     style="width:70px; height:50px; border-radius:6px; object-fit:cover;">
-                <div>
-                    <div style="font-size:14px; font-weight:600;">${proy.titulo}</div>
-                    <div style="font-size:11px; opacity:0.6;">
-                        ${new Date(proy.fecha).toLocaleString()}
-                    </div>
-                </div>
-            </div>
-        `;
-
-        item.addEventListener("click", () => {
-            cargarProyectoEnPreview(proy.id);
-        });
-
-        cont.appendChild(item);
-    });
-}
-
-
-
-// =====================================================
-// Cargar proyecto al preview
-// =====================================================
-function cargarProyectoEnPreview(id) {
-    const proyectos = cargarProyectos();
-    const proy = proyectos.find(p => p.id === id);
-
-    if (!proy) return alert("Proyecto no encontrado.");
-
-    updatePreview(proy.html);
-}
-
-
-
-// =====================================================
+// ===============================================
 // ELEMENTOS
-// =====================================================
+// ===============================================
 const promptCrear = document.getElementById("prompt-crear");
 const btnCrear = document.getElementById("btn-crear");
 
 const promptAjustar = document.getElementById("prompt-ajustar");
 const btnAjustar = document.getElementById("btn-ajustar");
 
-const preview = document.getElementById("preview-container");
-const loader = document.getElementById("loader");
-
 const btnRestaurarCrear = document.getElementById("restore-crear");
 const btnRestaurarAjustar = document.getElementById("restore-ajustar");
 
+const preview = document.getElementById("preview-container");
+const loader = document.getElementById("loader");
+
 const btnDescargar = document.getElementById("btn-descargar");
 const btnPantalla = document.getElementById("btn-fullscreen");
+const btnNueva = document.getElementById("btn-nueva");
+
+const proyectosLista = document.getElementById("proyectos-lista");
+
+// Botones de vista
+const btnMobile = document.getElementById("btn-mobile");
+const btnTablet = document.getElementById("btn-tablet");
+const btnDesktop = document.getElementById("btn-desktop");
+const btnZoomIn = document.getElementById("btn-zoom-in");
+const btnZoomOut = document.getElementById("btn-zoom-out");
+const btnZoomReset = document.getElementById("btn-zoom-reset");
+const btnNormal = document.getElementById("btn-normal");
+
+// Responsive
+const responsiveWrapper = document.getElementById("responsive-frame-wrapper");
+const responsiveFrame = document.getElementById("responsive-frame");
+const viewportContainer = document.getElementById("viewport-container");
+
+let zoomScale = 1;
 
 
-
-// =====================================================
-// UTILIDADES
-// =====================================================
-
+// ===============================================
+// LOADER
+// ===============================================
 function showLoading() {
     loader.style.display = "flex";
 }
@@ -183,10 +69,31 @@ function hideLoading() {
     loader.style.display = "none";
 }
 
+
+// ===============================================
+// PREVIEW
+// ===============================================
 function updatePreview(html) {
+    preview.style.display = "block";
+    responsiveWrapper.style.display = "none";
+
     preview.innerHTML = html;
 }
 
+function updateResponsivePreview(html) {
+    preview.style.display = "none";
+    responsiveWrapper.style.display = "block";
+
+    const doc = responsiveFrame.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
+}
+
+
+// ===============================================
+// DESCARGAR ARCHIVO
+// ===============================================
 function descargarHTML(nombre, contenido) {
     const blob = new Blob([contenido], { type: "text/html" });
     const url = URL.createObjectURL(blob);
@@ -200,97 +107,138 @@ function descargarHTML(nombre, contenido) {
 }
 
 
-
-// =====================================================
-// BACKEND
-// =====================================================
+// ===============================================
+// GENERAR LANDING
+// ===============================================
 async function generarLanding(prompt, modo) {
     try {
         showLoading();
 
         const respuesta = await fetch("/api/openai", {
             method: "POST",
-            body: JSON.stringify({ prompt, mode: modo })
+            body: JSON.stringify({
+                prompt: prompt,
+                mode: modo
+            })
         });
 
         const data = await respuesta.json();
         hideLoading();
 
         if (!data.html) {
-            alert("Error generando la landing");
-            return;
+            alert("Error generando landing");
+            return null;
         }
 
         updatePreview(data.html);
-
-        localStorage.setItem("ultimaLanding", data.html);
+        guardarProyecto(data.html, prompt);
 
         return data.html;
 
     } catch (err) {
         hideLoading();
-        alert("Error generando la landing");
+        alert("Error generando.");
+        console.error(err);
+        return null;
     }
 }
 
 
+// ===============================================
+// MODULO 3 — PROYECTOS LOCALSTORAGE
+// ===============================================
+function guardarProyecto(html, prompt) {
+    const slug = crearSlug(prompt);
+    const proyectos = JSON.parse(localStorage.getItem("proyectos") || "[]");
 
-// =====================================================
-// CREAR LANDING
-// =====================================================
+    proyectos.unshift({
+        slug,
+        html,
+        fecha: new Date().toISOString()
+    });
+
+    localStorage.setItem("proyectos", JSON.stringify(proyectos));
+    renderProyectos();
+}
+
+function renderProyectos() {
+    const proyectos = JSON.parse(localStorage.getItem("proyectos") || "[]");
+    proyectosLista.innerHTML = "";
+
+    proyectos.forEach(p => {
+        const item = document.createElement("div");
+        item.className = "project-item";
+        item.textContent = p.slug;
+
+        item.onclick = () => {
+            updatePreview(p.html);
+        };
+
+        proyectosLista.appendChild(item);
+    });
+}
+
+renderProyectos();
+
+
+// ===============================================
+// EVENTOS — CREAR LANDING
+// ===============================================
 btnCrear.addEventListener("click", async () => {
     const p = promptCrear.value.trim();
-    if (p.length < 5) return alert("Describe tu landing primero.");
+    if (p.length < 4) return alert("Escribe una descripción primero.");
 
-    const html = await generarLanding(p, "create");
-    if (!html) return;
-
-    const slug = crearSlug(p);
-    const titulo = p.substring(0, 40) + "...";
-
-    await guardarProyecto(titulo, slug, html, "create");
+    await generarLanding(p, "create");
 });
 
-btnRestaurarCrear.addEventListener("click", () => promptCrear.value = "");
+btnRestaurarCrear.addEventListener("click", () => {
+    promptCrear.value = "";
+});
 
 
-
-// =====================================================
-// AJUSTAR LANDING
-// =====================================================
+// ===============================================
+// EVENTOS — AJUSTAR LANDING
+// ===============================================
 btnAjustar.addEventListener("click", async () => {
     const p = promptAjustar.value.trim();
-    if (p.length < 5) return alert("Describe qué ajustar/agregar.");
+    if (p.length < 4) return alert("Describe qué agregar.");
 
     const nuevaSeccion = await generarLanding(p, "adjust");
     if (!nuevaSeccion) return;
 
     preview.innerHTML += "\n\n" + nuevaSeccion;
-
-    const slug = crearSlug("ajuste-" + p);
-    const titulo = "Ajuste: " + p.substring(0, 25) + "...";
-
-    await guardarProyecto(titulo, slug, preview.innerHTML, "adjust");
 });
 
-btnRestaurarAjustar.addEventListener("click", () => promptAjustar.value = "");
+btnRestaurarAjustar.addEventListener("click", () => {
+    promptAjustar.value = "";
+});
 
 
+// ===============================================
+// NUEVA LANDING
+// ===============================================
+btnNueva.addEventListener("click", () => {
+    preview.innerHTML = "";
+    promptCrear.value = "";
+    promptAjustar.value = "";
+    alert("Listo: proyecto limpio para empezar uno nuevo");
+});
 
-// =====================================================
+
+// ===============================================
 // DESCARGAR
-// =====================================================
+// ===============================================
 btnDescargar.addEventListener("click", () => {
     const html = preview.innerHTML.trim();
     if (!html) return alert("No hay landing para descargar.");
+
     descargarHTML("landing-generada", html);
 });
 
 
-
-// =====================================================
+// ===============================================
 // PANTALLA COMPLETA
-// =====================================================
+// ===============================================
 btnPantalla.addEventListener("click", () => {
     const win = window.open("", "_blank");
     win.document.write(preview.innerHTML);
@@ -298,216 +246,64 @@ btnPantalla.addEventListener("click", () => {
 });
 
 
+// ===============================================
+// MODO CLARO / OSCURO
+// ===============================================
+document.getElementById("toggle-theme").onclick = () => {
+    const html = document.documentElement;
+    html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+};
 
-// =====================================================
-// ON LOAD
-// =====================================================
-window.addEventListener("load", () => {
-    const ultima = localStorage.getItem("ultimaLanding");
-    if (ultima) updatePreview(ultima);
 
-    renderMisProyectos();
-});
+// ===============================================
+// MARCOS APPLE — VISTAS
+// ===============================================
+btnMobile.onclick = () => {
+    viewportContainer.style.width = "390px";
+    updateResponsivePreview(preview.innerHTML);
+};
 
-// -------------------------------------
-// MÓDULO 4 — VISTA RESPONSIVE PRO
-// -------------------------------------
+btnTablet.onclick = () => {
+    viewportContainer.style.width = "820px";
+    updateResponsivePreview(preview.innerHTML);
+};
 
-const btnMobile   = document.getElementById("btn-mobile");
-const btnTablet   = document.getElementById("btn-tablet");
-const btnDesktop  = document.getElementById("btn-desktop");
+btnDesktop.onclick = () => {
+    viewportContainer.style.width = "1280px";
+    updateResponsivePreview(preview.innerHTML);
+};
 
-const responsiveWrapper = document.getElementById("responsive-frame-wrapper");
-const responsiveFrame   = document.getElementById("responsive-frame");
 
-function cargarEnResponsive() {
-    const html = preview.innerHTML.trim();
-    const doc = responsiveFrame.contentWindow.document;
+// ===============================================
+// ZOOM
+// ===============================================
+btnZoomIn.onclick = () => {
+    zoomScale += 0.1;
+    viewportContainer.style.transform = `scale(${zoomScale})`;
+};
 
-    doc.open();
-    doc.write(html);
-    doc.close();
-}
+btnZoomOut.onclick = () => {
+    zoomScale -= 0.1;
+    if (zoomScale < 0.2) zoomScale = 0.2;
+    viewportContainer.style.transform = `scale(${zoomScale})`;
+};
 
-function activarResponsive(tipo) {
-    preview.style.display = "none";  
-    responsiveWrapper.style.display = "block";
+btnZoomReset.onclick = () => {
+    zoomScale = 1;
+    viewportContainer.style.transform = "scale(1)";
+};
 
-    responsiveWrapper.classList.remove("responsive-mobile","responsive-tablet","responsive-desktop");
-    responsiveWrapper.classList.add(tipo);
 
-    cargarEnResponsive();
-}
-
-btnMobile.addEventListener("click", () => {
-    activarResponsive("responsive-mobile");
-});
-
-btnTablet.addEventListener("click", () => {
-    activarResponsive("responsive-tablet");
-});
-
-btnDesktop.addEventListener("click", () => {
-    activarResponsive("responsive-desktop");
-});
-
-// Volver a la vista normal si recargan
-window.addEventListener("load", () => {
-    responsiveWrapper.style.display = "none";
-});
-
-// ------------------------------------------------------
-// MÓDULO 5 PRO — CONTROL RESPONSIVE + ZOOM + NORMAL VIEW
-// ------------------------------------------------------
-
-const btnNormal = document.getElementById("btn-normal");
-
-const btnZoomOut  = document.getElementById("btn-zoom-out");
-const btnZoomReset = document.getElementById("btn-zoom-reset");
-const btnZoomIn  = document.getElementById("btn-zoom-in");
-
-const viewport = document.getElementById("viewport-container");
-
-let zoomLevel = 1;
-
-// Aplicar landing al iframe
-function refrescarIframe() {
-    const html = preview.innerHTML.trim();
-    const doc = responsiveFrame.contentWindow.document;
-
-    doc.open();
-    doc.write(html);
-    doc.close();
-}
-
-// Cambiar vista → móvil/tablet/desktop
-function cambiarVista(tipo) {
-    preview.style.display = "none";
-    responsiveWrapper.style.display = "block";
-
-    responsiveWrapper.classList.remove("responsive-mobile", "responsive-tablet", "responsive-desktop");
-    responsiveWrapper.classList.add(tipo);
-
-    refrescarIframe();
-}
-
-// --- EVENTOS DE VISTA ---
-btnMobile.addEventListener("click", () => cambiarVista("responsive-mobile"));
-btnTablet.addEventListener("click", () => cambiarVista("responsive-tablet"));
-btnDesktop.addEventListener("click", () => cambiarVista("responsive-desktop"));
-
-// --- BOTÓN VOLVER A VISTA NORMAL ---
-btnNormal.addEventListener("click", () => {
+// ===============================================
+// VOLVER A VISTA NORMAL
+// ===============================================
+btnNormal.onclick = () => {
     responsiveWrapper.style.display = "none";
     preview.style.display = "block";
-});
+};
 
-// --- ZOOM OUT ---
-btnZoomOut.addEventListener("click", () => {
-    zoomLevel = Math.max(0.5, zoomLevel - 0.1);
-    viewport.style.transform = `scale(${zoomLevel})`;
-});
 
-// --- ZOOM RESET ---
-btnZoomReset.addEventListener("click", () => {
-    zoomLevel = 1;
-    viewport.style.transform = "scale(1)";
-});
 
-// --- ZOOM IN ---
-btnZoomIn.addEventListener("click", () => {
-    zoomLevel = Math.min(1.8, zoomLevel + 0.1);
-    viewport.style.transform = `scale(${zoomLevel})`;
-});
-
-// Cargar última landing en iframe si estaba abierta
-window.addEventListener("load", () => {
-    if (responsiveWrapper.style.display === "block") refrescarIframe();
-});
-
-// ------------------------------------------------------
-// MÓDULO 5 PRO — CONTROL RESPONSIVE + ZOOM + NORMAL VIEW
-// ------------------------------------------------------
-
-const responsiveWrapper = document.getElementById("responsive-frame-wrapper");
-const responsiveFrame   = document.getElementById("responsive-frame");
-
-const btnMobile   = document.getElementById("btn-mobile");
-const btnTablet   = document.getElementById("btn-tablet");
-const btnDesktop  = document.getElementById("btn-desktop");
-const btnNormal   = document.getElementById("btn-normal");
-
-const btnZoomOut  = document.getElementById("btn-zoom-out");
-const btnZoomReset = document.getElementById("btn-zoom-reset");
-const btnZoomIn   = document.getElementById("btn-zoom-in");
-
-const viewport = document.getElementById("viewport-container");
-
-let zoomLevel = 1;
-
-// Copiar el contenido del preview al iframe
-function refrescarIframe() {
-    const html = preview.innerHTML.trim();
-    const doc = responsiveFrame.contentWindow.document;
-
-    doc.open();
-    doc.write(html);
-    doc.close();
-}
-
-// Cambiar vista → móvil/tablet/desktop
-function cambiarVista(tipo) {
-    // Ocultamos preview normal
-    preview.style.display = "none";
-
-    // Mostramos frame responsive
-    responsiveWrapper.style.display = "block";
-
-    // Quitamos clases previas
-    responsiveWrapper.classList.remove("responsive-mobile", "responsive-tablet", "responsive-desktop");
-
-    // Agregamos clase nueva
-    responsiveWrapper.classList.add(tipo);
-
-    // Cargar contenido dentro del iframe
-    refrescarIframe();
-}
-
-// ---- EVENTOS VISTAS ----
-btnMobile.addEventListener("click", () => cambiarVista("responsive-mobile"));
-btnTablet.addEventListener("click", () => cambiarVista("responsive-tablet"));
-btnDesktop.addEventListener("click", () => cambiarVista("responsive-desktop"));
-
-// ---- BOTÓN VOLVER A VISTA NORMAL ----
-btnNormal.addEventListener("click", () => {
-    responsiveWrapper.style.display = "none";
-    preview.style.display = "block";
-});
-
-// ---- ZOOM OUT ----
-btnZoomOut.addEventListener("click", () => {
-    zoomLevel = Math.max(0.5, zoomLevel - 0.1);
-    viewport.style.transform = `scale(${zoomLevel})`;
-});
-
-// ---- ZOOM RESET ----
-btnZoomReset.addEventListener("click", () => {
-    zoomLevel = 1;
-    viewport.style.transform = "scale(1)";
-});
-
-// ---- ZOOM IN ----
-btnZoomIn.addEventListener("click", () => {
-    zoomLevel = Math.min(1.8, zoomLevel + 0.1);
-    viewport.style.transform = `scale(${zoomLevel})`;
-});
-
-// ---- Si estaba abierta vista responsive, refrescar al recargar ----
-window.addEventListener("load", () => {
-    if (responsiveWrapper.style.display === "block") {
-        refrescarIframe();
-    }
-});
 
 
 
