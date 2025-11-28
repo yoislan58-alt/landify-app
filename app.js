@@ -22,7 +22,41 @@ function crearSlug(texto) {
 
 
 // =====================================================
-// 🔥 MÓDULO 2 — SISTEMA DE PROYECTOS (sin backend)
+// 🔥 MÓDULO 3 — MINIATURAS AUTOMÁTICAS PRO
+// =====================================================
+
+// 📌 Convierte un HTML en una miniatura PNG (canvas)
+async function generarMiniatura(html) {
+    return new Promise((resolve) => {
+        const iframe = document.createElement("iframe");
+        iframe.style.width = "1200px"; // tamaño real
+        iframe.style.height = "2000px";
+        iframe.style.position = "absolute";
+        iframe.style.left = "-9999px"; // oculto
+        document.body.appendChild(iframe);
+
+        iframe.contentDocument.open();
+        iframe.contentDocument.write(html);
+        iframe.contentDocument.close();
+
+        setTimeout(() => {
+            html2canvas(iframe.contentDocument.body, {
+                width: 1200,
+                height: 900,
+                windowWidth: 1200
+            }).then(canvas => {
+                const img = canvas.toDataURL("image/png");
+                iframe.remove();
+                resolve(img);
+            });
+        }, 500);
+    });
+}
+
+
+
+// =====================================================
+// 🔥 MÓDULO 2 — SISTEMA DE PROYECTOS (con thumbnails)
 // =====================================================
 
 // Cargar proyectos desde localStorage
@@ -31,68 +65,86 @@ function cargarProyectos() {
     return data ? JSON.parse(data) : [];
 }
 
-// Guardar proyectos en localStorage
+// Guardar proyectos
 function guardarProyectos(lista) {
     localStorage.setItem("landify_proyectos", JSON.stringify(lista));
 }
 
-// Crear un proyecto nuevo
-function guardarProyecto(titulo, slug, html, tipo = "create") {
+// Guardar un PROYECTO completo (incluye miniatura)
+async function guardarProyecto(titulo, slug, html, tipo = "create") {
+
+    // generar thumbnail
+    const thumbnail = await generarMiniatura(html);
+
     const proyectos = cargarProyectos();
 
     proyectos.push({
         id: slug,
-        titulo: titulo,
-        html: html,
-        tipo: tipo,
-        fecha: new Date().toISOString()
+        titulo,
+        html,
+        tipo,
+        fecha: new Date().toISOString(),
+        thumbnail
     });
 
     guardarProyectos(proyectos);
     renderMisProyectos();
 }
 
-// Renderizar listado en “Mis Proyectos”
+
+
+// =====================================================
+// RENDER DE PROYECTOS CON MINIATURAS PRO
+// =====================================================
 function renderMisProyectos() {
-    const cont = document.getElementById("lista-proyectos");
-    if (!cont) return; // si aún no existe en index.html
+    const cont = document.getElementById("proyectos-lista");
+    if (!cont) return;
 
     const proyectos = cargarProyectos();
 
     cont.innerHTML = "";
 
     if (proyectos.length === 0) {
-        cont.innerHTML = "<p>No tienes proyectos todavía.</p>";
+        cont.innerHTML = "<p style='opacity:0.6;'>No tienes proyectos todavía.</p>";
         return;
     }
 
     proyectos.forEach(proy => {
-        const card = document.createElement("div");
-        card.className = "proyecto-item";
-        card.innerHTML = `
-            <button class="proyecto-btn" data-id="${proy.id}">
-                <strong>${proy.titulo}</strong>
-                <span>${new Date(proy.fecha).toLocaleString()}</span>
-            </button>
-        `;
-        cont.appendChild(card);
-    });
+        const item = document.createElement("div");
+        item.className = "project-item";
+        item.style.cursor = "pointer";
 
-    // Evento para cargar proyectos
-    document.querySelectorAll(".proyecto-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const id = btn.dataset.id;
-            cargarProyectoEnPreview(id);
+        item.innerHTML = `
+            <div style="display:flex; gap:10px; align-items:center;">
+                <img src="${proy.thumbnail}" 
+                     style="width:70px; height:50px; border-radius:6px; object-fit:cover;">
+                <div>
+                    <div style="font-size:14px; font-weight:600;">${proy.titulo}</div>
+                    <div style="font-size:11px; opacity:0.6;">
+                        ${new Date(proy.fecha).toLocaleString()}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        item.addEventListener("click", () => {
+            cargarProyectoEnPreview(proy.id);
         });
+
+        cont.appendChild(item);
     });
 }
 
-// Cargar un proyecto en el preview
+
+
+// =====================================================
+// Cargar proyecto al preview
+// =====================================================
 function cargarProyectoEnPreview(id) {
     const proyectos = cargarProyectos();
     const proy = proyectos.find(p => p.id === id);
 
-    if (!proy) return alert("Proyecto no encontrado");
+    if (!proy) return alert("Proyecto no encontrado.");
 
     updatePreview(proy.html);
 }
@@ -123,22 +175,18 @@ const btnPantalla = document.getElementById("btn-fullscreen");
 // UTILIDADES
 // =====================================================
 
-// Mostrar loader
 function showLoading() {
     loader.style.display = "flex";
 }
 
-// Ocultar loader
 function hideLoading() {
     loader.style.display = "none";
 }
 
-// Colocar HTML en la vista previa
 function updatePreview(html) {
     preview.innerHTML = html;
 }
 
-// Descargar archivo HTML
 function descargarHTML(nombre, contenido) {
     const blob = new Blob([contenido], { type: "text/html" });
     const url = URL.createObjectURL(blob);
@@ -154,7 +202,7 @@ function descargarHTML(nombre, contenido) {
 
 
 // =====================================================
-// LLAMADA AL BACKEND
+// BACKEND
 // =====================================================
 async function generarLanding(prompt, modo) {
     try {
@@ -162,10 +210,7 @@ async function generarLanding(prompt, modo) {
 
         const respuesta = await fetch("/api/openai", {
             method: "POST",
-            body: JSON.stringify({
-                prompt: prompt,
-                mode: modo
-            })
+            body: JSON.stringify({ prompt, mode: modo })
         });
 
         const data = await respuesta.json();
@@ -178,22 +223,20 @@ async function generarLanding(prompt, modo) {
 
         updatePreview(data.html);
 
-        // Guardar última landing
         localStorage.setItem("ultimaLanding", data.html);
 
         return data.html;
 
     } catch (err) {
         hideLoading();
-        console.error("ERROR:", err);
-        alert("Ocurrió un error generando la landing");
+        alert("Error generando la landing");
     }
 }
 
 
 
 // =====================================================
-// EVENTOS – CREAR LANDING
+// CREAR LANDING
 // =====================================================
 btnCrear.addEventListener("click", async () => {
     const p = promptCrear.value.trim();
@@ -202,22 +245,18 @@ btnCrear.addEventListener("click", async () => {
     const html = await generarLanding(p, "create");
     if (!html) return;
 
-    // Crear slug y guardar proyecto
     const slug = crearSlug(p);
     const titulo = p.substring(0, 40) + "...";
 
-    guardarProyecto(titulo, slug, html, "create");
+    await guardarProyecto(titulo, slug, html, "create");
 });
 
-// Restaurar cuadro crear
-btnRestaurarCrear.addEventListener("click", () => {
-    promptCrear.value = "";
-});
+btnRestaurarCrear.addEventListener("click", () => promptCrear.value = "");
 
 
 
 // =====================================================
-// EVENTOS – AJUSTAR LANDING
+// AJUSTAR LANDING
 // =====================================================
 btnAjustar.addEventListener("click", async () => {
     const p = promptAjustar.value.trim();
@@ -228,22 +267,18 @@ btnAjustar.addEventListener("click", async () => {
 
     preview.innerHTML += "\n\n" + nuevaSeccion;
 
-    // Guardar como proyecto de tipo "adjust"
     const slug = crearSlug("ajuste-" + p);
     const titulo = "Ajuste: " + p.substring(0, 25) + "...";
 
-    guardarProyecto(titulo, slug, preview.innerHTML, "adjust");
+    await guardarProyecto(titulo, slug, preview.innerHTML, "adjust");
 });
 
-// Restaurar cuadro ajustar
-btnRestaurarAjustar.addEventListener("click", () => {
-    promptAjustar.value = "";
-});
+btnRestaurarAjustar.addEventListener("click", () => promptAjustar.value = "");
 
 
 
 // =====================================================
-// DESCARGAR HTML
+// DESCARGAR
 // =====================================================
 btnDescargar.addEventListener("click", () => {
     const html = preview.innerHTML.trim();
@@ -265,7 +300,7 @@ btnPantalla.addEventListener("click", () => {
 
 
 // =====================================================
-// CARGAR AL INICIAR
+// ON LOAD
 // =====================================================
 window.addEventListener("load", () => {
     const ultima = localStorage.getItem("ultimaLanding");
@@ -273,8 +308,6 @@ window.addEventListener("load", () => {
 
     renderMisProyectos();
 });
-
-
 
 
 
