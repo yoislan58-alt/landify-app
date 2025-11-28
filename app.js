@@ -2,7 +2,27 @@
 // LANDIFY BUILDER PRO – APP.JS
 // ---------------------------
 
+
+// ---------------------------
+// MÓDULO 1 — SLUGIFIER PRO
+// ---------------------------
+function crearSlug(texto) {
+    return texto
+        .toString()
+        .toLowerCase()
+        .normalize("NFD")                     // separa acentos
+        .replace(/[\u0300-\u036f]/g, "")       // elimina acentos
+        .replace(/[^a-z0-9\s\-]/g, "")         // elimina símbolos
+        .trim()
+        .replace(/\s+/g, "-")                  // espacios → guiones
+        .replace(/\-+/g, "-")                  // colapsa guiones dobles
+        .substring(0, 60);                     // límite recomendado
+}
+
+
+// ---------------------------
 // ELEMENTOS
+// ---------------------------
 const promptCrear = document.getElementById("prompt-crear");
 const btnCrear = document.getElementById("btn-crear");
 
@@ -100,6 +120,9 @@ btnCrear.addEventListener("click", async () => {
     if (p.length < 5) return alert("Describe tu landing primero.");
 
     const html = await generarLanding(p, "create");
+
+    // Aquí usaremos el slug en Módulo 2 ✔
+    // const slug = crearSlug(p);
 });
 
 // Restaurar cuadro crear
@@ -157,6 +180,8 @@ window.addEventListener("load", () => {
     const ultima = localStorage.getItem("ultimaLanding");
     if (ultima) updatePreview(ultima);
 });
+
+
 
 
 
