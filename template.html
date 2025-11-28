@@ -3,236 +3,698 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Landing — Generada con Landify AI</title>
+  <title>{{page_title}}</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --bg: #050413;
-      --card: #0f0b25;
-      --card-soft: #151233;
+      --bg-alt: #0b0820;
+      --card: #120d32;
+      --card-soft: #17133d;
       --accent1: #7b3dff;
       --accent2: #ff4fba;
       --accent3: #49c5ff;
       --text-main: #fdfbff;
-      --text-soft: #d2cef7;
+      --text-soft: #c3bee7;
+      --border-soft: rgba(255,255,255,0.12);
+      --shadow-strong: 0 18px 55px rgba(0,0,0,0.7);
+      --shadow-soft: 0 10px 35px rgba(0,0,0,0.55);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: "Poppins", sans-serif;
-      background: radial-gradient(circle at top, #1a1238, #050413 55%);
+      background:
+        radial-gradient(circle at top, #281b78 0, transparent 55%),
+        radial-gradient(circle at bottom, #271043 0, #050413 65%);
       color: var(--text-main);
-      padding-bottom: 40px;
+      padding-bottom: 48px;
     }
 
-    img { max-width: 100%; border-radius: 16px; }
+    img { max-width: 100%; display: block; border-radius: 18px; }
 
     /* ===== BARRA SUPERIOR ===== */
     .top-bar {
-      position: sticky; top: 0; z-index: 50;
-      background: linear-gradient(90deg, rgba(123,61,255,.97), rgba(255,79,186,.97));
-      text-align: center;
-      padding: 10px;
-      font-size: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(90deg, rgba(123,61,255,.96), rgba(255,79,186,.98), rgba(73,197,255,.96));
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 13px;
       font-weight: 600;
+      letter-spacing: 0.02em;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45);
     }
 
-    /* ===== CONTENEDOR ===== */
-    .layout {
-      max-width: 1100px;
-      margin: auto;
-      padding: 25px 20px;
+    .top-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.18);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .top-pill-icon {
+      font-size: 14px;
+    }
+
+    /* ===== CONTENEDOR PRINCIPAL ===== */
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 26px 20px 0;
     }
 
     /* ===== HERO ===== */
     .hero {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 25px;
-      background: rgba(20,15,40,0.7);
-      padding: 30px;
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 10px 35px rgba(0,0,0,0.5);
+      grid-template-columns: minmax(0,1.2fr) minmax(0,1fr);
+      gap: 28px;
+      background: radial-gradient(circle at top left, rgba(123,61,255,0.4), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(73,197,255,0.26), transparent 55%),
+                  rgba(15,10,40,0.95);
+      padding: 28px;
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: var(--shadow-strong);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.13), transparent 60%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,0.08), transparent 60%);
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .hero-left,
+    .hero-right {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(5,4,19,0.85);
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+
+    .eyebrow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(135deg,var(--accent2),var(--accent3));
+      box-shadow: 0 0 10px rgba(255,79,186,0.6);
     }
 
     .hero-title {
-      font-size: clamp(26px, 4vw, 38px);
+      font-size: clamp(28px, 4vw, 40px);
       font-weight: 700;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+    }
+
+    .hero-highlight {
+      background: linear-gradient(135deg, var(--accent1), var(--accent3));
+      -webkit-background-clip: text;
+      color: transparent;
     }
 
     .hero-sub {
-      font-size: 16px;
+      font-size: 15px;
       color: var(--text-soft);
       margin-bottom: 18px;
     }
 
-    .btn-main {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent3));
-      padding: 14px 26px;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      color: #fff;
-      text-decoration: none;
-      box-shadow: 0 0 18px rgba(124,67,255,0.85);
-      margin-bottom: 12px;
+    .hero-bullets {
+      list-style: none;
+      margin-bottom: 18px;
     }
 
-    /* ===== SECCIONES ===== */
+    .hero-bullets li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: var(--text-soft);
+    }
+
+    .hero-badge {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top, var(--accent3), var(--accent1));
+      box-shadow: 0 0 12px rgba(73,197,255,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .btn-main {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 13px 24px;
+      border-radius: 999px;
+      color: #fff;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent3));
+      box-shadow: 0 0 24px rgba(124,67,255,0.95);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn-main::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.28), transparent 55%);
+      mix-blend-mode: soft-light;
+      opacity: 0.2;
+    }
+
+    .btn-main:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 30px rgba(124,67,255,1);
+    }
+
+    .btn-main-icon {
+      font-size: 18px;
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 11px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(5,4,19,0.7);
+      color: var(--text-soft);
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .hero-trust {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 6px;
+    }
+
+    .hero-right-main {
+      position: relative;
+    }
+
+    .hero-image-wrap {
+      border-radius: 26px;
+      padding: 4px;
+      background: radial-gradient(circle at top left, rgba(123,61,255,0.7), rgba(8,7,25,0.95));
+      box-shadow: var(--shadow-soft);
+    }
+
+    .hero-image-inner {
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.22);
+    }
+
+    .hero-countdown {
+      position: absolute;
+      left: 10px;
+      bottom: 12px;
+      right: 10px;
+      margin: 0 auto;
+      max-width: 260px;
+      background: rgba(5,4,19,0.92);
+      border-radius: 999px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid rgba(255,255,255,0.24);
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .count-label {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 10px;
+    }
+
+    .count-time {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* ===== SECCIONES GENÉRICAS ===== */
     .section {
-      margin-top: 26px;
-      background: var(--card-soft);
-      padding: 25px;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.06);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      margin-top: 30px;
+      background: var(--bg-alt);
+      padding: 24px 22px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.07);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
     }
 
     .section-title {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 600;
-      margin-bottom: 12px;
+    }
+
+    .section-kicker {
+      font-size: 12px;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     .section-sub {
       font-size: 14px;
       color: var(--text-soft);
-      margin-bottom: 18px;
+      max-width: 380px;
     }
 
-    /* ===== GRID GENERALES ===== */
+    /* ===== GRID ===== */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
       gap: 18px;
     }
 
-    .card-soft {
-      background: var(--card);
-      padding: 14px;
-      border-radius: 14px;
+    .info-card {
+      background: var(--card-soft);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 14px 14px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top,var(--accent3),var(--accent1));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 0 16px rgba(73,197,255,0.75);
+    }
+
+    .info-title {
       font-size: 15px;
-      border: 1px solid rgba(255,255,255,0.05);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .info-text {
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    /* ===== TESTIMONIOS ===== */
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+      gap: 18px;
     }
 
     .test-card {
-      background: var(--card-soft);
-      padding: 16px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 15px;
+      background: var(--card);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 16px 16px 14px;
       position: relative;
+      overflow: hidden;
     }
 
     .test-card::before {
       content: "“";
       position: absolute;
-      top: -12px;
-      left: 12px;
-      font-size: 38px;
-      color: rgba(255,255,255,0.09);
+      top: -18px;
+      left: 10px;
+      font-size: 60px;
+      color: rgba(255,255,255,0.06);
+    }
+
+    .test-person {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .test-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.8);
+      flex-shrink: 0;
+    }
+
+    .test-info-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .test-info-role {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .test-text {
+      font-size: 13px;
+      color: var(--text-soft);
+      position: relative;
+      z-index: 1;
     }
 
     /* ===== PRECIO ===== */
     .pricing {
-      background: radial-gradient(circle at top, rgba(123,61,255,0.3), rgba(8,6,25,0.95));
-      padding: 35px;
-      border-radius: 22px;
+      margin-top: 30px;
+      border-radius: 28px;
+      padding: 26px 22px 28px;
+      background: radial-gradient(circle at top, rgba(123,61,255,0.45), rgba(10,7,28,0.98));
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: var(--shadow-strong);
       text-align: center;
-      margin-top: 26px;
-      border: 1px solid rgba(255,255,255,0.15);
-      box-shadow: 0 15px 45px rgba(0,0,0,0.55);
     }
 
-    .pricing-title {
-      font-size: 26px;
+    .pricing-kicker {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-soft);
       margin-bottom: 6px;
     }
 
+    .pricing-title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
     .pricing-price {
-      font-size: 42px;
+      font-size: 40px;
       font-weight: 700;
-      margin: 16px 0;
+      margin: 16px 0 2px;
+    }
+
+    .pricing-caption {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 16px;
+    }
+
+    .pricing-list {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 18px;
+      list-style: none;
+    }
+
+    .pricing-list li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
+    .pricing-list-badge {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    /* ===== FAQ ===== */
+    .faq-item {
+      background: var(--card-soft);
+      border-radius: 16px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: 13px;
+    }
+
+    .faq-q {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .faq-a {
+      color: var(--text-soft);
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      max-width: 1120px;
+      margin: 24px auto 0;
+      padding: 0 20px;
+      font-size: 11px;
+      color: rgba(210,206,247,0.7);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      opacity: 0.8;
     }
 
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 860px) {
+    @media (max-width: 900px) {
       .hero {
         grid-template-columns: 1fr;
+        padding: 22px;
+      }
+      .hero-right-main { order: -1; }
+      .hero-countdown {
+        position: static;
+        margin-top: 10px;
       }
     }
-  </style>
 
+    @media (max-width: 600px) {
+      .page { padding-inline: 16px; }
+      .section, .pricing { padding-inline: 18px; }
+    }
+  </style>
 </head>
+
 <body>
 
   <!-- BARRA SUPERIOR -->
   <div class="top-bar">
-    ¡Oferta disponible hoy! Aumenta tus conversiones con un diseño profesional.
+    <div class="top-pill">
+      <span class="top-pill-icon">⚡</span>
+      <span>{{topbar_badge}}</span>
+    </div>
+    <span>{{topbar_text}}</span>
   </div>
 
-  <div class="layout">
+  <main class="page">
 
     <!-- HERO -->
     <section class="hero">
-      <div>
-        <h1 class="hero-title">{{heroText}}</h1>
-        <p class="hero-sub">{{subText}}</p>
-        <a href="#precio" class="btn-main">{{cta}}</a>
+      <div class="hero-left">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          <span>{{hero_eyebrow}}</span>
+        </div>
+
+        <h1 class="hero-title">
+          <span class="hero-highlight">{{hero_title_strong}}</span>
+          {{hero_title_rest}}
+        </h1>
+
+        <p class="hero-sub">{{hero_subtitle}}</p>
+
+        <ul class="hero-bullets">
+          <li><span class="hero-badge">✓</span> {{hero_bullet_1}}</li>
+          <li><span class="hero-badge">✓</span> {{hero_bullet_2}}</li>
+          <li><span class="hero-badge">✓</span> {{hero_bullet_3}}</li>
+        </ul>
+
+        <div class="hero-ctas">
+          <a href="{{hero_primary_link}}" class="btn-main">
+            <span class="btn-main-icon">✨</span>
+            <span>{{hero_primary_cta}}</span>
+          </a>
+          <a href="{{hero_secondary_link}}" class="btn-ghost">
+            <span>▶</span>
+            <span>{{hero_secondary_cta}}</span>
+          </a>
+        </div>
+
+        <div class="hero-trust">
+          <span>{{hero_trustline}}</span>
+        </div>
       </div>
-      <div>
-        <img src="{{heroImage}}" alt="Imagen hero">
+
+      <div class="hero-right hero-right-main">
+        <div class="hero-image-wrap">
+          <div class="hero-image-inner">
+            <img src="{{hero_image_url}}" alt="{{hero_image_alt}}">
+          </div>
+        </div>
+
+        <div class="hero-countdown">
+          <div>
+            <div class="count-label">{{countdown_label}}</div>
+            <div class="count-time">{{countdown_time_text}}</div>
+          </div>
+          <div style="font-size:11px; text-align:right;">
+            {{countdown_support_text}}
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- BENEFICIOS -->
     <section class="section">
-      <h2 class="section-title">Beneficios clave</h2>
-      <p class="section-sub">Lo que hace que esta oferta sea irresistible.</p>
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">{{benefits_kicker}}</div>
+          <h2 class="section-title">{{benefits_title}}</h2>
+        </div>
+        <p class="section-sub">{{benefits_subtitle}}</p>
+      </div>
 
       <div class="grid">
-        {{benefits}}
+        {{benefits_cards}}
       </div>
     </section>
 
-    <!-- FEATURES -->
+    <!-- CARACTERÍSTICAS -->
     <section class="section">
-      <h2 class="section-title">Qué incluye</h2>
-      <p class="section-sub">Características principales del producto.</p>
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">{{features_kicker}}</div>
+          <h2 class="section-title">{{features_title}}</h2>
+        </div>
+        <p class="section-sub">{{features_subtitle}}</p>
+      </div>
 
       <div class="grid">
-        {{features}}
+        {{features_cards}}
       </div>
     </section>
 
     <!-- TESTIMONIOS -->
     <section class="section">
-      <h2 class="section-title">Personas que ya confiaron</h2>
-      <p class="section-sub">Testimonios de usuarios reales.</p>
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">{{testimonials_kicker}}</div>
+          <h2 class="section-title">{{testimonials_title}}</h2>
+        </div>
+        <p class="section-sub">{{testimonials_subtitle}}</p>
+      </div>
+
+      <div class="test-grid">
+        {{testimonials_cards}}
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">{{faq_kicker}}</div>
+          <h2 class="section-title">{{faq_title}}</h2>
+        </div>
+        <p class="section-sub">{{faq_subtitle}}</p>
+      </div>
 
       <div class="grid">
-        {{testimonials}}
+        {{faq_items}}
       </div>
     </section>
 
     <!-- PRECIO -->
-    <section id="precio" class="pricing">
-      <h2 class="pricing-title">Transforma tu proyecto hoy</h2>
-      <div class="pricing-price">$27</div>
-      <a href="#" class="btn-main">{{cta}}</a>
+    <section class="pricing" id="precio">
+      <div class="pricing-kicker">{{pricing_kicker}}</div>
+      <h2 class="pricing-title">{{pricing_title}}</h2>
+      <div class="pricing-price">{{pricing_price}}</div>
+      <div class="pricing-caption">{{pricing_caption}}</div>
+
+      <ul class="pricing-list">
+        {{pricing_bullets}}
+      </ul>
+
+      <a href="{{pricing_cta_link}}" class="btn-main">
+        <span class="btn-main-icon">🚀</span>
+        <span>{{pricing_cta_text}}</span>
+      </a>
     </section>
 
-  </div>
+  </main>
+
+  <footer class="footer">
+    <span>{{footer_left}}</span>
+    <span>{{footer_right}}</span>
+  </footer>
 
 </body>
 </html>
-
 
 
 
