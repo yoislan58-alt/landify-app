@@ -1,18 +1,8 @@
 // =======================================================
-// REFERENCIAS A ELEMENTOS
+// ELEMENTOS
 // =======================================================
 
-// Sidebar
-const btnNueva = document.getElementById("btnNueva");
-const btnProyectosToggle = document.getElementById("btnProyectosToggle");
-const submenuProyectos = document.getElementById("submenuProyectos");
-const projectListSidebar = document.getElementById("projectListSidebar");
-
-const btnAjustesToggle = document.getElementById("btnAjustesToggle");
-const submenuAjustes = document.getElementById("submenuAjustes");
-const resetTodoBtn = document.getElementById("resetTodo");
-
-// Panel central
+// Panel izquierdo
 const panelGenerar = document.getElementById("panelGenerar");
 const panelAjustar = document.getElementById("panelAjustar");
 
@@ -26,6 +16,13 @@ const resetGenerarBtn = document.getElementById("resetGenerar");
 const adjustBtn = document.getElementById("adjustLandingBtn");
 const resetAjustarBtn = document.getElementById("resetAjustar");
 
+// Acciones rápidas
+const btnNueva = document.getElementById("btnNueva");
+const btnProyectosToggle = document.getElementById("btnProyectosToggle");
+const submenuProyectos = document.getElementById("submenuProyectos");
+const projectListSidebar = document.getElementById("projectListSidebar");
+const resetTodoBtn = document.getElementById("resetTodo");
+
 // Preview / topnav
 const previewCol = document.getElementById("previewCol");
 const previewFrame = document.getElementById("previewFrame");
@@ -34,14 +31,12 @@ const btnDesktop = document.getElementById("btnDesktop");
 const btnMobile = document.getElementById("btnMobile");
 
 const btnFullscreen = document.getElementById("btnFullscreen");
-const btnAbrir = document.getElementById("btnAbrir");
-const btnCopiar = document.getElementById("btnCopiar");
 const btnDescargar = document.getElementById("btnDescargar");
 
 // Tema
 const toggleTheme = document.getElementById("toggleTheme");
 
-// Loading
+// Loader
 const loadingBox = document.getElementById("loading");
 
 // =======================================================
@@ -56,7 +51,7 @@ function hideLoading() {
   loadingBox.classList.add("hidden");
 }
 
-// Limpia ```html, ``` y un "html" suelto al inicio
+// Limpia ```html, ``` y "html" suelto
 function cleanHTML(html) {
   return (html || "")
     .replace(/```html/gi, "")
@@ -69,7 +64,6 @@ function renderPreview(html) {
   previewFrame.srcdoc = cleanHTML(html);
 }
 
-// Obtiene lista de proyectos desde localStorage
 function getProjects() {
   return JSON.parse(localStorage.getItem("projects") || "[]");
 }
@@ -78,12 +72,10 @@ function setProjects(arr) {
   localStorage.setItem("projects", JSON.stringify(arr));
 }
 
-// Crea un ID único
 function generateID() {
   return "land-" + Date.now();
 }
 
-// Crea un nombre amigable a partir de un texto
 function buildProjectName(baseText, prefix = "Landing") {
   const clean = (baseText || "").trim();
   if (!clean) return prefix + " " + new Date().toLocaleString();
@@ -92,7 +84,7 @@ function buildProjectName(baseText, prefix = "Landing") {
 }
 
 // =======================================================
-// GESTIÓN DE PROYECTOS (SIDEBAR)
+// PROYECTOS
 // =======================================================
 
 function saveProject(html, nameHint) {
@@ -124,7 +116,7 @@ function renderProjectsSidebar() {
   projectListSidebar.innerHTML = projects
     .map(
       (p) => `
-      <button class="submenu-btn" onclick="loadProject('${p.id}')" title="${p.date}">
+      <button class="proj-btn" onclick="loadProject('${p.id}')" title="${p.date}">
         ${p.name}
       </button>
     `
@@ -132,17 +124,14 @@ function renderProjectsSidebar() {
     .join("");
 }
 
-// Exponer para onclick inline
 window.loadProject = function (id) {
   const projects = getProjects();
   const p = projects.find((x) => x.id === id);
   if (!p) return;
-
   localStorage.setItem("lastLanding", p.html);
   renderPreview(p.html);
 };
 
-// Reset total de la app
 function resetApp() {
   localStorage.removeItem("projects");
   localStorage.removeItem("lastLanding");
@@ -154,7 +143,7 @@ function resetApp() {
 }
 
 // =======================================================
-// MODOS DE VISTA (DESKTOP / MÓVIL)
+// PREVIEW MODES
 // =======================================================
 
 function setPreviewMode(mode) {
@@ -170,10 +159,10 @@ function setPreviewMode(mode) {
 }
 
 // =======================================================
-// HANDLERS PRINCIPALES
+// EVENTOS PRINCIPALES
 // =======================================================
 
-// Nueva landing (reset suave)
+// Nueva landing
 btnNueva.addEventListener("click", () => {
   userPrompt.value = "";
   ajustarPrompt.value = "";
@@ -182,17 +171,15 @@ btnNueva.addEventListener("click", () => {
   setPreviewMode("desktop");
 });
 
-// Desplegar / contraer Mis Proyectos
+// Acordeón Mis Proyectos
 btnProyectosToggle.addEventListener("click", () => {
   submenuProyectos.classList.toggle("hidden");
+  if (!submenuProyectos.classList.contains("hidden")) {
+    renderProjectsSidebar();
+  }
 });
 
-// Desplegar / contraer Ajustes
-btnAjustesToggle.addEventListener("click", () => {
-  submenuAjustes.classList.toggle("hidden");
-});
-
-// Reset total desde ajustes
+// Reset total
 resetTodoBtn.addEventListener("click", () => {
   const ok = confirm(
     "¿Seguro que quieres borrar TODOS los proyectos y reiniciar la app?"
@@ -201,16 +188,14 @@ resetTodoBtn.addEventListener("click", () => {
   resetApp();
 });
 
-// Botones de vista
+// Vista desktop / móvil
 btnDesktop.addEventListener("click", () => setPreviewMode("desktop"));
 btnMobile.addEventListener("click", () => setPreviewMode("mobile"));
 
-// Botón restaurar del panel Generar
+// Restaurar campos
 resetGenerarBtn.addEventListener("click", () => {
   userPrompt.value = "";
 });
-
-// Botón restaurar del panel Ajustar
 resetAjustarBtn.addEventListener("click", () => {
   ajustarPrompt.value = "";
   ajustarPosicion.value = "inicio";
@@ -313,7 +298,7 @@ ${last}
 adjustBtn.addEventListener("click", ajustarLanding);
 
 // =======================================================
-// ACCIONES TOPNAV (FULLSCREEN, ABRIR, COPIAR, DESCARGAR)
+// BOTONES TOPO: FULLSCREEN + DESCARGAR
 // =======================================================
 
 btnFullscreen.addEventListener("click", () => {
@@ -325,27 +310,6 @@ btnFullscreen.addEventListener("click", () => {
   const win = window.open("", "_blank");
   win.document.write(cleanHTML(html));
   win.document.close();
-});
-
-btnAbrir.addEventListener("click", () => {
-  const html = localStorage.getItem("lastLanding");
-  if (!html) {
-    alert("No hay landing actual para abrir.");
-    return;
-  }
-  const win = window.open("", "_blank");
-  win.document.write(cleanHTML(html));
-  win.document.close();
-});
-
-btnCopiar.addEventListener("click", () => {
-  const html = localStorage.getItem("lastLanding");
-  if (!html) {
-    alert("No hay landing actual para copiar.");
-    return;
-  }
-  navigator.clipboard.writeText(cleanHTML(html));
-  alert("HTML copiado al portapapeles.");
 });
 
 btnDescargar.addEventListener("click", () => {
@@ -388,6 +352,8 @@ toggleTheme.addEventListener("click", () => {
 renderPreview("<h3 style='padding:20px;color:gray;'>Vista previa aquí…</h3>");
 setPreviewMode("desktop");
 renderProjectsSidebar();
+hideLoading();
+
 
 
 
