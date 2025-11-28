@@ -11,129 +11,93 @@
 
 <body>
 
-<!-- SIDEBAR PREMIUM -->
-<aside class="sidebar">
+<!-- TOP NAV -->
+<header class="topnav">
+    <div class="topnav-left">
+        <h2>Vista Previa</h2>
 
-    <!-- LOGO + TEMA -->
-    <div class="sidebar-header">
-        <div class="logo">Landify<span>AI</span></div>
-        <button id="toggleTheme" class="theme-toggle" title="Cambiar tema">🌙</button>
+        <div class="view-buttons">
+            <button id="btnDesktop" class="view-btn active" title="Vista escritorio">🖥 Desktop</button>
+            <button id="btnMobile" class="view-btn" title="Vista móvil">📱 Móvil</button>
+        </div>
     </div>
 
-    <!-- MENÚ PRINCIPAL -->
-    <div class="menu">
+    <div class="topnav-right">
+        <button id="btnFullscreen" class="icon-btn" title="Ver en pantalla completa">🖼 Pantalla completa</button>
+        <button id="btnDescargar" class="icon-btn" title="Descargar HTML">⬇ Descargar</button>
+        <button id="toggleTheme" class="icon-btn theme-toggle" title="Cambiar modo claro/oscuro">🌙</button>
+    </div>
+</header>
 
-        <!-- INICIO / NUEVA LANDING -->
-        <button class="menu-item" id="btnNueva">
-            ✨ <span>Nueva Landing</span>
-        </button>
+<!-- LAYOUT 30% / 70% -->
+<div class="layout">
 
-        <!-- MIS PROYECTOS (DESPLEGABLE) -->
-        <div class="menu-group">
-            <button class="menu-item" id="btnProyectosToggle">
-                📁 <span>Mis Proyectos</span>
+    <!-- COLUMNA IZQUIERDA (30%) -->
+    <section class="panel">
+
+        <!-- LOADER -->
+        <div id="loading" class="loading hidden">
+            <div class="loader"></div>
+            <span>Generando…</span>
+        </div>
+
+        <!-- GENERAR LANDING -->
+        <div id="panelGenerar" class="card">
+            <div class="card-title">✨ Generar Landing</div>
+
+            <textarea id="userPrompt" class="input large" placeholder="Describe la landing con detalle…"></textarea>
+
+            <button id="generateBtn" class="btn-primary">✨ Generar</button>
+            <button id="resetGenerar" class="btn-reset">↺ Restaurar</button>
+        </div>
+
+        <!-- AJUSTAR / AGREGAR -->
+        <div id="panelAjustar" class="card">
+            <div class="card-title">🛠 Ajustar / Agregar sección</div>
+
+            <textarea id="ajustarPrompt" class="input large" placeholder="Ej: Agregar countdown debajo del héroe…"></textarea>
+
+            <select id="ajustarPosicion" class="input">
+                <option value="inicio">Al inicio</option>
+                <option value="despues-hero">Después del héroe</option>
+                <option value="antes-precio">Antes del precio</option>
+                <option value="final">Al final</option>
+            </select>
+
+            <button id="adjustLandingBtn" class="btn-primary">🛠 Aplicar cambios</button>
+            <button id="resetAjustar" class="btn-reset">↺ Restaurar</button>
+        </div>
+
+        <!-- ACCIONES: NUEVA + PROYECTOS -->
+        <div class="card card-acciones">
+            <div class="card-title">⚡ Acciones rápidas</div>
+
+            <button id="btnNueva" class="btn-primary-outline">✨ Nueva Landing</button>
+
+            <button id="btnProyectosToggle" class="btn-primary-outline" style="margin-top:8px;">
+                📁 Mis Proyectos
             </button>
 
             <div id="submenuProyectos" class="submenu hidden">
                 <div id="projectListSidebar"></div>
             </div>
+
+            <button id="resetTodo" class="btn-reset-full">🗑 Restablecer App</button>
         </div>
 
-        <!-- AJUSTES (DESPLEGABLE) -->
-        <div class="menu-group">
-            <button class="menu-item" id="btnAjustesToggle">
-                ⚙ <span>Ajustes</span>
-            </button>
+    </section>
 
-            <div id="submenuAjustes" class="submenu hidden">
-                <button id="resetTodo" class="submenu-btn">🔄 Restablecer App</button>
-            </div>
-        </div>
+    <!-- COLUMNA DERECHA (70%) -->
+    <section class="preview" id="previewCol">
+        <iframe id="previewFrame"></iframe>
+    </section>
 
-    </div>
-
-</aside>
-
-
-
-<!-- MAIN -->
-<main class="main">
-
-    <!-- TOP NAV -->
-    <header class="topnav">
-        <div class="topnav-left">
-            <h2>Vista Previa</h2>
-
-            <div class="view-buttons">
-                <button id="btnDesktop" class="view-btn active" title="Vista escritorio">🖥 Desktop</button>
-                <button id="btnMobile" class="view-btn" title="Vista móvil">📱 Móvil</button>
-            </div>
-        </div>
-
-        <div class="topnav-right">
-            <button id="btnFullscreen" class="icon-btn" title="Ver en pantalla completa">🖼 Pantalla completa</button>
-
-            <button id="btnAbrir" class="icon-btn" title="Abrir landing en nueva pestaña">🔗 Abrir</button>
-            <button id="btnCopiar" class="icon-btn" title="Copiar HTML al portapapeles">📋 Copiar</button>
-            <button id="btnDescargar" class="icon-btn" title="Descargar HTML">⬇ Descargar</button>
-        </div>
-    </header>
-
-    <!-- LAYOUT -->
-    <div class="layout">
-
-        <!-- PANEL IZQUIERDO (CENTRAL DE TRABAJO) -->
-        <section class="panel">
-
-            <!-- LOADING -->
-            <div id="loading" class="loading hidden">
-                <div class="loader"></div>
-                <span>Generando…</span>
-            </div>
-
-            <!-- GENERAR -->
-            <div id="panelGenerar" class="card">
-                <div class="card-title">✨ Generar Landing</div>
-
-                <textarea id="userPrompt" class="input large" placeholder="Describe la landing con detalle…"></textarea>
-
-                <button id="generateBtn" class="btn-primary">✨ Generar</button>
-
-                <button id="resetGenerar" class="btn-reset">↺ Restaurar</button>
-            </div>
-
-            <!-- AJUSTAR -->
-            <div id="panelAjustar" class="card hidden">
-                <div class="card-title">🛠 Ajustar / Agregar sección</div>
-
-                <textarea id="ajustarPrompt" class="input large" placeholder="Ej: Agregar countdown debajo del héroe…"></textarea>
-
-                <select id="ajustarPosicion" class="input">
-                    <option value="inicio">Al inicio</option>
-                    <option value="despues-hero">Después del héroe</option>
-                    <option value="antes-precio">Antes del precio</option>
-                    <option value="final">Al final</option>
-                </select>
-
-                <button id="adjustLandingBtn" class="btn-primary">🛠 Aplicar cambios</button>
-
-                <button id="resetAjustar" class="btn-reset">↺ Restaurar</button>
-            </div>
-
-        </section>
-
-        <!-- PREVIEW -->
-        <section class="preview" id="previewCol">
-            <iframe id="previewFrame"></iframe>
-        </section>
-
-    </div>
-
-</main>
+</div>
 
 <script src="app.js"></script>
 </body>
 </html>
+
 
 
 
