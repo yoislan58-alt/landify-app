@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-
         /* --------------------------
            VARIABLES MODO OSCURO / CLARO
         -------------------------- */
@@ -196,7 +195,7 @@
         }
 
         /* --------------------------
-           VISTA PREVIA
+           VISTA PREVIA NORMAL
         -------------------------- */
         #preview-container {
             background: white;
@@ -208,33 +207,24 @@
         }
 
         /* --------------------------
-           PROYECTOS (ACORDEÓN)
+           MARCOS APPLE PRO (iPhone / iPad / MacBook)
         -------------------------- */
-        .accordion-trigger {
-            background: var(--panel2);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            font-weight: 500;
-            cursor: pointer;
-            margin-top: 14px;
-        }
-
-        .accordion-content {
+        #responsive-frame-wrapper {
             display: none;
-            padding: 10px;
-            background: var(--panel);
-            border-radius: 8px;
-            margin-top: 6px;
-            border: 1px solid var(--border);
+            margin-top: 20px;
+            text-align: center;
         }
 
-        .project-item {
-            padding: 8px;
-            background: var(--card);
-            border-radius: 8px;
-            margin-bottom: 8px;
-            cursor: pointer;
+        #viewport-container {
+            display: inline-block;
+            transform-origin: top center;
+        }
+
+        #responsive-frame {
+            width: 100%;
+            height: 90vh;
+            background: white;
+            border-radius: 12px;
             border: 1px solid var(--border);
         }
     </style>
@@ -268,9 +258,7 @@
 
         <!-- ACORDEÓN PROYECTOS -->
         <div class="accordion-trigger">📁 Mis Proyectos</div>
-        <div class="accordion-content" id="proyectos-lista">
-            <!-- Aquí se insertan proyectos -->
-        </div>
+        <div class="accordion-content" id="proyectos-lista"></div>
 
     </div>
 
@@ -278,41 +266,39 @@
     <div class="right-panel">
 
         <!-- BOTONES DERECHA -->
-      <div class="top-right-buttons">
+        <div class="top-right-buttons">
 
-    <!-- Vista móvil -->
-    <div class="icon-btn" id="btn-mobile" title="Vista móvil">📱</div>
+            <!-- Vista móvil -->
+            <div class="icon-btn" id="btn-mobile" title="Vista móvil (iPhone)">📱</div>
 
-    <!-- Vista tablet -->
-    <div class="icon-btn" id="btn-tablet" title="Vista tablet">📲</div>
+            <!-- Vista tablet -->
+            <div class="icon-btn" id="btn-tablet" title="Vista tablet (iPad)">📲</div>
 
-    <!-- Vista escritorio -->
-    <div class="icon-btn" id="btn-desktop" title="Vista escritorio">🖥️</div>
+            <!-- Vista escritorio -->
+            <div class="icon-btn" id="btn-desktop" title="Vista escritorio (MacBook)">💻</div>
 
-    <!-- Zoom menos -->
-    <div class="icon-btn" id="btn-zoom-out" title="Zoom -">➖</div>
+            <!-- Zoom menos -->
+            <div class="icon-btn" id="btn-zoom-out" title="Zoom -">➖</div>
 
-    <!-- Zoom reset -->
-    <div class="icon-btn" id="btn-zoom-reset" title="Zoom 100%">🔄</div>
+            <!-- Zoom reset -->
+            <div class="icon-btn" id="btn-zoom-reset" title="Zoom 100%">🔄</div>
 
-    <!-- Zoom más -->
-    <div class="icon-btn" id="btn-zoom-in" title="Zoom +">➕</div>
+            <!-- Zoom más -->
+            <div class="icon-btn" id="btn-zoom-in" title="Zoom +">➕</div>
 
-    <!-- Volver a vista normal -->
-    <div class="icon-btn" id="btn-normal" title="Volver a vista normal">↩️</div>
+            <!-- Volver vista normal -->
+            <div class="icon-btn" id="btn-normal" title="Vista normal">↩️</div>
 
-    <!-- Descargar -->
-    <div class="icon-btn" id="btn-descargar" title="Descargar HTML">⬇️</div>
+            <!-- Descargar -->
+            <div class="icon-btn" id="btn-descargar" title="Descargar HTML">⬇️</div>
 
-    <!-- Vista completa -->
-    <div class="icon-btn" id="btn-fullscreen" title="Vista completa">🖥️+</div>
+            <!-- Pantalla completa -->
+            <div class="icon-btn" id="btn-fullscreen" title="Vista completa">🖥️</div>
 
-    <!-- Modo claro/oscuro -->
-    <div class="icon-btn" id="toggle-theme" title="Modo claro/oscuro">🌙</div>
+            <!-- Tema -->
+            <div class="icon-btn" id="toggle-theme" title="Modo claro/oscuro">🌙</div>
 
-</div>
-
-
+        </div>
 
         <!-- LOADER -->
         <div id="loader">
@@ -320,29 +306,28 @@
             <div class="loader-text">Generando...</div>
         </div>
 
-<!-- VISTA PREVIA RESPONSIVE (OCULTA) -->
-<div id="responsive-frame-wrapper" style="display:none; margin-top:20px; text-align:center;">
-    <div id="viewport-container" style="display:inline-block; transform:scale(1); transform-origin:top center;">
-        <iframe id="responsive-frame"
-                style="width:100%; height:90vh; border:1px solid var(--border); border-radius:12px; background:white;">
-        </iframe>
+        <!-- VISTA PREVIA RESPONSIVE -->
+        <div id="responsive-frame-wrapper">
+            <div id="viewport-container">
+                <iframe id="responsive-frame"></iframe>
+            </div>
+        </div>
+
+        <!-- PREVIEW NORMAL -->
+        <div id="preview-container"></div>
+
     </div>
-</div>
-        
 
-<!-- PREVIEW NORMAL -->
-<div id="preview-container"></div>
-
-
-
-
-    <!-- MÓDULO PARA MINIATURAS -->
+    <!-- MINIATURAS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <!-- APP PRINCIPAL -->
+    <!-- APP -->
     <script src="app.js"></script>
+
 </body>
 </html>
+
+
 
 
 
