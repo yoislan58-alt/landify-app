@@ -425,6 +425,92 @@ window.addEventListener("load", () => {
     if (responsiveWrapper.style.display === "block") refrescarIframe();
 });
 
+// ------------------------------------------------------
+// MÓDULO 5 PRO — CONTROL RESPONSIVE + ZOOM + NORMAL VIEW
+// ------------------------------------------------------
+
+const responsiveWrapper = document.getElementById("responsive-frame-wrapper");
+const responsiveFrame   = document.getElementById("responsive-frame");
+
+const btnMobile   = document.getElementById("btn-mobile");
+const btnTablet   = document.getElementById("btn-tablet");
+const btnDesktop  = document.getElementById("btn-desktop");
+const btnNormal   = document.getElementById("btn-normal");
+
+const btnZoomOut  = document.getElementById("btn-zoom-out");
+const btnZoomReset = document.getElementById("btn-zoom-reset");
+const btnZoomIn   = document.getElementById("btn-zoom-in");
+
+const viewport = document.getElementById("viewport-container");
+
+let zoomLevel = 1;
+
+// Copiar el contenido del preview al iframe
+function refrescarIframe() {
+    const html = preview.innerHTML.trim();
+    const doc = responsiveFrame.contentWindow.document;
+
+    doc.open();
+    doc.write(html);
+    doc.close();
+}
+
+// Cambiar vista → móvil/tablet/desktop
+function cambiarVista(tipo) {
+    // Ocultamos preview normal
+    preview.style.display = "none";
+
+    // Mostramos frame responsive
+    responsiveWrapper.style.display = "block";
+
+    // Quitamos clases previas
+    responsiveWrapper.classList.remove("responsive-mobile", "responsive-tablet", "responsive-desktop");
+
+    // Agregamos clase nueva
+    responsiveWrapper.classList.add(tipo);
+
+    // Cargar contenido dentro del iframe
+    refrescarIframe();
+}
+
+// ---- EVENTOS VISTAS ----
+btnMobile.addEventListener("click", () => cambiarVista("responsive-mobile"));
+btnTablet.addEventListener("click", () => cambiarVista("responsive-tablet"));
+btnDesktop.addEventListener("click", () => cambiarVista("responsive-desktop"));
+
+// ---- BOTÓN VOLVER A VISTA NORMAL ----
+btnNormal.addEventListener("click", () => {
+    responsiveWrapper.style.display = "none";
+    preview.style.display = "block";
+});
+
+// ---- ZOOM OUT ----
+btnZoomOut.addEventListener("click", () => {
+    zoomLevel = Math.max(0.5, zoomLevel - 0.1);
+    viewport.style.transform = `scale(${zoomLevel})`;
+});
+
+// ---- ZOOM RESET ----
+btnZoomReset.addEventListener("click", () => {
+    zoomLevel = 1;
+    viewport.style.transform = "scale(1)";
+});
+
+// ---- ZOOM IN ----
+btnZoomIn.addEventListener("click", () => {
+    zoomLevel = Math.min(1.8, zoomLevel + 0.1);
+    viewport.style.transform = `scale(${zoomLevel})`;
+});
+
+// ---- Si estaba abierta vista responsive, refrescar al recargar ----
+window.addEventListener("load", () => {
+    if (responsiveWrapper.style.display === "block") {
+        refrescarIframe();
+    }
+});
+
+
+
 
 
 
