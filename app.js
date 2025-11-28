@@ -356,6 +356,77 @@ window.addEventListener("load", () => {
     responsiveWrapper.style.display = "none";
 });
 
+// ------------------------------------------------------
+// MÓDULO 5 PRO — CONTROL RESPONSIVE + ZOOM + NORMAL VIEW
+// ------------------------------------------------------
+
+const btnNormal = document.getElementById("btn-normal");
+
+const btnZoomOut  = document.getElementById("btn-zoom-out");
+const btnZoomReset = document.getElementById("btn-zoom-reset");
+const btnZoomIn  = document.getElementById("btn-zoom-in");
+
+const viewport = document.getElementById("viewport-container");
+
+let zoomLevel = 1;
+
+// Aplicar landing al iframe
+function refrescarIframe() {
+    const html = preview.innerHTML.trim();
+    const doc = responsiveFrame.contentWindow.document;
+
+    doc.open();
+    doc.write(html);
+    doc.close();
+}
+
+// Cambiar vista → móvil/tablet/desktop
+function cambiarVista(tipo) {
+    preview.style.display = "none";
+    responsiveWrapper.style.display = "block";
+
+    responsiveWrapper.classList.remove("responsive-mobile", "responsive-tablet", "responsive-desktop");
+    responsiveWrapper.classList.add(tipo);
+
+    refrescarIframe();
+}
+
+// --- EVENTOS DE VISTA ---
+btnMobile.addEventListener("click", () => cambiarVista("responsive-mobile"));
+btnTablet.addEventListener("click", () => cambiarVista("responsive-tablet"));
+btnDesktop.addEventListener("click", () => cambiarVista("responsive-desktop"));
+
+// --- BOTÓN VOLVER A VISTA NORMAL ---
+btnNormal.addEventListener("click", () => {
+    responsiveWrapper.style.display = "none";
+    preview.style.display = "block";
+});
+
+// --- ZOOM OUT ---
+btnZoomOut.addEventListener("click", () => {
+    zoomLevel = Math.max(0.5, zoomLevel - 0.1);
+    viewport.style.transform = `scale(${zoomLevel})`;
+});
+
+// --- ZOOM RESET ---
+btnZoomReset.addEventListener("click", () => {
+    zoomLevel = 1;
+    viewport.style.transform = "scale(1)";
+});
+
+// --- ZOOM IN ---
+btnZoomIn.addEventListener("click", () => {
+    zoomLevel = Math.min(1.8, zoomLevel + 0.1);
+    viewport.style.transform = `scale(${zoomLevel})`;
+});
+
+// Cargar última landing en iframe si estaba abierta
+window.addEventListener("load", () => {
+    if (responsiveWrapper.style.display === "block") refrescarIframe();
+});
+
+
+
 
 
 
