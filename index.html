@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-
         /* --------------------------
            VARIABLES MODO OSCURO / CLARO
         -------------------------- */
@@ -47,7 +46,6 @@
             overflow: hidden;
         }
 
-
         /* --------------------------
            LAYOUT GENERAL
         -------------------------- */
@@ -67,6 +65,37 @@
             position: relative;
         }
 
+        /* --------------------------
+           BRAND
+        -------------------------- */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .brand-text {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .brand-text span {
+            color: var(--accent2);
+        }
 
         /* --------------------------
            TITULOS Y SECCIONES
@@ -103,7 +132,6 @@
             font-size: 14px;
         }
 
-
         /* --------------------------
            BOTONES PRINCIPALES
         -------------------------- */
@@ -132,7 +160,6 @@
             cursor: pointer;
             margin-top: 8px;
         }
-
 
         /* --------------------------
            BOTONES HEADER DERECHA
@@ -164,7 +191,6 @@
             background: var(--accent);
             color: white;
         }
-
 
         /* --------------------------
            LOADER PRO
@@ -198,7 +224,6 @@
             font-weight: 600;
         }
 
-
         /* --------------------------
            PREVIEW NORMAL
         -------------------------- */
@@ -210,7 +235,6 @@
             padding: 0;
             overflow-y: auto;
         }
-
 
         /* --------------------------
            MARCOS APPLE PRO
@@ -234,15 +258,15 @@
             border: 1px solid var(--border);
         }
 
-
         /* --------------------------
            ACORDEÓN PROYECTOS PRO
         -------------------------- */
         .accordion-trigger {
-            background: var(--panel2);
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
             padding: 12px;
             border-radius: 8px;
-            border: 1px solid var(--border);
+            border: none;
             font-weight: 500;
             cursor: pointer;
             margin-top: 14px;
@@ -261,7 +285,7 @@
             padding: 10px;
             background: var(--card);
             border-radius: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             border: 1px solid var(--border);
             cursor: pointer;
             font-weight: 500;
@@ -273,7 +297,8 @@
             border: 1px solid var(--border);
             padding: 8px;
             border-radius: 8px;
-            margin-top: 6px;
+            margin-top: 4px;
+            margin-bottom: 8px;
         }
 
         .project-options button {
@@ -287,7 +312,6 @@
             cursor: pointer;
             font-size: 14px;
         }
-
     </style>
 </head>
 
@@ -295,6 +319,12 @@
 
     <!-- PANEL IZQUIERDO -->
     <div class="left-panel">
+
+        <!-- BRAND LANDIFY -->
+        <div class="brand">
+            <div class="brand-logo">L</div>
+            <div class="brand-text">Landify <span>AI</span></div>
+        </div>
 
         <h2 class="panel-title">Crear nueva Landing</h2>
 
@@ -314,42 +344,37 @@
             <button class="btn-outline" id="restore-ajustar">Restaurar</button>
         </div>
 
+        <!-- BOTÓN GUARDAR -->
+        <button class="btn-main" id="btn-guardar">💾 Guardar Landing</button>
+
         <!-- BOTÓN NUEVA LANDING -->
         <button class="accordion-trigger" id="btn-nueva">🆕 Nueva Landing</button>
 
         <!-- ACORDEÓN PROYECTOS -->
-        <div class="accordion-trigger">📁 Mis Proyectos</div>
+        <div class="accordion-trigger" id="toggle-proyectos">📁 Mis Proyectos</div>
         <div class="accordion-content" id="proyectos-lista"></div>
 
     </div>
-
 
     <!-- PANEL DERECHO -->
     <div class="right-panel">
 
         <!-- BOTONES DERECHA -->
         <div class="top-right-buttons">
-
-            <div class="icon-btn" id="btn-mobile" title="Vista móvil (iPhone)">📱</div>
-            <div class="icon-btn" id="btn-tablet" title="Vista tablet (iPad)">📲</div>
-            <div class="icon-btn" id="btn-desktop" title="Vista escritorio (MacBook)">💻</div>
-            <div class="icon-btn" id="btn-zoom-out" title="Zoom -">➖</div>
-            <div class="icon-btn" id="btn-zoom-reset" title="Zoom 100%">🔄</div>
-            <div class="icon-btn" id="btn-zoom-in" title="Zoom +">➕</div>
+            <div class="icon-btn" id="btn-mobile" title="Vista móvil">📱</div>
+            <div class="icon-btn" id="btn-tablet" title="Vista tablet">📲</div>
+            <div class="icon-btn" id="btn-desktop" title="Vista escritorio">💻</div>
             <div class="icon-btn" id="btn-normal" title="Vista normal">↩️</div>
             <div class="icon-btn" id="btn-descargar" title="Descargar HTML">⬇️</div>
             <div class="icon-btn" id="btn-fullscreen" title="Vista completa">🖥️</div>
             <div class="icon-btn" id="toggle-theme" title="Modo claro/oscuro">🌙</div>
-
         </div>
-
 
         <!-- LOADER -->
         <div id="loader">
             <div class="loader-circle"></div>
             <div class="loader-text">Generando...</div>
         </div>
-
 
         <!-- VISTA RESPONSIVE -->
         <div id="responsive-frame-wrapper">
@@ -358,13 +383,12 @@
             </div>
         </div>
 
-
         <!-- VISTA NORMAL -->
         <div id="preview-container"></div>
 
     </div>
 
-    <!-- MINIATURAS -->
+    <!-- MINIATURAS (si luego queremos thumbnails) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <!-- APP -->
@@ -372,6 +396,7 @@
 
 </body>
 </html>
+
 
 
 
