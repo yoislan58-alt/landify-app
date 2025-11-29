@@ -1,328 +1,362 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landify Builder AI — Panel PRO</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landify Builder AI — Panel PRO</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <style>
-        /* --------------------------
-           VARIABLES MODO OSCURO / CLARO
-        -------------------------- */
-        :root[data-theme="dark"] {
-            --bg: #0b0b11;
-            --panel: #11111a;
-            --panel2: #161622;
-            --text: #ffffff;
-            --text-soft: #bdbdd2;
-            --accent: #8b4dff;
-            --accent2: #ff4d9e;
-            --border: #2a2a3d;
-            --card: #141422;
-        }
+  <style>
+    /* --------------------------
+       VARIABLES MODO OSCURO / CLARO
+    -------------------------- */
+    :root[data-theme="dark"] {
+      --bg: #0b0b11;
+      --panel: #11111a;
+      --panel2: #161622;
+      --text: #ffffff;
+      --text-soft: #bdbdd2;
+      --accent: #8b4dff;
+      --accent2: #ff4d9e;
+      --border: #2a2a3d;
+      --card: #141422;
+    }
 
-        :root[data-theme="light"] {
-            --bg: #f5f5fc;
-            --panel: #ffffff;
-            --panel2: #fafaff;
-            --text: #1b1b2e;
-            --text-soft: #4d4d66;
-            --accent: #8b4dff;
-            --accent2: #ff4d9e;
-            --border: #d8d8ea;
-            --card: #fff;
-        }
+    :root[data-theme="light"] {
+      --bg: #f5f5fc;
+      --panel: #ffffff;
+      --panel2: #fafaff;
+      --text: #1b1b2e;
+      --text-soft: #4d4d66;
+      --accent: #8b4dff;
+      --accent2: #ff4d9e;
+      --border: #d8d8ea;
+      --card: #fff;
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: "Poppins", sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-        }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
 
-        /* --------------------------
-           LAYOUT GENERAL
-        -------------------------- */
-        .left-panel {
-            width: 30%;
-            background: var(--panel);
-            padding: 22px;
-            border-right: 1px solid var(--border);
-            overflow-y: auto;
-        }
+    /* --------------------------
+       LAYOUT GENERAL
+    -------------------------- */
+    .left-panel {
+      width: 30%;
+      background: var(--panel);
+      padding: 18px 20px;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+    }
 
-        .right-panel {
-            width: 70%;
-            background: var(--panel2);
-            padding: 18px;
-            overflow-y: auto;
-            position: relative;
-        }
+    .right-panel {
+      width: 70%;
+      background: var(--panel2);
+      padding: 16px;
+      overflow-y: auto;
+      position: relative;
+    }
 
-        /* --------------------------
-           TITULOS Y SECCIONES
-        -------------------------- */
-        .panel-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
+    /* --------------------------
+       BRAND / LOGO
+    -------------------------- */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
 
-        .section-block {
-            background: var(--card);
-            padding: 14px;
-            border-radius: 12px;
-            margin-bottom: 18px;
-            border: 1px solid var(--border);
-        }
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #8b4dff, #ff4d9e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 0 16px rgba(139,77,255,0.65);
+    }
 
-        .section-block-title {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
 
-        textarea {
-            width: 100%;
-            height: 90px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            padding: 10px;
-            background: var(--panel2);
-            color: var(--text);
-            resize: none;
-            font-size: 14px;
-        }
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
 
-        /* --------------------------
-           BOTONES PRINCIPALES
-        -------------------------- */
-        .btn-main {
-            width: 100%;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            padding: 12px;
-            border-radius: 10px;
-            color: #fff;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.2s;
-        }
-        .btn-main:hover { opacity: 0.85; }
+    /* --------------------------
+       TITULOS Y SECCIONES
+    -------------------------- */
+    .panel-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
 
-        .btn-outline {
-            width: 100%;
-            background: transparent;
-            border: 1px solid var(--accent);
-            padding: 10px;
-            border-radius: 10px;
-            font-weight: 500;
-            color: var(--accent);
-            cursor: pointer;
-            margin-top: 8px;
-        }
+    .section-block {
+      background: var(--card);
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+    }
 
-        /* --------------------------
-           BOTONES DEL HEADER (DERECHA)
-        -------------------------- */
-        .top-right-buttons {
-            display: flex;
-            gap: 10px;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 40;
-        }
+    .section-block-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
 
-        .icon-btn {
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: 0.2s;
-        }
+    textarea {
+      width: 100%;
+      height: 80px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 8px;
+      background: var(--panel2);
+      color: var(--text);
+      resize: none;
+      font-size: 13px;
+    }
 
-        .icon-btn:hover {
-            background: var(--accent);
-            color: white;
-        }
+    /* --------------------------
+       BOTONES PRINCIPALES
+    -------------------------- */
+    .btn-main {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      padding: 10px;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      margin-top: 8px;
+      font-size: 13px;
+      transition: 0.2s;
+    }
+    .btn-main:hover { opacity: 0.9; }
 
-        /* --------------------------
-           LOADER PRO
-        -------------------------- */
-        #loader {
-            display: none;
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.45);
-            backdrop-filter: blur(4px);
-            z-index: 60;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
+    .btn-outline {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--accent);
+      padding: 8px;
+      border-radius: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      cursor: pointer;
+      margin-top: 6px;
+      font-size: 13px;
+    }
 
-        .loader-circle {
-            width: 45px;
-            height: 45px;
-            border: 5px solid #aaa;
-            border-top-color: var(--accent2);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+    /* --------------------------
+       PROYECTOS (ACORDEÓN)
+    -------------------------- */
+    .accordion-trigger {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+    .accordion-content {
+      margin-top: 8px;
+      padding: 8px;
+      background: var(--card);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: none;
+      max-height: 220px;
+      overflow-y: auto;
+    }
 
-        .loader-text {
-            margin-top: 8px;
-            color: white;
-            font-weight: 600;
-        }
+    .project-item {
+      padding: 6px 8px;
+      margin-bottom: 6px;
+      border-radius: 8px;
+      background: #151528;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      cursor: pointer;
+    }
 
-        /* --------------------------
-           VISTA PREVIA NORMAL
-        -------------------------- */
-        #preview-container {
-            background: white;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            min-height: 90vh;
-            padding: 0;
-            overflow-y: auto;
-        }
+    .project-item:hover {
+      border-color: var(--accent);
+      background: #191932;
+    }
 
-        /* --------------------------
-           MARCO RESPONSIVE
-        -------------------------- */
-        #responsive-frame-wrapper {
-            display: none;
-            margin-top: 20px;
-            text-align: center;
-        }
+    /* --------------------------
+       BOTONES DEL HEADER (DERECHA)
+    -------------------------- */
+    .top-right-buttons {
+      display: flex;
+      gap: 8px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 40;
+    }
 
-        #viewport-container {
-            display: inline-block;
-            transform-origin: top center;
-        }
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: 0.2s;
+    }
 
-        #responsive-frame {
-            width: 100%;
-            height: 90vh;
-            background: white;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-    </style>
+    .icon-btn:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* --------------------------
+       LOADER PRO
+    -------------------------- */
+    #loader {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(4px);
+      z-index: 60;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .loader-circle {
+      width: 40px;
+      height: 40px;
+      border: 5px solid #aaa;
+      border-top-color: var(--accent2);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      margin-top: 6px;
+      color: white;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    /* --------------------------
+       VISTA PREVIA
+    -------------------------- */
+    #preview-container {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      min-height: 90vh;
+      padding: 0;
+      overflow-y: auto;
+    }
+
+    /* Contenedor interno de la landing */
+    #landing-root {
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>
 
-    <!-- PANEL IZQUIERDO -->
-    <div class="left-panel">
+  <!-- PANEL IZQUIERDO -->
+  <div class="left-panel">
 
-        <!-- LOGO PRO -->
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-            <div style="
-                width:45px;height:45px;border-radius:12px;
-                background:linear-gradient(135deg,#8b4dff,#ff4d9e);
-                display:flex;align-items:center;justify-content:center;
-                font-size:24px;font-weight:700;color:white;
-            ">L</div>
-
-            <div>
-                <div style="font-size:19px;font-weight:700;">Landify AI</div>
-                <div style="font-size:13px;color:var(--text-soft);">Builder PRO</div>
-            </div>
-        </div>
-
-        <h2 class="panel-title">Crear nueva Landing</h2>
-
-        <!-- BLOQUE CREAR -->
-        <div class="section-block">
-            <div class="section-block-title">Describe la landing</div>
-            <textarea id="prompt-crear" placeholder="Ej: Landing moderna para cafetería orgánica..."></textarea>
-            <button class="btn-main" id="btn-crear">⚡ Generar Landing</button>
-            <button class="btn-outline" id="restore-crear">Restaurar</button>
-        </div>
-
-        <!-- BLOQUE AJUSTAR -->
-        <div class="section-block">
-            <div class="section-block-title">Agregar o ajustar sección</div>
-            <textarea id="prompt-ajustar" placeholder="Ej: Agrega sección de garantía premium..."></textarea>
-            <button class="btn-main" id="btn-ajustar">🛠 Agregar Sección</button>
-            <button class="btn-outline" id="restore-ajustar">Restaurar</button>
-        </div>
-
-        <!-- GUARDAR -->
-        <button class="btn-main" id="btn-guardar">💾 Guardar proyecto</button>
-
-        <!-- NUEVA -->
-        <button class="btn-main" id="btn-nueva">🆕 Nueva Landing</button>
-
-        <!-- PROYECTOS -->
-        <div class="accordion-trigger">📁 Mis Proyectos</div>
-        <div class="accordion-content" id="proyectos-lista"></div>
-
+    <!-- LOGO / NOMBRE -->
+    <div class="brand">
+      <div class="brand-logo">L</div>
+      <div>
+        <div class="brand-title">Landify AI</div>
+        <div class="brand-sub">Builder PRO</div>
+      </div>
     </div>
 
-    <!-- PANEL DERECHO -->
-    <div class="right-panel">
+    <h2 class="panel-title">Crear nueva landing</h2>
 
-        <!-- BOTONES DERECHA -->
-        <div class="top-right-buttons">
-
-            <div class="icon-btn" id="btn-mobile" title="Vista móvil">📱</div>
-            <div class="icon-btn" id="btn-tablet" title="Vista tablet">📲</div>
-            <div class="icon-btn" id="btn-desktop" title="Vista escritorio">💻</div>
-
-            <div class="icon-btn" id="btn-normal" title="Vista normal">↩️</div>
-
-            <div class="icon-btn" id="btn-descargar" title="Descargar HTML">⬇️</div>
-
-            <div class="icon-btn" id="btn-fullscreen" title="Pantalla completa">🖥️</div>
-
-            <div class="icon-btn" id="toggle-theme" title="Modo claro/oscuro">🌙</div>
-
-        </div>
-
-        <!-- LOADER -->
-        <div id="loader">
-            <div class="loader-circle"></div>
-            <div class="loader-text">Generando...</div>
-        </div>
-
-        <!-- RESPONSIVE -->
-        <div id="responsive-frame-wrapper">
-            <div id="viewport-container">
-                <iframe id="responsive-frame"></iframe>
-            </div>
-        </div>
-
-        <!-- PREVIEW NORMAL -->
-        <div id="preview-container"></div>
-
+    <!-- BLOQUE CREAR -->
+    <div class="section-block">
+      <div class="section-block-title">Describe la landing</div>
+      <textarea id="prompt-crear" placeholder="Ej: Landing moderna para nutrición, con hero, beneficios y CTA..."></textarea>
+      <button class="btn-main" id="btn-crear">⚡ Generar Landing</button>
+      <button class="btn-outline" id="restore-crear">Restaurar</button>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="app.js"></script>
+    <!-- BLOQUE AJUSTAR -->
+    <div class="section-block">
+      <div class="section-block-title">Agregar o ajustar sección</div>
+      <textarea id="prompt-ajustar" placeholder="Ej: Agrega sección de testimonio con foto, estilo premium..."></textarea>
+      <button class="btn-main" id="btn-ajustar">🛠 Agregar Sección</button>
+      <button class="btn-outline" id="restore-ajustar">Restaurar</button>
+    </div>
 
+    <!-- GUARDAR -->
+    <button class="btn-main" id="btn-guardar">💾 Guardar proyecto</button>
+
+    <!-- NUEVA LANDING -->
+    <button class="btn-main" id="btn-nueva">🆕 Nueva Landing</button>
+
+    <!-- PROYECTOS -->
+    <div class="accordion-trigger">📁 Mis Proyectos</div>
+    <div class="accordion-content" id="proyectos-lista"></div>
+
+  </div>
+
+  <!-- PANEL DERECHO -->
+  <div class="right-panel">
+
+    <!-- BOTONES DERECHA -->
+    <div class="top-right-buttons">
+      <div class="icon-btn" id="btn-descargar" title="Descargar HTML">⬇️</div>
+      <div class="icon-btn" id="btn-fullscreen" title="Pantalla completa">🖥️</div>
+      <div class="icon-btn" id="toggle-theme" title="Modo claro/oscuro">🌙</div>
+    </div>
+
+    <!-- LOADER -->
+    <div id="loader">
+      <div class="loader-circle"></div>
+      <div class="loader-text">Generando...</div>
+    </div>
+
+    <!-- PREVIEW NORMAL -->
+    <div id="preview-container">
+      <div id="landing-root"></div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
+
 
 
 
