@@ -1,28 +1,23 @@
-// -------------------------------------------------
-// LANDIFY BUILDER PRO — APP.JS COMPLETO Y FINAL
-// -------------------------------------------------
+// ------------------------------------------
+// LANDIFY BUILDER PRO — VERSIÓN ESTABLE
+// ------------------------------------------
 
 
-// ===============================================
-// MÓDULO 1 — SLUGIFIER PRO
-// ===============================================
+// ============= SLUG PARA PROYECTOS =============
 function crearSlug(texto) {
-    return texto
-        .toString()
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-z0-9\s\-]/g, "")
-        .trim()
-        .replace(/\s+/g, "-")
-        .replace(/\-+/g, "-")
-        .substring(0, 60);
+  return texto
+    .toString()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s\-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/\-+/g, "-")
+    .substring(0, 60);
 }
 
-
-// ===============================================
-// ELEMENTOS
-// ===============================================
+// ============= ELEMENTOS =============
 const promptCrear = document.getElementById("prompt-crear");
 const btnCrear = document.getElementById("btn-crear");
 
@@ -32,8 +27,8 @@ const btnAjustar = document.getElementById("btn-ajustar");
 const btnRestaurarCrear = document.getElementById("restore-crear");
 const btnRestaurarAjustar = document.getElementById("restore-ajustar");
 
-const preview = document.getElementById("preview-container");
 const loader = document.getElementById("loader");
+const landingRoot = document.getElementById("landing-root");
 
 const btnDescargar = document.getElementById("btn-descargar");
 const btnPantalla = document.getElementById("btn-fullscreen");
@@ -41,261 +36,266 @@ const btnNueva = document.getElementById("btn-nueva");
 const btnGuardar = document.getElementById("btn-guardar");
 
 const proyectosLista = document.getElementById("proyectos-lista");
+const proyectosTrigger = document.querySelector(".accordion-trigger");
 
-// Botones de vista
-const btnMobile = document.getElementById("btn-mobile");
-const btnTablet = document.getElementById("btn-tablet");
-const btnDesktop = document.getElementById("btn-desktop");
-const btnNormal = document.getElementById("btn-normal");
+const toggleThemeBtn = document.getElementById("toggle-theme");
 
-// Responsive
-const responsiveWrapper = document.getElementById("responsive-frame-wrapper");
-const responsiveFrame = document.getElementById("responsive-frame");
-const viewportContainer = document.getElementById("viewport-container");
-
-let zoomScale = 1;
-
-
-// ===============================================
-// LOADER
-// ===============================================
-function showLoading() { loader.style.display = "flex"; }
-function hideLoading() { loader.style.display = "none"; }
-
-
-// ===============================================
-// PREVIEW
-// ===============================================
-function updatePreview(html) {
-    preview.style.display = "block";
-    responsiveWrapper.style.display = "none";
-    preview.innerHTML = html;
+// ============= LOADER =============
+function showLoading() {
+  loader.style.display = "flex";
+}
+function hideLoading() {
+  loader.style.display = "none";
 }
 
-function updateResponsivePreview(html) {
-    preview.style.display = "none";
-    responsiveWrapper.style.display = "block";
-
-    const doc = responsiveFrame.contentWindow.document;
-    doc.open();
-    doc.write(html);
-    doc.close();
+// ============= PREVIEW =============
+function setLandingHTML(html) {
+  landingRoot.innerHTML = html;
+}
+function getLandingHTML() {
+  return landingRoot.innerHTML.trim();
 }
 
-
-// ===============================================
-// DESCARGAR ARCHIVO
-// ===============================================
-function descargarHTML(nombre, contenido) {
-    const blob = new Blob([contenido], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = nombre + ".html";
-    a.click();
-
-    URL.revokeObjectURL(url);
-}
-
-
-// ===============================================
-// GENERAR LANDING
-// ===============================================
-async function generarLanding(prompt, modo) {
-    try {
-        showLoading();
-
-        const respuesta = await fetch("/api/openai", {
-            method: "POST",
-            body: JSON.stringify({ prompt, mode: modo })
-        });
-
-        const data = await respuesta.json();
-        hideLoading();
-
-        if (!data.html) {
-            alert("Error generando landing");
-            return null;
-        }
-
-        updatePreview(data.html);
-        return data.html;
-
-    } catch (err) {
-        hideLoading();
-        alert("Error generando.");
-        return null;
-    }
-}
-
-
-// ===============================================
-// GENERAR SECCIÓN (NUEVO y CORRECTO)
-// ===============================================
-async function generarSeccion(prompt) {
+// ============= LLAMADA BACKEND: CREAR =============
+async function generarLanding(prompt) {
+  try {
     showLoading();
 
-    const respuesta = await fetch("/api/openai", {
-        method: "POST",
-        body: JSON.stringify({
-            prompt,
-            mode: "adjust-section"
-        })
+    const res = await fetch("/api/openai", {
+      method: "POST",
+      body: JSON.stringify({
+        prompt,
+        mode: "create"
+      })
     });
 
-    const data = await respuesta.json();
+    const data = await res.json();
     hideLoading();
 
-    return data.section || null;
+    if (!data || !data.html) {
+      alert("Error generando la landing");
+      return null;
+    }
+
+    // TODO: aquí se supone que data.html es la landing completa
+    setLandingHTML(data.html);
+    return data.html;
+
+  } catch (e) {
+    hideLoading();
+    console.error(e);
+    alert("Error generando la landing");
+    return null;
+  }
 }
 
+// ============= LLAMADA BACKEND: SECCIÓN =============
+async function generarSeccion(prompt) {
+  try {
+    showLoading();
 
-// ===============================================
-// MODULO 3 — PROYECTOS LOCALSTORAGE
-// ===============================================
-function guardarProyecto() {
-    const html = preview.innerHTML.trim();
-    if (!html) return alert("No hay landing para guardar.");
-
-    const slug = crearSlug("landing-" + Date.now());
-    const proyectos = JSON.parse(localStorage.getItem("proyectos") || "[]");
-
-    proyectos.unshift({
-        slug,
-        html,
-        fecha: new Date().toISOString()
+    const res = await fetch("/api/openai", {
+      method: "POST",
+      body: JSON.stringify({
+        prompt,
+        mode: "adjust-section" // IMPORTANTE: que el backend devuelva { section: "<section>...</section>" }
+      })
     });
 
-    localStorage.setItem("proyectos", JSON.stringify(proyectos));
-    renderProyectos();
+    const data = await res.json();
+    hideLoading();
 
-    alert("Proyecto guardado con éxito");
+    if (!data || !data.section) {
+      alert("No se pudo generar la sección. Revisa openai.js para devolver { section }.");
+      return null;
+    }
+
+    return data.section;
+
+  } catch (e) {
+    hideLoading();
+    console.error(e);
+    alert("Error generando sección");
+    return null;
+  }
+}
+
+// ============= PROYECTOS (LOCALSTORAGE) =============
+function guardarProyecto() {
+  const html = getLandingHTML();
+  if (!html) {
+    alert("No hay landing para guardar.");
+    return;
+  }
+
+  const proyectos = JSON.parse(localStorage.getItem("proyectos") || "[]");
+
+  const nombreBase = promptCrear.value.trim() || "landing";
+  const slug = crearSlug(nombreBase || "landing-" + Date.now());
+
+  proyectos.unshift({
+    slug,
+    html,
+    fecha: new Date().toISOString()
+  });
+
+  localStorage.setItem("proyectos", JSON.stringify(proyectos));
+  renderProyectos();
+  alert("Proyecto guardado correctamente.");
 }
 
 function renderProyectos() {
-    const proyectos = JSON.parse(localStorage.getItem("proyectos") || "[]");
-    proyectosLista.innerHTML = "";
+  const proyectos = JSON.parse(localStorage.getItem("proyectos") || "[]");
+  proyectosLista.innerHTML = "";
 
-    proyectos.forEach(p => {
-        const item = document.createElement("div");
-        item.className = "project-item";
-        item.textContent = p.slug;
+  if (!proyectos.length) {
+    const div = document.createElement("div");
+    div.style.color = "#bdbdd2";
+    div.style.fontSize = "12px";
+    div.textContent = "Aún no tienes landings guardadas.";
+    proyectosLista.appendChild(div);
+    return;
+  }
 
-        item.onclick = () => updatePreview(p.html);
+  proyectos.forEach(p => {
+    const item = document.createElement("div");
+    item.className = "project-item";
+    item.textContent = p.slug;
 
-        proyectosLista.appendChild(item);
-    });
+    item.onclick = () => {
+      setLandingHTML(p.html);
+    };
+
+    proyectosLista.appendChild(item);
+  });
 }
 
+// iniciar lista al cargar
 renderProyectos();
 
-
-// ===============================================
-// EVENTOS — CREAR LANDING
-// ===============================================
+// ============= EVENTOS CREAR =============
 btnCrear.addEventListener("click", async () => {
-    const p = promptCrear.value.trim();
-    if (p.length < 4) return alert("Escribe una descripción primero.");
+  const p = promptCrear.value.trim();
+  if (p.length < 5) {
+    alert("Describe la landing con un poco más de detalle.");
+    return;
+  }
 
-    await generarLanding(p, "create");
+  await generarLanding(p);
 });
 
 btnRestaurarCrear.addEventListener("click", () => {
-    promptCrear.value = "";
+  promptCrear.value = "";
 });
 
-
-// ===============================================
-// EVENTOS — AJUSTAR / AGREGAR SECCIÓN (FINAL)
-// ===============================================
+// ============= EVENTOS AJUSTAR / AGREGAR SECCIÓN =============
 btnAjustar.addEventListener("click", async () => {
-    const p = promptAjustar.value.trim();
-    if (p.length < 4) return alert("Escribe qué agregar.");
+  const instruccion = promptAjustar.value.trim();
+  if (instruccion.length < 5) {
+    alert("Describe qué sección quieres agregar o ajustar.");
+    return;
+  }
 
-    const seccion = await generarSeccion(p);
-    if (!seccion) return alert("No se pudo generar la sección.");
+  const htmlActual = getLandingHTML();
+  if (!htmlActual) {
+    alert("Primero genera una landing antes de agregar secciones.");
+    return;
+  }
 
-    preview.innerHTML += "\n\n" + seccion;
+  const seccion = await generarSeccion(instruccion);
+  if (!seccion) return;
+
+  // Solo se inserta dentro de la landing, NO en la app
+  landingRoot.innerHTML += "\n\n" + seccion;
 });
 
 btnRestaurarAjustar.addEventListener("click", () => {
-    promptAjustar.value = "";
+  promptAjustar.value = "";
 });
 
+// ============= GUARDAR PROYECTO =============
+btnGuardar.addEventListener("click", guardarProyecto);
 
-// ===============================================
-// GUARDAR PROYECTO
-// ===============================================
-btnGuardar.onclick = guardarProyecto;
-
-
-// ===============================================
-// NUEVA LANDING
-// ===============================================
+// ============= NUEVA LANDING =============
 btnNueva.addEventListener("click", () => {
-    preview.innerHTML = "";
-    promptCrear.value = "";
-    promptAjustar.value = "";
-    alert("Listo: proyecto limpio para empezar uno nuevo");
+  setLandingHTML("");
+  promptCrear.value = "";
+  promptAjustar.value = "";
+  alert("Listo, puedes comenzar una nueva landing desde cero.");
 });
 
+// ============= PROYECTOS: MOSTRAR / OCULTAR =============
+proyectosTrigger.addEventListener("click", () => {
+  const visible = proyectosLista.style.display === "block";
+  proyectosLista.style.display = visible ? "none" : "block";
+});
 
-// ===============================================
-// DESCARGAR
-// ===============================================
+// ============= DESCARGAR HTML =============
 btnDescargar.addEventListener("click", () => {
-    const html = preview.innerHTML.trim();
-    if (!html) return alert("No hay landing para descargar.");
-    descargarHTML("landing-generada", html);
+  const contenido = getLandingHTML();
+  if (!contenido) {
+    alert("No hay landing para descargar.");
+    return;
+  }
+
+  const htmlCompleto =
+`<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Landing generada</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+${contenido}
+</body>
+</html>`;
+
+  const slug = crearSlug(promptCrear.value || "landing-generada");
+  const nombre = slug || "landing-generada";
+  const blob = new Blob([htmlCompleto], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nombre + ".html";
+  a.click();
+
+  URL.revokeObjectURL(url);
 });
 
-
-// ===============================================
-// PANTALLA COMPLETA
-// ===============================================
+// ============= PANTALLA COMPLETA =============
 btnPantalla.addEventListener("click", () => {
-    const win = window.open("", "_blank");
-    win.document.write(preview.innerHTML);
-    win.document.close();
+  const contenido = getLandingHTML();
+  if (!contenido) {
+    alert("No hay landing para mostrar.");
+    return;
+  }
+
+  const win = window.open("", "_blank");
+  win.document.write(
+`<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Preview Landing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+${contenido}
+</body>
+</html>`
+  );
+  win.document.close();
+});
+
+// ============= MODO CLARO/OSCURO =============
+toggleThemeBtn.addEventListener("click", () => {
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
 });
 
 
-// ===============================================
-// MODO CLARO / OSCURO
-// ===============================================
-document.getElementById("toggle-theme").onclick = () => {
-    const html = document.documentElement;
-    html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
-};
-
-
-// ===============================================
-// MARCOS APPLE — VISTAS
-// ===============================================
-btnMobile.onclick = () => {
-    viewportContainer.style.width = "390px";
-    updateResponsivePreview(preview.innerHTML);
-};
-
-btnTablet.onclick = () => {
-    viewportContainer.style.width = "820px";
-    updateResponsivePreview(preview.innerHTML);
-};
-
-btnDesktop.onclick = () => {
-    viewportContainer.style.width = "1280px";
-    updateResponsivePreview(preview.innerHTML);
-};
-
-
-// ===============================================
-// VOLVER A VISTA NORMAL
-// ===============================================
-btnNormal.onclick = () => {
-    responsiveWrapper.style.display = "none";
-    preview.style.display = "block";
-};
 
 
 
