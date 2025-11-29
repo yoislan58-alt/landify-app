@@ -35,7 +35,11 @@
             --card: #fff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: "Poppins", sans-serif;
@@ -66,44 +70,51 @@
         }
 
         /* --------------------------
-           BRAND
+           BRAND LANDIFY
         -------------------------- */
         .brand {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
         .brand-logo {
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 999px;
             background: linear-gradient(135deg, var(--accent), var(--accent2));
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
             font-weight: 700;
-            font-size: 18px;
+            font-size: 20px;
+            color: #fff;
+            box-shadow: 0 0 16px rgba(139, 77, 255, 0.7);
         }
 
         .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
             font-weight: 700;
             font-size: 18px;
         }
 
-        .brand-text span {
-            color: var(--accent2);
+        .brand-sub {
+            font-size: 12px;
+            color: var(--text-soft);
         }
 
         /* --------------------------
            TITULOS Y SECCIONES
         -------------------------- */
         .panel-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .section-block {
@@ -147,7 +158,11 @@
             margin-top: 10px;
             transition: 0.2s;
         }
-        .btn-main:hover { opacity: 0.85; }
+
+        .btn-main:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
 
         .btn-outline {
             width: 100%;
@@ -161,8 +176,33 @@
             margin-top: 8px;
         }
 
+        .btn-outline:hover {
+            background: rgba(139, 77, 255, 0.08);
+        }
+
+        /* Botones laterales (Nueva / Proyectos) */
+        .side-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            text-align: left;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .side-btn:hover {
+            opacity: 0.9;
+        }
+
         /* --------------------------
-           BOTONES HEADER DERECHA
+           BOTONES DEL HEADER (DERECHA)
         -------------------------- */
         .top-right-buttons {
             display: flex;
@@ -199,7 +239,7 @@
             display: none;
             position: absolute;
             inset: 0;
-            background: rgba(0,0,0,0.45);
+            background: rgba(0, 0, 0, 0.45);
             backdrop-filter: blur(4px);
             z-index: 60;
             align-items: center;
@@ -216,7 +256,11 @@
             animation: spin 1s linear infinite;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         .loader-text {
             margin-top: 8px;
@@ -225,7 +269,7 @@
         }
 
         /* --------------------------
-           PREVIEW NORMAL
+           VISTA PREVIA NORMAL
         -------------------------- */
         #preview-container {
             background: white;
@@ -237,7 +281,7 @@
         }
 
         /* --------------------------
-           MARCOS APPLE PRO
+           VISTA RESPONSIVE (IFRAME)
         -------------------------- */
         #responsive-frame-wrapper {
             display: none;
@@ -259,58 +303,30 @@
         }
 
         /* --------------------------
-           ACORDEÓN PROYECTOS PRO
+           PROYECTOS (ACORDEÓN)
         -------------------------- */
-        .accordion-trigger {
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            color: #fff;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 500;
-            cursor: pointer;
-            margin-top: 14px;
-        }
-
         .accordion-content {
             display: none;
             padding: 10px;
             background: var(--panel);
             border-radius: 8px;
-            margin-top: 6px;
+            margin-top: 8px;
             border: 1px solid var(--border);
         }
 
         .project-item {
-            padding: 10px;
+            padding: 8px;
             background: var(--card);
             border-radius: 8px;
-            margin-bottom: 6px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .project-options {
-            display: none;
-            background: var(--panel2);
-            border: 1px solid var(--border);
-            padding: 8px;
-            border-radius: 8px;
-            margin-top: 4px;
             margin-bottom: 8px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            font-size: 13px;
         }
 
-        .project-options button {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            background: var(--accent);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
+        .project-item:hover {
+            border-color: var(--accent);
+            background: #191932;
         }
     </style>
 </head>
@@ -320,19 +336,22 @@
     <!-- PANEL IZQUIERDO -->
     <div class="left-panel">
 
-        <!-- BRAND LANDIFY -->
+        <!-- LOGO / NOMBRE -->
         <div class="brand">
             <div class="brand-logo">L</div>
-            <div class="brand-text">Landify <span>AI</span></div>
+            <div class="brand-text">
+                <div class="brand-name">Landify</div>
+                <div class="brand-sub">Builder AI PRO</div>
+            </div>
         </div>
 
-        <h2 class="panel-title">Crear nueva Landing</h2>
+        <h2 class="panel-title">Crear nueva landing</h2>
 
         <!-- BLOQUE CREAR -->
         <div class="section-block">
             <div class="section-block-title">Describe la landing</div>
             <textarea id="prompt-crear" placeholder="Ej: Landing moderna para cafetería orgánica..."></textarea>
-            <button class="btn-main" id="btn-crear">⚡ Generar Landing</button>
+            <button class="btn-main" id="btn-crear">⚡ Generar landing</button>
             <button class="btn-outline" id="restore-crear">Restaurar</button>
         </div>
 
@@ -340,18 +359,15 @@
         <div class="section-block">
             <div class="section-block-title">Ajustar o agregar sección</div>
             <textarea id="prompt-ajustar" placeholder="Ej: Agrega sección de garantía premium..."></textarea>
-            <button class="btn-main" id="btn-ajustar">🛠 Agregar Sección</button>
+            <button class="btn-main" id="btn-ajustar">🛠 Agregar sección</button>
             <button class="btn-outline" id="restore-ajustar">Restaurar</button>
         </div>
 
-        <!-- BOTÓN GUARDAR -->
-        <button class="btn-main" id="btn-guardar">💾 Guardar Landing</button>
-
         <!-- BOTÓN NUEVA LANDING -->
-        <button class="accordion-trigger" id="btn-nueva">🆕 Nueva Landing</button>
+        <button class="side-btn" id="btn-nueva">🆕 Nueva landing</button>
 
-        <!-- ACORDEÓN PROYECTOS -->
-        <div class="accordion-trigger" id="toggle-proyectos">📁 Mis Proyectos</div>
+        <!-- BOTÓN PROYECTOS -->
+        <button class="side-btn" id="btn-proyectos-toggle">📁 Mis proyectos</button>
         <div class="accordion-content" id="proyectos-lista"></div>
 
     </div>
@@ -361,12 +377,19 @@
 
         <!-- BOTONES DERECHA -->
         <div class="top-right-buttons">
+            <!-- Vista móvil -->
             <div class="icon-btn" id="btn-mobile" title="Vista móvil">📱</div>
+            <!-- Vista tablet -->
             <div class="icon-btn" id="btn-tablet" title="Vista tablet">📲</div>
+            <!-- Vista escritorio -->
             <div class="icon-btn" id="btn-desktop" title="Vista escritorio">💻</div>
+            <!-- Volver vista normal -->
             <div class="icon-btn" id="btn-normal" title="Vista normal">↩️</div>
+            <!-- Descargar -->
             <div class="icon-btn" id="btn-descargar" title="Descargar HTML">⬇️</div>
+            <!-- Pantalla completa -->
             <div class="icon-btn" id="btn-fullscreen" title="Vista completa">🖥️</div>
+            <!-- Tema -->
             <div class="icon-btn" id="toggle-theme" title="Modo claro/oscuro">🌙</div>
         </div>
 
@@ -376,19 +399,19 @@
             <div class="loader-text">Generando...</div>
         </div>
 
-        <!-- VISTA RESPONSIVE -->
+        <!-- VISTA PREVIA RESPONSIVE -->
         <div id="responsive-frame-wrapper">
             <div id="viewport-container">
                 <iframe id="responsive-frame"></iframe>
             </div>
         </div>
 
-        <!-- VISTA NORMAL -->
+        <!-- PREVIEW NORMAL -->
         <div id="preview-container"></div>
 
     </div>
 
-    <!-- MINIATURAS (si luego queremos thumbnails) -->
+    <!-- MINIATURAS (por ahora no usado, pero preparado) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <!-- APP -->
@@ -396,7 +419,6 @@
 
 </body>
 </html>
-
 
 
 
