@@ -392,9 +392,6 @@ textarea:focus {
   <button class="btn-main" id="btn-ajustar">🛠 Agregar Sección</button>
 </div>
 
-    <!-- GUARDAR -->
-    <button class="btn-main" id="btn-guardar">💾 Guardar proyecto</button>
-
     <!-- NUEVA LANDING -->
     <button class="btn-main" id="btn-nueva">🆕 Nueva Landing</button>
 
@@ -407,12 +404,23 @@ textarea:focus {
   <!-- PANEL DERECHO -->
   <div class="right-panel">
 
-    <!-- BOTONES DERECHA -->
-    <div class="top-right-buttons">
-      <div class="icon-btn" id="btn-descargar" title="Descargar HTML">⬇️</div>
-      <div class="icon-btn" id="btn-fullscreen" title="Pantalla completa">🖥️</div>
-      <div class="icon-btn" id="toggle-theme" title="Modo claro/oscuro">🌙</div>
-    </div>
+    <!-- BOTONES SUPERIORES -->
+<div class="top-right-buttons">
+
+  <!-- Descargar -->
+  <div class="icon-btn" id="btn-descargar" title="Descargar HTML">⬇️</div>
+
+  <!-- Pantalla completa -->
+  <div class="icon-btn" id="btn-fullscreen" title="Pantalla completa">🖥️</div>
+
+  <!-- Guardar proyecto (nuevo arriba) -->
+  <div class="icon-btn" id="btn-guardar" title="Guardar proyecto">💾</div>
+
+  <!-- Tema claro/oscuro mejorado -->
+  <div class="icon-btn theme-btn" id="toggle-theme" title="Modo claro/oscuro">🌙</div>
+
+</div>
+
 
     <!-- LOADER -->
     <div id="loader">
@@ -430,6 +438,7 @@ textarea:focus {
   <script src="app.js"></script>
 </body>
 </html>
+
 
 
 
