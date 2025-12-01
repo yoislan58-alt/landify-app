@@ -119,55 +119,61 @@ body {
 }
 
 /* =========================================================
-   BOTONERA SUPERIOR — AJUSTADA Y ELEGANTE
+   BOTONERA SUPERIOR — AJUSTADA
 ========================================================= */
 .top-right-buttons {
   position: absolute;
-  top: 8px;
-  right: 12px;
-
+  top: 16px;
+  right: 18px;
   display: flex;
   gap: 10px;
-
-  /* Esto garantiza que queden FUERA del recuadro blanco */
-  transform: translateY(-12px);
   z-index: 999;
 }
 
+/* Botón base */
 .icon-btn {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+
+  background: rgba(0,0,0,0.25);
+  color: #ffffff;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: rgba(255,255,255,0.12);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-
-  font-size: 20px;
   cursor: pointer;
-  transition: 0.2s ease;
+  font-size: 20px;
+
   backdrop-filter: blur(6px);
 
-  box-shadow:
-    0 4px 14px rgba(0,0,0,0.35),
-    0 0 0 1px rgba(255,255,255,0.1);
+  transition: 
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
 }
 
 .icon-btn:hover {
   background: linear-gradient(135deg, var(--gold-1), var(--gold-2));
-  border-color: rgba(120,76,12,0.6);
+  border-color: rgba(120,76,12,0.7);
   color: #2b1402;
-  box-shadow: 0 6px 20px var(--gold-shadow);
+  box-shadow: 0 8px 20px var(--gold-shadow);
 }
 
-/* Botón de tema mejorado */
+/* Botón de tema: un poco más grande y con sol + luna */
 .theme-btn {
-  font-size: 22px !important;    /* Más grande */
-  padding-top: 1px;
+  width: 54px;
+  justify-content: space-between;
+  padding: 0 6px;
 }
+
+.theme-btn .theme-sun,
+.theme-btn .theme-moon {
+  font-size: 18px;
+}
+
 
 
 .theme-toggle {
@@ -345,6 +351,7 @@ body {
         height: 60vh;
     }
 }
+
 
 
 
