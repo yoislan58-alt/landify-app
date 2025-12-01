@@ -76,21 +76,47 @@ body {
     color: #000;
 }
 
-/* MODO CLARO/OSCURO — UN SOLO BOTÓN */
+/* BOTÓN TEMA PREMIUM (sol + luna en un solo botón) */
 .toggle-theme {
+    width: 60px;
+    height: 44px;
+    border-radius: 20px;
+    background: var(--glass);
+    border: 1px solid var(--border);
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
+    justify-content: space-between;
+    padding: 0 10px;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: 0.25s;
+    position: relative;
 }
 
-.theme-icon-sun {
-    font-size: 18px;
+.toggle-theme:hover {
+    background: linear-gradient(135deg, var(--gold1), var(--gold2));
+    color: #000;
 }
 
+.theme-icon-sun,
 .theme-icon-moon {
     font-size: 18px;
+    opacity: 0.35;
+    transition: 0.25s;
 }
+
+/* Tema claro → se ilumina el sol */
+html[data-theme="light"] .theme-icon-sun {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* Tema oscuro → se ilumina la luna */
+html[data-theme="dark"] .theme-icon-moon {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
 
 /* =====================================================
    LAYOUT 30/70
@@ -283,6 +309,7 @@ textarea {
 .project-item:hover {
     border-color: var(--gold2);
 }
+
 
 
 
