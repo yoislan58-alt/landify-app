@@ -24,9 +24,6 @@ const btnCrear = document.getElementById("btn-crear");
 const promptAjustar = document.getElementById("prompt-ajustar");
 const btnAjustar = document.getElementById("btn-ajustar");
 
-const btnRestaurarCrear = document.getElementById("restore-crear");
-const btnRestaurarAjustar = document.getElementById("restore-ajustar");
-
 const loader = document.getElementById("loader");
 const landingRoot = document.getElementById("landing-root");
 
@@ -184,10 +181,6 @@ btnCrear.addEventListener("click", async () => {
   await generarLanding(p);
 });
 
-btnRestaurarCrear.addEventListener("click", () => {
-  promptCrear.value = "";
-});
-
 // ============= EVENTOS AJUSTAR / AGREGAR SECCIÓN =============
 btnAjustar.addEventListener("click", async () => {
   const instruccion = promptAjustar.value.trim();
@@ -207,10 +200,6 @@ btnAjustar.addEventListener("click", async () => {
 
   // Solo se inserta dentro de la landing, NO en la app
   landingRoot.innerHTML += "\n\n" + seccion;
-});
-
-btnRestaurarAjustar.addEventListener("click", () => {
-  promptAjustar.value = "";
 });
 
 // ============= GUARDAR PROYECTO =============
@@ -294,6 +283,7 @@ toggleThemeBtn.addEventListener("click", () => {
   const html = document.documentElement;
   html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
 });
+
 
 
 
