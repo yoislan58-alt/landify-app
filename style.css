@@ -1,45 +1,50 @@
 /* =========================================================
-   VARIABLES GLOBALES
+   VARIABLES PREMIUM
 ========================================================= */
 :root {
-    --bg-dark: #0b0c1d;
-    --bg-light: #f5f7ff;
+    --gold-1: #f7d67b;
+    --gold-2: #f5b945;
+    --gold-3: #fff2cc;
+    --gold-shadow: rgba(245,185,69,0.35);
+
+    --bg-dark: #0b0c14;
+    --bg-light: #f6f7fb;
 
     --text-dark: #ffffff;
-    --text-light: #1a1a1a;
+    --text-light: #12121a;
 
-    --glass-dark: rgba(255,255,255,0.06);
-    --glass-light: rgba(255,255,255,0.7);
-
-    --border-dark: rgba(255,255,255,0.15);
-    --border-light: rgba(0,0,0,0.12);
-
-    --glow1: #a56dff;
-    --glow2: #00b7ff;
+    --panel-dark: rgba(20,18,28,0.68);
+    --panel-light: rgba(255,255,255,0.75);
 
     --card-dark: rgba(255,255,255,0.08);
     --card-light: rgba(255,255,255,0.9);
 
-    --shadow-dark: 0 4px 20px rgba(0,0,0,0.45);
-    --shadow-light: 0 4px 20px rgba(0,0,0,0.08);
+    --border-dark: rgba(255,255,255,0.18);
+    --border-light: rgba(0,0,0,0.12);
+
+    --crystal-dark: radial-gradient(circle at 0% 0%, rgba(247,214,123,0.15), transparent 55%),
+                    radial-gradient(circle at 100% 100%, rgba(245,185,69,0.12), transparent 55%);
+
+    --crystal-light: radial-gradient(circle at 0% 0%, rgba(245,185,69,0.15), transparent 55%),
+                     radial-gradient(circle at 100% 100%, rgba(247,214,123,0.22), transparent 55%);
 }
 
 html[data-theme="dark"] {
     --bg: var(--bg-dark);
     --text: var(--text-dark);
-    --glass: var(--glass-dark);
-    --border: var(--border-dark);
+    --panel: var(--panel-dark);
     --card: var(--card-dark);
-    --shadow: var(--shadow-dark);
+    --border: var(--border-dark);
+    --crystal-bg: var(--crystal-dark);
 }
 
 html[data-theme="light"] {
     --bg: var(--bg-light);
     --text: var(--text-light);
-    --glass: var(--glass-light);
-    --border: var(--border-light);
+    --panel: var(--panel-light);
     --card: var(--card-light);
-    --shadow: var(--shadow-light);
+    --border: var(--border-light);
+    --crystal-bg: var(--crystal-light);
 }
 
 /* =========================================================
@@ -49,6 +54,7 @@ html[data-theme="light"] {
 body {
     margin: 0;
     background: var(--bg);
+    background-image: var(--crystal-bg);
     color: var(--text);
     font-family: "Poppins", sans-serif;
     overflow: hidden;
@@ -58,9 +64,7 @@ body {
     display: none;
 }
 
-*::-webkit-scrollbar {
-    width: 6px;
-}
+*::-webkit-scrollbar { width: 6px; }
 *::-webkit-scrollbar-thumb {
     background: rgba(255,255,255,0.25);
     border-radius: 6px;
@@ -73,12 +77,13 @@ body {
 .topnav {
     height: 58px;
     border-bottom: 1px solid var(--border);
-    background: rgba(0,0,0,0.25);
+    background: rgba(255,255,255,0.08);
     backdrop-filter: blur(18px);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 18px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.25);
 }
 
 .topnav-left {
@@ -90,48 +95,46 @@ body {
 .topnav-left h2 {
     margin: 0;
     font-size: 18px;
+    font-weight: 600;
 }
 
-.view-buttons {
-    display: flex;
-    gap: 6px;
-}
+/* Botones de vista */
+.view-buttons { display: flex; gap: 6px; }
 
 .view-btn {
-    padding: 5px 12px;
-    border-radius: 8px;
+    padding: 6px 12px;
+    border-radius: 10px;
     border: 1px solid var(--border);
-    background: transparent;
+    background: rgba(255,255,255,0.08);
     color: var(--text);
     cursor: pointer;
     font-size: 12px;
+    transition: 0.2s ease;
 }
 .view-btn.active {
-    background: linear-gradient(45deg, var(--glow1), var(--glow2));
-    border: none;
-    color: white;
-}
-
-.topnav-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.icon-btn {
-    padding: 5px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: transparent;
-    cursor: pointer;
-    font-size: 13px;
-    color: var(--text);
-}
-.icon-btn:hover {
-    background: rgba(255,255,255,0.15);
+    background: linear-gradient(135deg, var(--gold-3), var(--gold-1), var(--gold-2));
+    color: #2b1402;
+    border: 1px solid rgba(120,76,12,0.5);
+    box-shadow: 0 10px 22px var(--gold-shadow);
 }
 
 /* Botón tema */
+.topnav-right { display: flex; align-items: center; gap: 8px; }
+
+.icon-btn {
+    padding: 6px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.08);
+    cursor: pointer;
+    color: var(--text);
+    font-size: 13px;
+    transition: 0.2s ease;
+}
+.icon-btn:hover {
+    background: rgba(255,255,255,0.18);
+}
+
 .theme-toggle {
     font-size: 18px;
 }
@@ -145,17 +148,24 @@ body {
     height: calc(100vh - 58px);
 }
 
-/* Panel izquierdo (30%) */
+/* Panel Izquierdo – PREMIUM */
 .panel {
     width: 30%;
-    padding: 15px;
+    padding: 18px;
+    background: var(--panel);
+    border-radius: 22px;
+    border: 1px solid rgba(247,214,123,0.25);
+    box-shadow:
+        0 15px 32px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(247,214,123,0.1);
+    backdrop-filter: blur(18px);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
 }
 
-/* Preview derecho (70%) */
+/* Preview Derecho */
 .preview {
     width: 70%;
     border-left: 1px solid var(--border);
@@ -165,33 +175,37 @@ body {
     padding: 15px;
 }
 
+/* Frame */
 #previewFrame {
     width: 100%;
     height: 100%;
     border: none;
-    border-radius: 12px;
+    border-radius: 16px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.45);
 }
 
-/* Modo móvil */
+/* Dispositivo móvil */
 .preview.mobile #previewFrame {
     width: 390px;
     height: 780px;
-    border-radius: 30px;
+    border-radius: 28px;
     border: 10px solid #000;
     box-shadow: 0 0 0 3px #333;
 }
 
 /* =========================================================
-   CARDS PANEL IZQUIERDO
+   CARDS IZQUIERDA
 ========================================================= */
 
 .card {
-    background: var(--card);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 14px;
-    box-shadow: var(--shadow);
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(247,214,123,0.25);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow:
+        0 12px 32px rgba(0,0,0,0.45),
+        0 0 0 1px rgba(247,214,123,0.1);
 }
 
 .card-title {
@@ -203,151 +217,82 @@ body {
 /* Inputs */
 .input {
     width: 100%;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(247,214,123,0.25);
+    border-radius: 14px;
     padding: 10px;
     font-size: 13px;
     color: var(--text);
     margin-bottom: 10px;
+    transition: 0.2s ease;
 }
-.input.large {
-    height: 120px;
-}
-
-/* Botones principales */
-.btn-primary {
-    width: 100%;
-    padding: 10px;
-    background: linear-gradient(45deg, var(--glow1), var(--glow2));
-    border: none;
-    border-radius: 12px;
-    color: white;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-}
-.btn-primary:hover {
-    filter: brightness(1.1);
+.input:focus {
+    border-color: var(--gold-2);
+    box-shadow: 0 0 0 2px rgba(245,185,69,0.25);
 }
 
-/* Botón restaurar de cada card */
-.btn-reset {
-    margin-top: 6px;
-    width: 100%;
-    padding: 8px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    cursor: pointer;
-    font-size: 13px;
-}
-.btn-reset:hover {
-    background: rgba(255,255,255,0.15);
-}
-
-/* Card Acciones */
-.card-acciones {
-    margin-top: 4px;
-}
-
-.btn-primary-outline {
-    width: 100%;
-    padding: 8px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text);
-    cursor: pointer;
-    font-size: 13px;
-}
-.btn-primary-outline:hover {
-    background: rgba(255,255,255,0.15);
-}
-
-/* Submenú proyectos */
-.submenu {
-    margin-top: 8px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    padding: 8px;
-    background: rgba(0,0,0,0.2);
-    max-height: 180px;
-    overflow-y: auto;
-}
-
-#projectListSidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.proj-btn {
-    width: 100%;
-    padding: 6px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text);
-    cursor: pointer;
-    font-size: 12px;
-    text-align: left;
-}
-.proj-btn:hover {
-    background: rgba(255,255,255,0.15);
-}
-
-/* Botón reset total */
-.btn-reset-full {
-    margin-top: 10px;
-    width: 100%;
-    padding: 8px;
-    background: transparent;
-    border: 1px solid #e25b5b;
-    border-radius: 10px;
-    color: #ff9a9a;
-    cursor: pointer;
-    font-size: 13px;
-}
-.btn-reset-full:hover {
-    background: rgba(226,91,91,0.15);
-}
+.input.large { height: 120px; }
 
 /* =========================================================
-   LOADING
+   BOTONES PREMIUM
 ========================================================= */
 
-.loading {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255,255,255,0.08);
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--gold-3), var(--gold-1), var(--gold-2));
+    border: 1px solid rgba(120,76,12,0.6);
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c1603;
+    cursor: pointer;
+    box-shadow:
+        0 16px 36px var(--gold-shadow),
+        0 0 0 1px rgba(255,255,255,0.25);
+    transition: 0.2s ease;
+}
+.btn-primary:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+/* Secundario */
+.btn-primary-outline {
+    width: 100%;
+    padding: 10px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+.btn-primary-outline:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+/* Reset */
+.btn-reset {
+    width: 100%;
     padding: 8px;
     border-radius: 12px;
+    border: 1px solid rgba(255,120,120,0.5);
+    color: #ff9a9a;
+    background: transparent;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
-
-.loader {
-    width: 20px;
-    height: 20px;
-    border: 3px solid transparent;
-    border-top-color: var(--glow2);
-    border-radius: 50%;
-    animation: spin .9s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
+.btn-reset:hover {
+    background: rgba(255,120,120,0.15);
 }
 
 /* =========================================================
-   RESPONSIVE BÁSICO
+   RESPONSIVE
 ========================================================= */
 
 @media (max-width: 900px) {
-    body {
-        overflow: auto;
-    }
+    body { overflow: auto; }
 
     .layout {
         flex-direction: column;
@@ -365,80 +310,6 @@ body {
         height: 60vh;
     }
 }
-
-/* ===============================
-      VISTA RESPONSIVA PRO
-   =============================== */
-#responsive-frame-wrapper {
-    transition: all 0.25s ease;
-}
-
-.responsive-mobile iframe {
-    width: 375px !important;
-    margin: auto;
-    display: block;
-}
-
-.responsive-tablet iframe {
-    width: 768px !important;
-    margin: auto;
-    display: block;
-}
-
-.responsive-desktop iframe {
-    width: 100% !important;
-}
-
-/* ============= ZOOM ============= */
-#viewport-container {
-    transition: transform 0.25s ease;
-}
-
-/* ============================================================
-   RESPONSIVE FRAME — MOBILE / TABLET / DESKTOP
-============================================================ */
-
-#responsive-frame-wrapper {
-    width: 100%;
-    text-align: center;
-    margin-top: 20px;
-}
-
-/* Contenedor del dispositivo */
-#viewport-container {
-    display: inline-block;
-    transform: scale(1);
-    transform-origin: top center;
-    transition: transform 0.25s ease;
-}
-
-/* Tamaños según la vista */
-.responsive-mobile #responsive-frame {
-    width: 390px !important;
-    height: 800px !important;
-    border-radius: 22px;
-}
-
-.responsive-tablet #responsive-frame {
-    width: 768px !important;
-    height: 1000px !important;
-    border-radius: 18px;
-}
-
-.responsive-desktop #responsive-frame {
-    width: 100% !important;
-    max-width: 1200px;
-    height: 1000px !important;
-    border-radius: 12px;
-}
-
-/* Efecto del dispositivo premium */
-#responsive-frame {
-    box-shadow: 0 10px 35px rgba(0,0,0,0.35);
-    background: white;
-}
-
-
 
 
 
